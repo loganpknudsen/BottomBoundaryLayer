@@ -53,14 +53,14 @@ b₀(x, y, z) = 0
 
 set!(model, u=u₀, v=v₀, w=w₀, b=b₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 10000)
+simulation = Simulation(model, Δt = 1, stop_time = 10)
 
 wizard = TimeStepWizard(cfl=2, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) # dec cfl 0.9 -> .5
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) # dec. int 500 -> 5 (max)
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
-filename = "/Users/loganknudsen/Documents/UMD_Research/internal_wave.jld2"
+filename = "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/internal_wave.jld2"
 simulation.output_writers[:velocities] = JLD2OutputWriter(model, model.velocities; filename,
                                                           schedule = TimeInterval(500),
                                                           overwrite_existing = true)
@@ -116,7 +116,7 @@ fig[1, 1] = Label(fig, title, fontsize=24, tellwidth=false)
 tlength=length(w_timeseries.times)
 
 frames = 1:tlength
-record(fig, "/Users/loganknudsen/Documents/UMD_Research/internal_waves.mp4", frames, framerate=8) do j
+record(fig, "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/internal_waves.mp4", frames, framerate=8) do j
     msg = string("Plotting frame ", j, "of ", frames[end])
     # @info msg * "\r"
     n[] = j
