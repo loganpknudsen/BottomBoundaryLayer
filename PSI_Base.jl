@@ -28,7 +28,7 @@ ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ = 0.6, ϕ = 0, f = coriolis
 U_func(x, y, z, t, ps) = ((ps.S^2*z)/ps.f)*(1+ps.γ*cos(ps.f*t-ps.ϕ))
 V_func(x, y, z, t, ps) = -1*((ps.S^2*z*ps.γ)/ps.f)*(sin(ps.f*t-ps.ϕ))
 W_func(x,y,z,t) = 0
-B_func(x, y, z, t, ps) = (ps.Nₒ^2-ps.γ*(ps.S^4/ps.f^2)*(cos(ps.ϕ)-cos(ps.f*t-ps.ϕ)))*z +ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
+B_func(x, y, z, t, ps) = (ps.Nₒ^2-ps.γ*(ps.S^4/ps.f^2)*(cos(ps.ϕ)-cos(ps.f*t-ps.ϕ)))*z - ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
 U = BackgroundField(U_func, parameters=ps)
 V = BackgroundField(V_func, parameters=ps)
 W = BackgroundField(W_func)
@@ -48,10 +48,10 @@ model = NonhydrostaticModel(; grid,
                             buoyancy = BuoyancyTracer(),
                             background_fields = (; u=U, v=V, w=W, b=B)) # `background_fields` is a `NamedTuple`
 
-u₀(x, y, z) = 0.1*Random.randn()
-v₀(x, y, z) = 0#.1*Random.randn()
-w₀(x, y, z) = 0#.1*Random.randn()
-b₀(x, y, z) = 0#.1*Random.randn()
+u₀(x, y, z) = 0.25*Random.randn()
+v₀(x, y, z) = 0.25*Random.randn()
+w₀(x, y, z) = 0.25*Random.randn()
+b₀(x, y, z) = 0
 
 set!(model, u=u₀, v=v₀, w=w₀, b=b₀)
 

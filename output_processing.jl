@@ -18,11 +18,11 @@ ax = Axis(fig[2, 1]; xlabel = "y", ylabel = "z",
 
 n = Observable(1)
 
-w_timeseries = FieldTimeSeries(filename, "v")
+w_timeseries = FieldTimeSeries(filename, "u")
 x, y, z = nodes(w_timeseries)
 
 w = @lift interior(w_timeseries[$n], 1, :, :)
-w_lim = 0.01
+w_lim = 1
 
 @info "Data has been stored into w"
 
