@@ -1,7 +1,7 @@
 using Oceananigans
 using GLMakie#master
 
-filename = "/Users/loganknudsen/Documents/UMD_Research/internal_wave.jld2"
+filename = "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/internal_wave.jld2"
 
 set_theme!(Theme(fontsize = 24))
 
@@ -18,11 +18,11 @@ ax = Axis(fig[2, 1]; xlabel = "y", ylabel = "z",
 
 n = Observable(1)
 
-w_timeseries = FieldTimeSeries(filename, "u")
+w_timeseries = FieldTimeSeries(filename, "v")
 x, y, z = nodes(w_timeseries)
 
 w = @lift interior(w_timeseries[$n], 1, :, :)
-w_lim = 1
+w_lim = 0.01
 
 @info "Data has been stored into w"
 
@@ -43,7 +43,7 @@ fig[1, 1] = Label(fig, title, fontsize=24, tellwidth=false)
 tlength=length(w_timeseries.times)
 
 frames = 1:tlength
-record(fig, "/Users/loganknudsen/Documents/UMD_Research/internal_waves.mp4", frames, framerate=8) do j
+record(fig, "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/internal_waves.mp4", frames, framerate=8) do j
     msg = string("Plotting frame ", j, "of ", frames[end])
     # @info msg * "\r"
     n[] = j
