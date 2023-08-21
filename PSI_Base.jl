@@ -47,14 +47,16 @@ model = NonhydrostaticModel(; grid,
                             buoyancy = BuoyancyTracer(),
                             background_fields = (; u=U, v=V, w=W, b=B)) # `background_fields` is a `NamedTuple`
 
-u₀(x, y, z) = Random.randn()
-v₀(x, y, z) = Random.randn()
-w₀(x, y, z) = Random.randn()
-b₀(x, y, z) = 0
+u₀(x, y, z) = 0.1*Random.randn()
+v₀(x, y, z) = 0.1*Random.randn()
+w₀(x, y, z) = 0.1*Random.randn()
+# b₀(x, y, z) = 0
 
-set!(model, u=u₀, v=v₀, w=w₀, b=b₀)
+# set!(model, u=u₀, v=v₀, w=w₀, b=b₀)
+set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 40000)
+
+simulation = Simulation(model, Δt = 1, stop_time = 10)
 
 wizard = TimeStepWizard(cfl=1, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) # dec cfl 0.9 -> .5
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) # dec. int 500 -> 5 (max)
@@ -63,7 +65,7 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) # dec. in
 
 filename = "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/PSI.jld2"
 simulation.output_writers[:velocities] = JLD2OutputWriter(model, model.velocities; filename,
-                                                          schedule = TimeInterval(500),
+                                                          schedule = TimeInterval(1),
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation

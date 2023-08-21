@@ -22,7 +22,7 @@ w_timeseries = FieldTimeSeries(filename, "v")
 x, y, z = nodes(w_timeseries)
 
 w = @lift interior(w_timeseries[$n], 1, :, :)
-w_lim = 1
+w_lim = 0.1
 
 @info "Data has been stored into w"
 
