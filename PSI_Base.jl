@@ -3,7 +3,7 @@
 # # Internal wave example
 #
 # ## The physical domain
-#
+# just a test
 
 using Oceananigans
 using Random
