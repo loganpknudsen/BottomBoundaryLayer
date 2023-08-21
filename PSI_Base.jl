@@ -7,7 +7,6 @@
 
 using Oceananigans
 using Random
-using LaTeXStrings
 
 # made grid correct shape, need to modify z boundaries to make sure they are no slip
 grid = RectilinearGrid(size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0), topology=(Periodic, Periodic, Bounded))
@@ -48,23 +47,23 @@ model = NonhydrostaticModel(; grid,
                             buoyancy = BuoyancyTracer(),
                             background_fields = (; u=U, v=V, w=W, b=B)) # `background_fields` is a `NamedTuple`
 
-u₀(x, y, z) = 0.25*Random.randn()
-v₀(x, y, z) = 0.25*Random.randn()
-w₀(x, y, z) = 0.25*Random.randn()
+u₀(x, y, z) = Random.randn()
+v₀(x, y, z) = Random.randn()
+w₀(x, y, z) = Random.randn()
 b₀(x, y, z) = 0
 
 set!(model, u=u₀, v=v₀, w=w₀, b=b₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 10)
+simulation = Simulation(model, Δt = 1, stop_time = 40000)
 
 wizard = TimeStepWizard(cfl=1, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) # dec cfl 0.9 -> .5
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) # dec. int 500 -> 5 (max)
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
-filename = "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/internal_wave.jld2"
+filename = "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/PSI.jld2"
 simulation.output_writers[:velocities] = JLD2OutputWriter(model, model.velocities; filename,
-                                                          schedule = TimeInterval(1),
+                                                          schedule = TimeInterval(500),
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
