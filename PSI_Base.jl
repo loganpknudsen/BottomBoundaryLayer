@@ -35,7 +35,7 @@ B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
 no_slip_field_bcs = FieldBoundaryConditions(FluxBoundaryCondition(0.0));
-buoyancy_grad = FieldBoundaryConditions(top=GradientBoundaryCondition(ps.Nₒ),bottom=GradientBoundaryCondition(ps.Nₒ))
+buoyancy_grad = FieldBoundaryConditions(top=GradientBoundaryCondition(ps.Nₒ^2),bottom=GradientBoundaryCondition(ps.Nₒ^2))
 
 model = NonhydrostaticModel(; grid,
                             boundary_conditions=(u=no_slip_field_bcs, v=no_slip_field_bcs, w=no_slip_field_bcs, b=buoyancy_grad),
@@ -50,9 +50,7 @@ model = NonhydrostaticModel(; grid,
 u₀(x, y, z) = 0.1*Random.randn()
 v₀(x, y, z) = 0.1*Random.randn()
 w₀(x, y, z) = 0.1*Random.randn()
-# b₀(x, y, z) = 0
 
-# set!(model, u=u₀, v=v₀, w=w₀, b=b₀)
 set!(model, u=u₀, v=v₀, w=w₀)
 
 
@@ -63,13 +61,15 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) # dec. in
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
-filename = "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/PSI.jld2"
-simulation.output_writers[:velocities] = JLD2OutputWriter(model, model.velocities; filename,
+outputs =fields(model)
+
+simulation.output_writers[:fields] = JLD2OutputWriter(model, outputs;
                                                           schedule = TimeInterval(1),
+                                                          filename = "PSI_outputs.jld2",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
-
+ 
 run!(simulation)
 
 # ## Animating a propagating packet

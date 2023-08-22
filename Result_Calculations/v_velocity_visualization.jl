@@ -1,7 +1,8 @@
 using Oceananigans
 using GLMakie#master
 
-filename = "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/PSI.jld2"
+coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
+ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ = 0.6, ϕ = 0, f = coriolis.f)
 
 set_theme!(Theme(fontsize = 24))
 
@@ -17,10 +18,14 @@ ax = Axis(fig[2, 1]; xlabel = "y", ylabel = "z",
 # [Makie.jl's Documentation](https://makie.juliaplots.org/stable/documentation/nodes/index.html).
 
 n = Observable(1)
-
+filename = "PSI_outputs.jld2"
 w_timeseries = FieldTimeSeries(filename, "v")
+b_timeseries = FieldTimeSeries(filename, "b")
+
 x, y, z = nodes(w_timeseries)
 
+t=w_timeseries.times
+b = @lift interior(b_timeseries[$n], 1, :, :)
 w = @lift interior(w_timeseries[$n], 1, :, :)
 w_lim = 0.1
 
@@ -30,6 +35,7 @@ plt = GLMakie.heatmap!(ax, y, z, w,
           colormap = :balance,
           colorrange = (-w_lim, w_lim)
           )
+GLMakie.contour!(ax,y,z,b)
 Colorbar(fig[2,2],plt)
 @info "Data has been mapped"
 
@@ -40,10 +46,9 @@ fig[1, 1] = Label(fig, title, fontsize=24, tellwidth=false)
 
 @info "Compiling movie"
 
-tlength=length(w_timeseries.times)
-
+tlength = length(t)
 frames = 1:tlength
-record(fig, "/Users/loganknudsen/Documents/UMD_Research/BottomBoundaryLayer/cross_front_visualization.mp4", frames, framerate=8) do j
+record(fig, "cross_front_visualization.mp4", frames, framerate=8) do j
     msg = string("Plotting frame ", j, "of ", frames[end])
     # @info msg * "\r"
     n[] = j
