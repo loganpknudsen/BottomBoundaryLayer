@@ -6,3 +6,5 @@
 *.jld2
 *.nc
 *.mp4
+*.DS_store
+*.icloud
