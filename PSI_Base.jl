@@ -1,5 +1,26 @@
 using Oceananigans
 using Random
+using Printf
+using ArgParse
+
+function parse_commandline()
+    s = ArgParseSettings()
+    @add_arg_table s begin
+        "path"
+        help = "pathname to save data under"
+        default = ""
+    end
+    return parse_args(s)
+end
+
+args=parse_commandline()
+
+@info("command line args:")
+for (arg,val) in args
+  @info("   $arg => $val")
+end
+
+path_name = args["path"]
 
 # made grid correct shape, need to modify z boundaries to make sure they are no slip
 grid = RectilinearGrid(size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0), topology=(Periodic, Periodic, Bounded))
@@ -54,7 +75,7 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(5),
-                                                          filename = "/glade/scratch/knudsenl/BottomBoundaryLayer/test6.nc",
+                                                          filename = path_name*"test6.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
