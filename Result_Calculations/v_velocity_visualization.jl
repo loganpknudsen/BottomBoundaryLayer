@@ -18,16 +18,17 @@ ax = Axis(fig[2, 1]; xlabel = "y", ylabel = "z",
 # [Makie.jl's Documentation](https://makie.juliaplots.org/stable/documentation/nodes/index.html).
 
 n = Observable(1)
-filename = "PSI_outputs.jld2"
+# filename = "PSI_outputs.jld2"
+filename = "/Users/loganknudsen/Documents/UMD_Research/PSI.jld2"
 w_timeseries = FieldTimeSeries(filename, "v")
-b_timeseries = FieldTimeSeries(filename, "b")
 
 x, y, z = nodes(w_timeseries)
 
 t=w_timeseries.times
-b = @lift interior(b_timeseries[$n], 1, :, :)
+B_func(x, y, z, t, ps) = (ps.Nₒ^2-ps.γ*(ps.S^4/ps.f^2)*(cos(ps.ϕ)-cos(ps.f*t-ps.ϕ)))*z - ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
+b = [B_func(xi,yi,zi,ti,ps) for xi in x, yi in y, zi in z, ti in t]
 w = @lift interior(w_timeseries[$n], 1, :, :)
-w_lim = 0.1
+w_lim = 0.001
 
 @info "Data has been stored into w"
 
@@ -35,7 +36,7 @@ plt = GLMakie.heatmap!(ax, y, z, w,
           colormap = :balance,
           colorrange = (-w_lim, w_lim)
           )
-GLMakie.contour!(ax,y,z,b)
+# GLMakie.contour!(ax,y,z,b)
 Colorbar(fig[2,2],plt)
 @info "Data has been mapped"
 
@@ -48,7 +49,7 @@ fig[1, 1] = Label(fig, title, fontsize=24, tellwidth=false)
 
 tlength = length(t)
 frames = 1:tlength
-record(fig, "cross_front_visualization.mp4", frames, framerate=8) do j
+record(fig, "/Users/loganknudsen/Documents/UMD_Research/cross_front_visualization2.mp4", frames, framerate=8) do j
     msg = string("Plotting frame ", j, "of ", frames[end])
     # @info msg * "\r"
     n[] = j
