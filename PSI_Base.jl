@@ -35,25 +35,26 @@ model = NonhydrostaticModel(; grid,
 u₀(x, y, z) = 0.1*Random.randn()
 v₀(x, y, z) = 0.1*Random.randn()
 w₀(x, y, z) = 0.1*Random.randn()
-bₒ(x,y,z) = 0.1*Random.randn()
+bₒ(x,y,z) = 0.05*Random.randn()
 
-set!(model, u=u₀, v=v₀, w=w₀,b=bₒ)
+set!(model, u=u₀, v=v₀, w=w₀, b=bₒ)
 
 simulation = Simulation(model, Δt = 1, stop_time = 100)
 
 
-wizard = TimeStepWizard(cfl=1, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) 
+wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
 u,v,w = model.velocities
 
-output = (;u,v,w,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v))
+output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),
+                                                    B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(10),
-                                                          filename = "test3.nc",
+                                                          schedule = TimeInterval(5),
+                                                          filename = "test6.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
