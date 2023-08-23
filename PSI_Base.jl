@@ -63,7 +63,7 @@ set!(model, u=u₀, v=v₀, w=w₀, b=bₒ)
 simulation = Simulation(model, Δt = 1, stop_time = 100)
 
 
-wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) 
+wizard = TimeStepWizard(cfl=1, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 # and add an output writer that saves the vertical velocity field every two iterations:
@@ -74,8 +74,8 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
                                                     B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(5),
-                                                          filename = path_name*"test6.nc",
+                                                          schedule = TimeInterval(1),
+                                                          filename = path_name*"longrun_PSI.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
