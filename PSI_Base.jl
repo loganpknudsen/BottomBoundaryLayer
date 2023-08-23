@@ -60,7 +60,7 @@ bₒ(x,y,z) = 0.05*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀, b=bₒ)
 
-simulation = Simulation(model, Δt = 1, stop_time = 100)
+simulation = Simulation(model, Δt = 1, stop_time = 50000)
 
 
 wizard = TimeStepWizard(cfl=1, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) 
@@ -74,7 +74,7 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
                                                     B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(1),
+                                                          schedule = TimeInterval(500),
                                                           filename = path_name*"longrun_PSI.nc",
                                                           overwrite_existing = true)
 
