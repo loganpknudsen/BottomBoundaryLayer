@@ -8,5 +8,5 @@
 *.mp4
 *.DS_store
 *.icloud
-# *.pub
-# *githubkey
+*.pub
+*githubkey
