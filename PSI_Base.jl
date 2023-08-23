@@ -54,7 +54,7 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(5),
-                                                          filename = "test6.nc",
+                                                          filename = "/glade/scratch/knudsenl/BottomBoundaryLayer/test6.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
