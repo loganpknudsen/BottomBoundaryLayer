@@ -43,6 +43,8 @@ B = BackgroundField(B_func, parameters=ps)
 no_slip_field_bcs = FieldBoundaryConditions(FluxBoundaryCondition(0.0));
 buoyancy_grad = FieldBoundaryConditions(top=GradientBoundaryCondition(ps.Nₒ^2),bottom=GradientBoundaryCondition(ps.Nₒ^2))
 
+start_time = time_ns()
+
 model = NonhydrostaticModel(; grid,
                             boundary_conditions=(u=no_slip_field_bcs, v=no_slip_field_bcs, w=no_slip_field_bcs, b=buoyancy_grad),
                             coriolis,
@@ -60,11 +62,18 @@ bₒ(x,y,z) = 0.05*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀, b=bₒ)
 
-simulation = Simulation(model, Δt = 1, stop_time = 50000)
+simulation = Simulation(model, Δt = 1, stop_time = 10000)
 
 
-wizard = TimeStepWizard(cfl=1, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) 
+wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
+
+progress_message(sim) =
+        @printf("i: %04d, t: %s, Δt: %s, wall time: %s\n",
+        sim.model.clock.iteration, prettytime(sim.model.clock.time),
+        prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
+
+simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(1000.0))
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
@@ -74,7 +83,7 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
                                                     B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(500),
+                                                          schedule = TimeInterval(500.0),
                                                           filename = path_name*"longrun_PSI.nc",
                                                           overwrite_existing = true)
 
