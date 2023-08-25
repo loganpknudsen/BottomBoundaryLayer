@@ -55,10 +55,10 @@ model = NonhydrostaticModel(; grid,
                             buoyancy = BuoyancyTracer(),
                             background_fields = ( u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
 
-u₀(x, y, z) = 0.1*Random.randn()
-v₀(x, y, z) = 0.1*Random.randn()
-w₀(x, y, z) = 0.1*Random.randn()
-bₒ(x,y,z) = 0.05*Random.randn()
+u₀(x, y, z) = 0.01*Random.randn()
+v₀(x, y, z) = 0.01*Random.randn()
+w₀(x, y, z) = 0.01*Random.randn()
+bₒ(x,y,z) = 0.005*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀, b=bₒ)
 
@@ -79,8 +79,7 @@ simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(1000.0
 
 u,v,w = model.velocities
 
-output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),
-                                                    B=(model.background_fields.tracers.b+0*model.tracers.b))
+output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(500.0),
