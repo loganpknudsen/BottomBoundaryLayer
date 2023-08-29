@@ -41,7 +41,8 @@ B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
 no_slip_field_bcs = FieldBoundaryConditions(FluxBoundaryCondition(0.0));
-buoyancy_grad = FieldBoundaryConditions(top=GradientBoundaryCondition(ps.Nₒ^2),bottom=GradientBoundaryCondition(ps.Nₒ^2))
+b_bc = GradientBoundaryCondition(ps.Nₒ^2)
+buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
 start_time = time_ns()
 
@@ -55,14 +56,16 @@ model = NonhydrostaticModel(; grid,
                             buoyancy = BuoyancyTracer(),
                             background_fields = ( u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
 
-u₀(x, y, z) = 0.01*Random.randn()
-v₀(x, y, z) = 0.01*Random.randn()
-w₀(x, y, z) = 0.01*Random.randn()
+ns = 10^(-4) # standard deviation for noise
+
+u₀(x, y, z) = ns*Random.randn()
+v₀(x, y, z) = ns*Random.randn()
+w₀(x, y, z) = ns*Random.randn()
 # bₒ(x,y,z) = 0.005*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 800000)
+simulation = Simulation(model, Δt = 1, stop_time = 100000)
 
 
 wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) 
@@ -70,7 +73,7 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5))
 
 progress_message(sim) =
         @printf("i: %04d, t: %s, Δt: %s, wall time: %s\n",
-        sim.model.clock.iteration, prettytime(sim.model.clock.time),
+        sim.:model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
 simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(1000.0))
@@ -82,8 +85,8 @@ u,v,w = model.velocities
 output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(1000.0),
-                                                          filename = path_name*"PSI_800k_run_no_b.nc",
+                                                          schedule = TimeInterval(500.0),
+                                                          filename = path_name*"small_pert_check.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
