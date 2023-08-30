@@ -56,7 +56,7 @@ model = NonhydrostaticModel(; grid,
                             buoyancy = BuoyancyTracer(),
                             background_fields = ( u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
 
-ns = 10^(-4) # standard deviation for noise
+ns = 10^(-3) # standard deviation for noise
 
 u₀(x, y, z) = ns*Random.randn()
 v₀(x, y, z) = ns*Random.randn()
@@ -86,7 +86,7 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(15708.0),
-                                                          filename = path_name*"psi_b_change_g_0.nc",
+                                                          filename = path_name*"psi_b_change_g_0_p_3.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
