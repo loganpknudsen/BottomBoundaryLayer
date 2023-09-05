@@ -29,7 +29,7 @@ grid = RectilinearGrid(size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0), topol
 coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
 
 ## initial buoyancy frequency, horizontal buoyancy, scaling factor, inital phase of inertial oscillation, corilois
-ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ = 0, ϕ = 0, f = coriolis.f)
+ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ = 0.6, ϕ = 0, f = coriolis.f)
 
 # background flow with geostrophic and ageostrophic shear 
 U_func(x, y, z, t, ps) = ((ps.S^2*z)/ps.f)*(1+ps.γ*cos(ps.f*t-ps.ϕ))
@@ -65,7 +65,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 314160)
+simulation = Simulation(model, Δt = 1, stop_time = 3*(2*pi)/ps.f)
 
 
 wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
@@ -85,8 +85,8 @@ u,v,w = model.velocities
 output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(15708.0),
-                                                          filename = path_name*"psi_b_change_g_0_p_3.nc",
+                                                          schedule = TimeInterval(0.5*(2*pi)/ps.f),
+                                                          filename = path_name*"psi_b_change_g_0_6.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
