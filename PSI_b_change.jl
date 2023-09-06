@@ -56,7 +56,7 @@ model = NonhydrostaticModel(; grid,
                             buoyancy = BuoyancyTracer(),
                             background_fields = ( u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
 
-ns = 10^(-2) # standard deviation for noise
+ns = 10^(-4) # standard deviation for noise
 
 u₀(x, y, z) = ns*Random.randn()
 v₀(x, y, z) = ns*Random.randn()
@@ -76,7 +76,7 @@ progress_message(sim) =
         sim.:model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
-simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(1000.0))
+simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(0.1*(2*pi)/ps.f))
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
@@ -85,8 +85,8 @@ u,v,w = model.velocities
 output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.5*(2*pi)/ps.f),
-                                                          filename = path_name*"psi_b_change_g_0_clos_1_e_4.nc",
+                                                          schedule = TimeInterval(0.1*(2*pi)/ps.f),
+                                                          filename = path_name*"psi_b_change_g_0_clos_1_e_4_long.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
