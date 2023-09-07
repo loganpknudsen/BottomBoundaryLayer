@@ -45,14 +45,13 @@ V = BackgroundField(V_func, parameters=ps)
 B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
-no_slip_field_bcs = FieldBoundaryConditions(FluxBoundaryCondition(0.0));
 b_bc = GradientBoundaryCondition(ps.Nₒ^2)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
 start_time = time_ns()
 
 model = NonhydrostaticModel(; grid,
-                            boundary_conditions=(u=no_slip_field_bcs, v=no_slip_field_bcs, w=no_slip_field_bcs, b=buoyancy_grad),
+                            boundary_conditions=(b=buoyancy_grad),
                             coriolis,
                             advection = CenteredFourthOrder(),
                             timestepper = :RungeKutta3,
@@ -70,7 +69,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 5*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 1, stop_time = 3*(2*pi)/ps.f)
 
 
 wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
