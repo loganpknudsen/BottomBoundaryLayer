@@ -51,7 +51,7 @@ buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 start_time = time_ns()
 
 model = NonhydrostaticModel(; grid,
-                            boundary_conditions=(b=buoyancy_grad),
+                            boundary_conditions=(;b=buoyancy_grad),
                             coriolis,
                             advection = CenteredFourthOrder(),
                             timestepper = :RungeKutta3,
