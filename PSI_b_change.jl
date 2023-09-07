@@ -2,6 +2,7 @@ using Oceananigans
 using Random
 using Printf
 using ArgParse
+using CUDA: has_cuda_gpu
 
 function parse_commandline()
     s = ArgParseSettings()
@@ -23,7 +24,11 @@ end
 path_name = args["path"]
 
 # made grid correct shape, need to modify z boundaries to make sure they are no slip
-grid = RectilinearGrid(size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0), topology=(Periodic, Periodic, Bounded))
+
+# grid specifications
+arch = has_cuda_gpu() ? GPU() : CPU()
+
+grid = RectilinearGrid(arch; ize=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0), topology=(Periodic, Periodic, Bounded))
 
 # realustuc mid latitude for now
 coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
@@ -65,7 +70,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 5*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 1, stop_time = 0.2*(2*pi)/ps.f)
 
 
 wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
