@@ -24,7 +24,7 @@ module purge
 module load ncarenv/1.3 gnu/10.1.0 ncarcompilers/0.5.0
 module load netcdf/4.8.1 openmpi/4.1.1 
 module load julia
-module load cuda/11.4.0
+module load cuda/4.4.1
 
 ### file to run
 julia --project PSI_b_change.jl /glade/scratch/knudsenl/BottomBoundaryLayer/
