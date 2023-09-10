@@ -45,14 +45,13 @@ V = BackgroundField(V_func, parameters=ps)
 B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
-# b_bc = GradientBoundaryCondition(ps.Nₒ^2)
-# buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
-
-# boundary_conditions=(;b=buoyancy_grad),
+b_bc = GradientBoundaryCondition(ps.Nₒ^2)
+buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
 start_time = time_ns()
 
 model = NonhydrostaticModel(; grid,
+                            boundary_conditions=(;b=buoyancy_grad),
                             coriolis,
                             advection = CenteredFourthOrder(),
                             timestepper = :RungeKutta3,
@@ -70,7 +69,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 3*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 1, stop_time = 1*(2*pi)/ps.f)
 
 
 wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
@@ -91,7 +90,7 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/ps.f),
-                                                          filename = path_name*"psi_b_change_g_0_long.nc",
+                                                          filename = path_name*"psi_b_change_short.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
