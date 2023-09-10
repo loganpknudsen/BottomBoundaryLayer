@@ -60,7 +60,7 @@ model = NonhydrostaticModel(; grid,
                             buoyancy = BuoyancyTracer(),
                             background_fields = ( u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
 
-ns = 10^(-3) # standard deviation for noise
+ns = 10^(-2) # standard deviation for noise
 
 u₀(x, y, z) = ns*Random.randn()
 v₀(x, y, z) = ns*Random.randn()
