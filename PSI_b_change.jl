@@ -46,7 +46,8 @@ B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
 
-b_bc = GradientBoundaryCondition(ps.Nₒ^2)
+b_bc_function(x, y, t, Nₒ) = Nₒ^2
+b_bc = GradientBoundaryCondition(b_bc_function, parameters=Nₒ)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
 start_time = time_ns()
@@ -78,7 +79,7 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5))
 
 progress_message(sim) =
         @printf("i: %04d, t: %s, Δt: %s, wall time: %s\n",
-        sim.:model.clock.iteration, prettytime(sim.model.clock.time),
+        sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
 simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(0.1*(2*pi)/ps.f))
