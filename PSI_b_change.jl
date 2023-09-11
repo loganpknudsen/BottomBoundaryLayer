@@ -46,14 +46,13 @@ B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
 
-# b_bc = GradientBoundaryCondition(-1*ps.Nₒ^2)
-b_bc = GradientBoundaryCondition(B_func(x,y,z,0,ps))
+b_bc = GradientBoundaryCondition(-1*ps.Nₒ^2)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
 start_time = time_ns()
 
 model = NonhydrostaticModel(; grid,
-                            boundary_conditions=(;b=buoyancy_grad,parameters=ps),
+                            boundary_conditions=(;b=buoyancy_grad),
                             coriolis,
                             advection = CenteredFourthOrder(),
                             timestepper = :RungeKutta3,
