@@ -34,7 +34,7 @@ grid = RectilinearGrid(arch; size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0),
 coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
 
 ## initial buoyancy frequency, horizontal buoyancy, scaling factor, inital phase of inertial oscillation, corilois
-ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ =0.6, ϕ = 0, f = coriolis.f)
+ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ =0, ϕ = 0, f = coriolis.f)
 
 # background flow with geostrophic and ageostrophic shear 
 U_func(x, y, z, t, ps) = ((ps.S^2*z)/ps.f)*(1+ps.γ*cos(ps.f*t-ps.ϕ))
@@ -60,7 +60,7 @@ model = NonhydrostaticModel(; grid,
                             buoyancy = BuoyancyTracer(),
                             background_fields = ( u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
 
-ns = 10^(-2) # standard deviation for noise
+ns = 10^(-4) # standard deviation for noise
 
 u₀(x, y, z) = ns*Random.randn()
 v₀(x, y, z) = ns*Random.randn()
