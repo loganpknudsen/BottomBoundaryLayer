@@ -37,7 +37,8 @@ coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
 ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ =0, ϕ = 0, f = coriolis.f)
 
 # background flow with geostrophic and ageostrophic shear 
-U_func(x, y, z, t, ps) = ((ps.S^2*z)/ps.f)*(1+ps.γ*cos(ps.f*t-ps.ϕ))
+
+U_func(x, y, z, t, ps) = ((ps.S^2*z)/ps.f)*(1+0.6*cos(ps.f*t-ps.ϕ))
 V_func(x, y, z, t, ps) = -1*((ps.S^2*z*ps.γ)/ps.f)*(sin(ps.f*t-ps.ϕ))
 B_func(x, y, z, t, ps) = (ps.Nₒ^2-ps.γ*(ps.S^4/ps.f^2)*(cos(ps.ϕ)-cos(ps.f*t-ps.ϕ)))*z - ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
 U = BackgroundField(U_func, parameters=ps)
@@ -92,7 +93,7 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/ps.f),
-                                                          filename = path_name*"psi_b_change_short_exper_run.nc",
+                                                          filename = path_name*"psi_b_change_short_run.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
