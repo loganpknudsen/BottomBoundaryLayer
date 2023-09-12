@@ -46,7 +46,7 @@ B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
 
-b_bc_function(y, z, t) = ps.Nₒ^2*z-ps.S^2*y
+@inline b_bc_function(y, z) = ps.Nₒ^2*z-ps.S^2*y
 b_bc = FluxBoundaryCondition(b_bc_function, parameters=(;ps.Nₒ,ps.S))
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
