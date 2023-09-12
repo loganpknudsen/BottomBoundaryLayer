@@ -51,7 +51,7 @@ B = BackgroundField(B_func, parameters=ps)
 # Boundary condition set up
 
 @inline b_bc_function(y, z) = ps.Nₒ^2
-b_bc = FluxBoundaryCondition(ps.Nₒ^2)
+b_bc = GradientBoundaryCondition(ps.Nₒ^2)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
 start_time = time_ns()
