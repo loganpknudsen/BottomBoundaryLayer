@@ -42,8 +42,8 @@ ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ =0, ϕ = 0, f = coriolis.f)
 @inline phs_dff(t,ps) = cos(ps.ϕ)-cs_func(t,ps)
 
 U_func(z, t, ps) = (ps.S^2/ps.f)*(1+ps.γ*cs_func(t,ps))*z # current run is set on gamma=0.6
-V_func(z, t, ps) = -1*((ps.S^2*0.6)/ps.f)*sn_func(t,ps)*z # change to 0.6 on next run if current on collapses
-B_func(y, z, t, ps) = (ps.Nₒ^2-ps.γ*(ps.S^4/ps.f^2)*phs_dff(t,ps))*z - ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
+V_func(z, t, ps) = -1*((ps.S^2*ps.γ)/ps.f)*sn_func(t,ps)*z # change to 0.6 on next run if current on collapses
+B_func(y, z, t, ps) = (ps.Nₒ^2-0.6*(ps.S^4/ps.f^2)*phs_dff(t,ps))*z - ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
 U = BackgroundField(U_func, parameters=ps)
 V = BackgroundField(V_func, parameters=ps)
 B = BackgroundField(B_func, parameters=ps)
@@ -75,7 +75,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 5*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 1, stop_time = 1*(2*pi)/ps.f)
 
 
 wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
