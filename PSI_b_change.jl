@@ -46,8 +46,8 @@ B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
 
-@inline b_bc_function(y, z) = ps.Nₒ^2*z-ps.S^2*y
-b_bc = FluxBoundaryCondition(b_bc_function, parameters=(;ps.Nₒ,ps.S))
+@inline b_bc_function(y, z) = ps.Nₒ^2
+b_bc = FluxBoundaryCondition(ps.Nₒ^2)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
 start_time = time_ns()
@@ -71,7 +71,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 1*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 1, stop_time = 5*(2*pi)/ps.f)
 
 
 wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
