@@ -37,9 +37,9 @@ coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
 ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ =0.6, ϕ = 0, f = coriolis.f)
 
 # background flow with geostrophic and ageostrophic shear 
-@inline cs_func(t,ps) = cos(ps.f*t-ps.ϕ)
-@inline sn_func(t,ps) = sin(ps.f*t-ps.ϕ)
-@inline phs_dff(t,ps) = cos(ps.ϕ)-cs_func(t,ps)
+@inline cs_func(x, y, z, t,ps) = cos(ps.f*t-ps.ϕ)
+@inline sn_func(x, y, z, t,ps) = sin(ps.f*t-ps.ϕ)
+@inline phs_dff(x, y, z, t,ps) = cos(ps.ϕ)-cs_func(t,ps)
 
 U_func(x, y, z, t, ps) = (ps.S^2/ps.f)*(1+ps.γ*cs_func(t,ps))*z # current run is set on gamma=0.6
 V_func(x, y, z, t, ps) = -1*((ps.S^2*ps.γ)/ps.f)*sn_func(t,ps)*z # change to 0.6 on next run if current on collapses
@@ -50,7 +50,6 @@ B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
 
-@inline b_bc_function(y, z) = ps.Nₒ^2
 b_bc = GradientBoundaryCondition(ps.Nₒ^2)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
@@ -75,10 +74,10 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 1*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 1, stop_time = 0.5*(2*pi)/ps.f)
 
 
-wizard = TimeStepWizard(cfl=0.5, max_change=1.0, max_Δt=5.0, min_Δt=0.001) 
+wizard = TimeStepWizard(cfl=0.5, max_change=0.5, max_Δt=2.0, min_Δt=0.001) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 progress_message(sim) =
