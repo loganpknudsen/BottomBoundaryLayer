@@ -34,7 +34,7 @@ grid = RectilinearGrid(arch; size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0),
 coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
 
 ## initial buoyancy frequency, horizontal buoyancy, scaling factor, inital phase of inertial oscillation, corilois
-ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ =0, ϕ = 0, f = coriolis.f)
+ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ =0.6, ϕ = 0, f = coriolis.f)
 
 # background flow with geostrophic and ageostrophic shear 
 @inline cs_func(t,ps) = cos(ps.f*t-ps.ϕ)
@@ -78,7 +78,7 @@ set!(model, u=u₀, v=v₀, w=w₀)
 simulation = Simulation(model, Δt = 1, stop_time = 5*(2*pi)/ps.f)
 
 
-wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
+wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=5.0, min_Δt=0.001) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 progress_message(sim) =
