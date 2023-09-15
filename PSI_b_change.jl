@@ -28,7 +28,7 @@ path_name = args["path"]
 # grid specifications
 arch = has_cuda_gpu() ? GPU() : CPU()
 
-grid = RectilinearGrid(arch; size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0), topology=(Periodic, Periodic, Bounded))
+grid = RectilinearGrid(arch; size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # realustuc mid latitude for now
 coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
@@ -69,15 +69,15 @@ ns = 10^(-4) # standard deviation for noise
 
 u₀(x, y, z) = ns*Random.randn()
 v₀(x, y, z) = ns*Random.randn()
-# w₀(x, y, z) = ns*Random.randn()
+w₀(x, y, z) = ns*Random.randn()
 # bₒ(x,y,z) = 0.005*Random.randn()
 
-set!(model, u=u₀, v=v₀)
+set!(model, u=u₀, v=v₀, w=w₀)
 
 simulation = Simulation(model, Δt = 1, stop_time = 0.5*(2*pi)/ps.f)
 
 
-wizard = TimeStepWizard(cfl=0.5, max_change=0.5, max_Δt=5.0, min_Δt=0.001) 
+wizard = TimeStepWizard(cfl=0.5, max_change=1.0, max_Δt=5.0, min_Δt=0.001) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 progress_message(sim) =
@@ -95,7 +95,7 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/ps.f),
-                                                          filename = path_name*"psi_b_change_short_run_no_pw.nc",
+                                                          filename = path_name*"psi_b_change_flat.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
