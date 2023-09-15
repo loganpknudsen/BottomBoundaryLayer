@@ -28,7 +28,7 @@ path_name = args["path"]
 # grid specifications
 arch = has_cuda_gpu() ? GPU() : CPU()
 
-grid = RectilinearGrid(arch; size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
+grid = RectilinearGrid(arch; size=(1, 1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # realustuc mid latitude for now
 coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
