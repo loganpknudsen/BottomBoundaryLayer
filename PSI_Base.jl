@@ -23,7 +23,7 @@ end
 path_name = args["path"]
 
 # made grid correct shape, need to modify z boundaries to make sure they are no slip
-grid = RectilinearGrid(size=(1, 1024, 200), x=(0,1),y=(0,3000),z=(-200,0), topology=(Periodic, Periodic, Bounded))
+grid = RectilinearGrid(size=(100, 200),y=(0,100),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # realustuc mid latitude for now
 coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)

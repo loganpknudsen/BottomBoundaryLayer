@@ -63,7 +63,7 @@ model = NonhydrostaticModel(; grid,
                             closure = ScalarDiffusivity(ν=1e-4,κ=1e-4), # removed molecular diffusiviy 
                             tracers = :b,
                             buoyancy = BuoyancyTracer(),
-                            background_fields = ( u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
+                            background_fields = (; u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
 
 ns = 10^(-4) # standard deviation for noise
 
