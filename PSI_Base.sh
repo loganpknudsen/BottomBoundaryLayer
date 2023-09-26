@@ -27,7 +27,7 @@ module load julia
 module load cuda/4.4.1
 
 ### file to run
-julia --project PSI_b_change.jl /glade/scratch/knudsenl/BottomBoundaryLayer/
+julia --project PSI_BASE.jl /glade/scratch/knudsenl/BottomBoundaryLayer/
 
 
 
