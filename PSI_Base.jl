@@ -88,7 +88,7 @@ progress_message(sim) =
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
-simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(0.1*(2*pi)/ps.f))
+simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(1*(2*pi)/ps.f))
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
