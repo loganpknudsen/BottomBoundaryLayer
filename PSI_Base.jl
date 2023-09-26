@@ -97,7 +97,7 @@ u,v,w = model.velocities
 output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 ε = Field(KineticEnergyDissipationRate(model))
-dBdz = Field(@at (Center, Center, Center) ∂z(b))
+dBdz = Field(@at (Center, Center, Center) ∂z(model.tracers.b+model.background_fields.tracers.b))
 
 output = merge(output, (; ϵ=ε, N2=dBdz,))
 
