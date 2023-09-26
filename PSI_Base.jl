@@ -1,4 +1,6 @@
 using Oceananigans
+using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
+using Oceananigans.Grids: Center, Face
 using Random
 using Printf
 using ArgParse
@@ -93,6 +95,11 @@ simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(0.1*(2
 u,v,w = model.velocities
 
 output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
+
+ε = Field(KineticEnergyDissipationRate(model))
+dBdz = Field(@at (Center, Center, Center) ∂z(b))
+
+output = merge(output, (; ϵ=ε, N2=dBdz,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/ps.f),
