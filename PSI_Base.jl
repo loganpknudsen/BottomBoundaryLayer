@@ -2,6 +2,8 @@ using Oceananigans
 using Random
 using Printf
 using ArgParse
+using CUDA: has_cuda_gpu
+using Oceanostics
 
 function parse_commandline()
     s = ArgParseSettings()
@@ -23,38 +25,46 @@ end
 path_name = args["path"]
 
 # made grid correct shape, need to modify z boundaries to make sure they are no slip
-grid = RectilinearGrid(size=(100, 200),y=(0,100),z=(-200,0), topology=(Flat, Periodic, Bounded))
+
+# grid specifications
+arch = has_cuda_gpu() ? GPU() : CPU()
+
+grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # realustuc mid latitude for now
 coriolis = FPlane(rotation_rate=7.292115e-5, latitude=45)
 
 ## initial buoyancy frequency, horizontal buoyancy, scaling factor, inital phase of inertial oscillation, corilois
-ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ = 0.6, ϕ = 0, f = coriolis.f)
+ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ =0.6, ϕ = 0, f = coriolis.f)
 
 # background flow with geostrophic and ageostrophic shear 
-U_func(x, y, z, t, ps) = ((ps.S^2*z)/ps.f)*(1+ps.γ*cos(ps.f*t-ps.ϕ))
-V_func(x, y, z, t, ps) = -1*((ps.S^2*z*ps.γ)/ps.f)*(sin(ps.f*t-ps.ϕ))
-B_func(x, y, z, t, ps) = (ps.Nₒ^2-ps.γ*(ps.S^4/ps.f^2)*(cos(ps.ϕ)-cos(ps.f*t-ps.ϕ)))*z - ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
+@inline cs_func(t,ps) = cos(ps.f*t-ps.ϕ)
+@inline sn_func(t,ps) = sin(ps.f*t-ps.ϕ)
+@inline phs_dff(t,ps) = cos(ps.ϕ)-cs_func(t,ps)
+
+U_func(x, y, z, t, ps) = (ps.S^2/ps.f)*(1+ps.γ*cs_func(t,ps))*z # current run is set on gamma=0.6
+V_func(x, y, z, t, ps) = -1*((ps.S^2*ps.γ)/ps.f)*sn_func(t,ps)*z # change to 0.6 on next run if current on collapses
+B_func(x, y, z, t, ps) = (ps.Nₒ^2-ps.γ*(ps.S^4/ps.f^2)*phs_dff(t,ps))*z - ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
 U = BackgroundField(U_func, parameters=ps)
 V = BackgroundField(V_func, parameters=ps)
 B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
-no_slip_field_bcs = FieldBoundaryConditions(FluxBoundaryCondition(0.0));
+
 b_bc = GradientBoundaryCondition(ps.Nₒ^2)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 
 start_time = time_ns()
 
 model = NonhydrostaticModel(; grid,
-                            boundary_conditions=(u=no_slip_field_bcs, v=no_slip_field_bcs, w=no_slip_field_bcs, b=buoyancy_grad),
+                            boundary_conditions=(;b=buoyancy_grad),
                             coriolis,
                             advection = CenteredFourthOrder(),
                             timestepper = :RungeKutta3,
-                            closure = ScalarDiffusivity(ν=1e-3,κ=1e-3), # removed molecular diffusiviy 
+                            closure = ScalarDiffusivity(ν=1e-4,κ=1e-4), # removed molecular diffusiviy 
                             tracers = :b,
                             buoyancy = BuoyancyTracer(),
-                            background_fields = ( u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
+                            background_fields = (; u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
 
 ns = 10^(-4) # standard deviation for noise
 
@@ -65,18 +75,18 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 100000)
+simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/ps.f)
 
 
-wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.0001) 
+wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=5.0, min_Δt=0.001) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 progress_message(sim) =
         @printf("i: %04d, t: %s, Δt: %s, wall time: %s\n",
-        sim.:model.clock.iteration, prettytime(sim.model.clock.time),
+        sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
-simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(1000.0))
+simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(0.1*(2*pi)/ps.f))
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
@@ -85,8 +95,8 @@ u,v,w = model.velocities
 output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(500.0),
-                                                          filename = path_name*"small_pert_check.nc",
+                                                          schedule = TimeInterval(0.1*(2*pi)/ps.f),
+                                                          filename = path_name*"psi_b_change_flat.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
