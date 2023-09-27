@@ -77,7 +77,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 5*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/ps.f)
 
 
 wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
@@ -99,7 +99,7 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
 ε = Field(KineticEnergyDissipationRate(model))
 dBdz = Field(@at (Center, Center, Center) ∂z(model.tracers.b+model.background_fields.tracers.b))
 
-output = merge(output, (; ϵ=ε, N2=dBdz,))
+output = merge(output, (; E=ε, N2=dBdz,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/ps.f),
