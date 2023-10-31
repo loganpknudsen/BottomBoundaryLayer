@@ -56,7 +56,10 @@ B = BackgroundField(B_func, parameters=ps)
 b_bc = GradientBoundaryCondition(ps.Nₒ^2)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 # boundary_conditions=(;b=buoyancy_grad),
-# 
+
+U = (ps.S^2*ps.γ*200)/(coriolis.f)
+eddy_visc = (U*200)/(1.3*10^6)
+diffus = eddy_visc
 
 start_time = time_ns()
 
@@ -65,7 +68,7 @@ model = NonhydrostaticModel(; grid,
                             coriolis,
                             advection = CenteredFourthOrder(),
                             timestepper = :RungeKutta3,
-                            closure = ScalarDiffusivity(ν=1e-4,κ=1e-4), # removed molecular diffusiviy 
+                            closure = ScalarDiffusivity(ν=eddy_visc,κ=diffus), # removed molecular diffusiviy 
                             tracers = :b,
                             buoyancy = BuoyancyTracer(),
                             background_fields = (; u=U, v=V, b=B)) # `background_fields` is a `NamedTuple`
