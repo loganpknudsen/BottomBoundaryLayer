@@ -57,14 +57,14 @@ b_bc = GradientBoundaryCondition(ps.Nₒ^2)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 # boundary_conditions=(;b=buoyancy_grad),
 
-U = (ps.S^2*ps.γ*200)/(coriolis.f)
-eddy_visc = (U*200)/(1.3*10^6)
+Uₒ = (ps.S^2*ps.γ*200)/(coriolis.f)
+eddy_visc = (Uₒ*200)/(1.3*10^6)
 diffus = eddy_visc
 
 start_time = time_ns()
 
 model = NonhydrostaticModel(; grid,
-                            boundary_conditions=(;b=buoyancy_grad),
+                            boundary_conditions=(;buoyancy_grad),
                             coriolis,
                             advection = CenteredFourthOrder(),
                             timestepper = :RungeKutta3,
