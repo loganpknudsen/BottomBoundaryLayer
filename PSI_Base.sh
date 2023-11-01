@@ -1,6 +1,6 @@
 #!/bin/bash -l
 ### Job Name
-#PBS -N PSI_b_change
+#PBS -N PSI_Base
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources

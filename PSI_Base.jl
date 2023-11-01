@@ -53,8 +53,8 @@ B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
 
-b_bc = GradientBoundaryCondition(ps.Nₒ^2)
-buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
+# b_bc = GradientBoundaryCondition(ps.Nₒ^2)
+# buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 # boundary_conditions=(;b=buoyancy_grad),
 
 Uₒ = (ps.S^2*ps.γ*200)/(coriolis.f)
@@ -64,7 +64,6 @@ diffus = eddy_visc
 start_time = time_ns()
 
 model = NonhydrostaticModel(; grid,
-                            boundary_conditions=(;buoyancy_grad),
                             coriolis,
                             advection = CenteredFourthOrder(),
                             timestepper = :RungeKutta3,
@@ -108,7 +107,7 @@ output = merge(output, (; E=ε, N2=dBdz,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/ps.f),
-                                                          filename = path_name*"psi_base_test_ocng_w_b.nc",
+                                                          filename = path_name*"psi_base_test_ocng_w_no_b.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
