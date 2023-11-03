@@ -53,8 +53,8 @@ B = BackgroundField(B_func, parameters=ps)
 
 # Boundary condition set up
 
-# b_bc = GradientBoundaryCondition(ps.Nₒ^2)
-# buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
+b_bc = GradientBoundaryCondition(ps.Nₒ^2)
+buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 # boundary_conditions=(;b=buoyancy_grad),
 
 Uₒ = (ps.S^2*ps.γ*200)/(coriolis.f)
@@ -65,6 +65,7 @@ start_time = time_ns()
 
 model = NonhydrostaticModel(; grid,
                             coriolis,
+                            boundary_conditions=(;b=buoyancy_grad),
                             advection = CenteredFourthOrder(),
                             timestepper = :RungeKutta3,
                             closure = ScalarDiffusivity(ν=eddy_visc,κ=diffus), # removed molecular diffusiviy 
@@ -81,7 +82,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 1, stop_time = 1*(2*pi)/ps.f)
 
 
 wizard = TimeStepWizard(cfl=0.5, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
