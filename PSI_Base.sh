@@ -27,7 +27,6 @@ module load julia
 module load cuda/4.4.1
 
 ### file to run
-julia --project PSI_Base.jl /glade/scratch/knudsenl/temp_test/
-
+julia --project PSI_Base.jl /glade/scratch/knudsenl/BottomBoundaryLayer/
 
 
