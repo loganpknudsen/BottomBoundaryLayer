@@ -103,12 +103,14 @@ output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=
 
 ε = Field(KineticEnergyDissipationRate(model))
 dBdz = Field(@at (Center, Center, Center) ∂z(model.tracers.b+model.background_fields.tracers.b))
+u_m_flux = u*w
+v_m_flux = v*w
 
-output = merge(output, (; E=ε, N2=dBdz,))
+output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.05*(2*pi)/ps.f),
-                                                          filename = path_name*"psi_base_test_ocng_diff_10_7.nc",
+                                                          schedule = TimeInterval(0.1*(2*pi)/ps.f),
+                                                          filename = path_name*"psi_base_test.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
