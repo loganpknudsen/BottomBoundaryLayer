@@ -58,7 +58,7 @@ buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 # boundary_conditions=(;b=buoyancy_grad),
 
 Uₒ = (ps.S^2*ps.γ*200)/(coriolis.f)
-eddy_visc = (Uₒ*200)/(1*10^6)
+eddy_visc = (Uₒ*200)/(1*10^8)
 diffus = eddy_visc
 
 start_time = time_ns()
