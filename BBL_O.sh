@@ -4,7 +4,7 @@
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
-#PBS -l select=1:ncpus=1:ngpus=1
+#PBS -l select=1:ncpus=1###:ngpus=1
 ### Run Time
 #PBS -l walltime=20:00:00
 ### To the derecho queue
