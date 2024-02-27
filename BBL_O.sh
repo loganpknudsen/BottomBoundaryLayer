@@ -27,6 +27,6 @@ module load julia
 module load cuda/12.2.1
 
 ### file to run
-julia --project BBL_with_oscillations_code.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer
+julia --project BBL_with_oscillations_code.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
 
 
