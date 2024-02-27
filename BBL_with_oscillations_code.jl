@@ -166,7 +166,7 @@ B = b + B∞
 dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
 
 
-outputs = (; U, V, w, B, dBdz)
+output = (; U, V, w, B, dBdz)
 
 # u,v,w = model.velocities
 
