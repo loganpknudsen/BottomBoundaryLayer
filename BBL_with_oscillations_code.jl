@@ -57,8 +57,7 @@ z_faces(k) = - Lz * (ζ(k) * Σ(k) - 1)
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
                        x = (0, Lx),
-                       z = z_faces,
-                       halo = (3, 3))
+                       z = z_faces)
 
 # grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
@@ -107,7 +106,7 @@ U_field = BackgroundField(u_adjustment, parameters=(; ĝ, N²,θ,f,V∞,hu,γ,u�
 
 z₀ = 0.1 # m (roughness length)
 κ = 0.4 # von Karman constant
-z₁ = znodes(grid, Center())[1] # Closest grid center to the bottom
+z₁ = 0.556030399702645 #znodes(grid, Center())[1] # Closest grid center to the bottom
 cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
 
 @inline drag_u(x, y, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
@@ -140,7 +139,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 0.5 * minimum_zspacing(grid) / (abs(V∞)), stop_time = 10*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 0.5 * minimum_zspacing(grid) / (abs(V∞)), stop_time = 20*(2*pi)/ps.f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
