@@ -93,9 +93,9 @@ function interval(q,a,b)
     end
 end
 
-@inline u_adjustment(x, y, z, t, p) = (p.uₒ*cos(p.fˢ*t)+sin(p.fˢ*t)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ)*(p.hu-z).*interval(z,0,abs(p.hu))
-@inline v_adjustment(x, y, z, t, p) = (p.vₒ-(p.f*p.uₒ)/p.fˢ*sin(p.fˢ*t)+(cos(p.fˢ*t)-1)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ-sign(p.V∞)*(p.θ * p.N²)/(p.f))*(p.hu-z).*interval(z,0,abs(p.hu))*p.γ+p.V∞
-@inline constant_stratification(x, y, z, t, p) = p.N² * x*p.ĝ[1] + p.N²*z.*interval(z,abs(p.hu),p.Lz) + ((p.Nₒ*((1-(cos(p.fˢ*t)-1)*(p.θ^2*p.N²)/(p.fˢ)^2))+p.θ*p.N²*((p.uₒ)/p.fˢ*sin(p.fˢ*t)-(cos(p.fˢ*t)-1)*(p.f*p.vₒ)/(p.fˢ)^2))*(z+(sign(p.V∞)*p.θ*p.γ*p.hu)/(1-sign(p.V∞)*p.θ*p.γ))).*interval(z,0,abs(p.hu))
+u_adjustment(x, y, z, t, p) = (p.uₒ*cos(p.fˢ*t)+sin(p.fˢ*t)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ)*(p.hu-z).*interval(z,0,abs(p.hu))
+v_adjustment(x, y, z, t, p) = (p.vₒ-(p.f*p.uₒ)/p.fˢ*sin(p.fˢ*t)+(cos(p.fˢ*t)-1)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ-sign(p.V∞)*(p.θ * p.N²)/(p.f))*(p.hu-z).*interval(z,0,abs(p.hu))*p.γ+p.V∞
+constant_stratification(x, y, z, t, p) = p.N² * x*p.ĝ[1] + p.N²*z.*interval(z,abs(p.hu),p.Lz) + ((p.Nₒ*((1-(cos(p.fˢ*t)-1)*(p.θ^2*p.N²)/(p.fˢ)^2))+p.θ*p.N²*((p.uₒ)/p.fˢ*sin(p.fˢ*t)-(cos(p.fˢ*t)-1)*(p.f*p.vₒ)/(p.fˢ)^2))*(z+(sign(p.V∞)*p.θ*p.γ*p.hu)/(1-sign(p.V∞)*p.θ*p.γ))).*interval(z,0,abs(p.hu))
 
 B_field = BackgroundField(constant_stratification, parameters=(; ĝ, N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz))
 V_field = BackgroundField(v_adjustment, parameters=(; ĝ, N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ))
