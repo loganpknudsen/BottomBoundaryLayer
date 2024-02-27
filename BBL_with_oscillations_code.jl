@@ -161,10 +161,10 @@ B∞ = model.background_fields.tracers.b
 U = u + ub
 V = v + vb #+ V∞
 B = b + B∞
-dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
+# dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
 
 
-output = (; U, V, w, B, dBdz)
+output = (; U, V, w, B)
 
 # u,v,w = model.velocities
 
