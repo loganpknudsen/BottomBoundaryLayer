@@ -1,7 +1,6 @@
 using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 using Oceananigans.Grids: Center, Face
-using Oceananigans.Units
 using Random
 using Printf
 using ArgParse
@@ -164,7 +163,7 @@ B = b + B∞
 # dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
 
 
-output = (; U, V, w, B)
+output = (; u, U, v, V, w, b, B)
 
 # u,v,w = model.velocities
 
