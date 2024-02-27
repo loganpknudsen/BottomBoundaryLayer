@@ -139,7 +139,7 @@ w₀(x, y, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/ps.f)
+simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
@@ -150,7 +150,7 @@ progress_message(sim) =
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
-simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(1*(2*pi)/ps.f))
+simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(1*(2*pi)/f))
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
@@ -168,9 +168,9 @@ dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
 
 outputs = (; U, V, w, B, dBdz)
 
-u,v,w = model.velocities
+# u,v,w = model.velocities
 
-output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
+# output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 # ε = Field(KineticEnergyDissipationRate(model))
 # dBdz = Field(@at (Center, Center, Center) ∂z(model.tracers.b+model.background_fields.tracers.b))
