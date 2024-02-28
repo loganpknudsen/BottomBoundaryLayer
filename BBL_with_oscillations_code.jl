@@ -98,8 +98,8 @@ p =( ĝ, N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz)
 @inline sn_fn(t,p) = sin(p.fˢ*t)
 @inline cs_fn(t,p) = cos(p.fˢ*t)
 
-u_adjustment(x, y, z, t, p) = (p.uₒ*cs_fn(t,p)+sn_fn(t,p)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ)*(p.hu-z)*interval(z,0,abs(p.hu))
-v_adjustment(x, y, z, t, p) = (p.vₒ-(p.f*p.uₒ)/p.fˢ*sn_fn(t,p)+(cs_fn(t,p)-1)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ-sign(p.V∞)*(p.θ * p.N²)/(p.f))*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞
+u_adjustment(x, z, t, p) = (p.uₒ*cs_fn(t,p)+sn_fn(t,p)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ)*(p.hu-z)*interval(z,0,abs(p.hu))
+v_adjustment(x, z, t, p) = (p.vₒ-(p.f*p.uₒ)/p.fˢ*sn_fn(t,p)+(cs_fn(t,p)-1)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ-sign(p.V∞)*(p.θ * p.N²)/(p.f))*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞
 constant_stratification(x, y, z, t, p) = p.N²*x*p.ĝ[1] + p.N²*z*interval(z,abs(p.hu),p.Lz) + ((p.Nₒ*((1-(cs_fn(t,p)-1)*(p.θ^2*p.N²)/(p.fˢ)^2))+p.θ*p.N²*((p.uₒ)/p.fˢ*sn_fn(t,p)-(cs_fn(t,p)-1)*(p.f*p.vₒ)/(p.fˢ)^2))*(z+(sign(p.V∞)*p.θ*p.γ*p.hu)/(1-sign(p.V∞)*p.θ*p.γ)))*interval(z,0,abs(p.hu))
 
 U_field = BackgroundField(u_adjustment, parameters=p)
@@ -113,8 +113,8 @@ z₀ = 0.1 # m (roughness length)
 z₁ = znodes(grid, Center())[1] # Closest grid center to the bottom
 cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
 
-@inline drag_u(x, y, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
-@inline drag_v(x, y, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * (v + p.V∞)
+@inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
+@inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * (v + p.V∞)
 
 ps = (cᴰ, V∞)
 
