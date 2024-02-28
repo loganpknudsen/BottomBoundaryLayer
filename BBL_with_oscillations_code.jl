@@ -85,13 +85,15 @@ fˢ=(f^2+θ^2*N²)^(0.5)
 p =( ĝ, N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz)
 
 # background flow with geostrophic and ageostrophic shear 
-function interval(q,a,b)
-    if a<=q<=b
-        return 1
-    else
-        return 0
-    end
-end
+
+@inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
+# function interval(q,a,b)
+#     if a<=q<=b
+#         return 1
+#     else
+#         return 0
+#     end
+# end
 
 @inline sn_fn(t,p) = sin(p.fˢ*t)
 @inline cs_fn(t,p) = cos(p.fˢ*t)
