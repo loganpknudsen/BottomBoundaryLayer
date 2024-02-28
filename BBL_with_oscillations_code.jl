@@ -130,7 +130,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             advection = UpwindBiasedFifthOrder(),
                             tracers = :b,
                             boundary_conditions = (u=u_bcs, v=v_bcs),
-                            background_fields = (; u=U_field, v=V_field, b=B_field,))
+                            background_fields = (; u=U_field, v=V_field, b=B_field))
 
 ns = 10^(-4) # standard deviation for noise
 
