@@ -138,9 +138,9 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
 
 ns = 10^(-4) # standard deviation for noise
 
-u₀(x, y, z) = ns*Random.randn()
-v₀(x, y, z) = ns*Random.randn()
-w₀(x, y, z) = ns*Random.randn()
+u₀(x, z) = ns*Random.randn()
+v₀(x, z) = ns*Random.randn()
+w₀(x, z) = ns*Random.randn()
 # bₒ(x,y,z) = 0.005*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)

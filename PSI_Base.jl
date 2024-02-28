@@ -76,11 +76,11 @@ model = NonhydrostaticModel(; grid,
 ns = 10^(-4) # standard deviation for noise
 
 u₀(x, z) = ns*Random.randn()
-# v₀(x, z) = ns*Random.randn()
-w₀(x, z) = ns*Random.randn()
+v₀(x, z) = ns*Random.randn()
+w₀(x, y, z) = ns*Random.randn()
 # bₒ(x,y,z) = 0.005*Random.randn()
 
-set!(model, u=u₀, w=w₀)
+set!(model, u=u₀, v=v₀, w=w₀)
 
 simulation = Simulation(model, Δt = 1, stop_time = 10*(2*pi)/ps.f)
 
