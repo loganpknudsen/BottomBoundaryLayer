@@ -122,7 +122,7 @@ start_time = time_ns()
 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
-                            advection = WENO(),
+                            advection = CenteredFourthOrder(),
                             tracers = :b,
                             boundary_conditions = (; u=u_bcs, v=v_bcs),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
@@ -130,11 +130,11 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
 ns = 10^(-4) # standard deviation for noise
 
 u₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)#ns*Random.randn()
-v₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
-# w₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
+# v₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
+w₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
 # bₒ(x,y,z) = 0.005*Random.randn()
 
-set!(model, u=u₀, v=v₀)
+set!(model, u=u₀, w=w₀)
 # set!(model, u=u₀, v=v₀, w=w₀)
 
 simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
