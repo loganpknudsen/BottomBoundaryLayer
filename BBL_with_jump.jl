@@ -92,7 +92,7 @@ p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
 
 u_adjustment(x, z, t, p) = p.uₒ
 v_adjustment(x, z, t, p) = -sign(p.V∞)*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞a
-constant_stratification(x, y, z, t, p) = p.N²*x*p.θ + p.N²*z*interval(z,abs(p.hu),p.Lz) + p.N²*p.γ*(h-z)*interval(z,0,abs(p.hu))
+constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z*interval(z,abs(p.hu),p.Lz) + p.N²*p.γ*(h-z)*interval(z,0,abs(p.hu))
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
