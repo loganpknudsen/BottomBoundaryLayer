@@ -21,7 +21,8 @@
 
 ## Clear environent and Load all the modules needed
 module --force purge
-module load ncarenv/23.10 ncarcompilers/1.0.0
+module load ncarenv/23.10 gcc/13.2.0
+module load ncarcompilers/1.0.0
 module load netcdf/4.9.2 openmpi/4.1.6 
 module load julia
 module load cuda/12.2.1
