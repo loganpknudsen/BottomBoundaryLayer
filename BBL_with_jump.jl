@@ -83,7 +83,7 @@ Nₒ = N²*(1-θ*γ) # initial stratification
 fˢ=(f^2+θ^2*N²)^(0.5)
 ε = V∞ # adjustment parameter
 V∞a = V∞ + ε # m s⁻¹ # m s⁻¹
-p =( ĝ, N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
+p =(; ĝ, N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
 
 # background flow with geostrophic and ageostrophic shear 
 
@@ -107,7 +107,7 @@ cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
 @inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞a)^2) * u
 @inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞a)^2) * (v + p.V∞a)
 
-ps = (cᴰ, V∞a)
+ps = (;cᴰ, V∞a)
 
 drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=ps)
 drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=ps)
