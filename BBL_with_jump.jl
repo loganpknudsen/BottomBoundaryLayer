@@ -131,10 +131,11 @@ ns = 10^(-4) # standard deviation for noise
 
 u₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)#ns*Random.randn()
 v₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
-w₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
+# w₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
 # bₒ(x,y,z) = 0.005*Random.randn()
 
-set!(model, u=u₀, v=v₀, w=w₀)
+set!(model, u=u₀, v=v₀)
+# set!(model, u=u₀, v=v₀, w=w₀)
 
 simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
 
