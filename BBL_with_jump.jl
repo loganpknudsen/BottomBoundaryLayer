@@ -34,8 +34,8 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 
 Lx = 3000meters
 Lz = 200meters
-Nx = 6000
-Nz = 400
+Nx = 3000
+Nz = 200
 
 # Creates a grid with near-constant spacing `refinement * Lz / Nz`
 # near the bottom:
@@ -139,7 +139,7 @@ w₀(x, z) = ns*Random.randn()
 set!(model, u=u₀, w=w₀)
 # set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 10*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
@@ -181,7 +181,7 @@ output = (; u, U, v, V, w, b, B)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_adj_test.nc",
+                                                          filename = path_name*"BBL_w_adj_test_short.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
