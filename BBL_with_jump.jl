@@ -35,7 +35,7 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 Lx = 3000meters
 Lz = 200meters
 Nx = 1000
-Nz = 100
+Nz = 400
 
 # Creates a grid with near-constant spacing `refinement * Lz / Nz`
 # near the bottom:
@@ -130,9 +130,10 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
 
 ns = 10^(-4) # standard deviation for noise
 
-u₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)#ns*Random.randn()
+# u₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)#ns*Random.randn()
+u₀(x, z) = ns*Random.randn()
 # v₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
-w₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
+w₀(x, z) = ns*Random.randn()
 # bₒ(x,y,z) = 0.005*Random.randn()
 
 set!(model, u=u₀, w=w₀)
@@ -180,7 +181,7 @@ output = (; u, U, v, V, w, b, B)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BLL_w_adj_test.nc",
+                                                          filename = path_name*"BBL_w_adj_test.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
