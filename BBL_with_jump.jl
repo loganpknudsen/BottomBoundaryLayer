@@ -32,9 +32,9 @@ path_name = args["path"]
 # grid specifications
 arch = has_cuda_gpu() ? GPU() : CPU()
 
-Lx = 3000meters
+Lx = 1000meters
 Lz = 200meters
-Nx = 3000
+Nx = 1000
 Nz = 200
 
 # Creates a grid with near-constant spacing `refinement * Lz / Nz`
@@ -75,11 +75,12 @@ V∞ = -0.01 # m s⁻¹
 N² = 1e-6 # interior stratification
 f=coriolis.fz
 ϕ = 0
-hu = 100
-γ = (f*V∞)/(hu*θ*N²)
+S∞ = (N²*θ^2)/(f^2)
+γ = (1+S∞)^(-1)
+hu = 
 uₒ = 0 #γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = V∞ #γ*(N²*θ)/(f)*sin(ϕ)
-Nₒ = N²*(1-θ*γ) # initial stratification
+Nₒ = N²*(1-γ) # initial stratification
 fˢ=(f^2+θ^2*N²)^(0.5)
 ε = V∞ # adjustment parameter
 V∞a = V∞ + ε # m s⁻¹ # m s⁻¹
