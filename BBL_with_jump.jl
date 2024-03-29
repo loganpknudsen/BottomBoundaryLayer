@@ -34,8 +34,8 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 
 Lx = 1000meters
 Lz = 200meters
-Nx = 1000
-Nz = 200
+Nx = 4000
+Nz = 100
 
 # Creates a grid with near-constant spacing `refinement * Lz / Nz`
 # near the bottom:
