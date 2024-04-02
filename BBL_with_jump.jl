@@ -32,9 +32,9 @@ path_name = args["path"]
 # grid specifications
 arch = has_cuda_gpu() ? GPU() : CPU()
 
-Lx = 1000meters
+Lx = 3000meters
 Lz = 200meters
-Nx = 4000
+Nx = 750
 Nz = 100
 
 # Creates a grid with near-constant spacing `refinement * Lz / Nz`
@@ -92,8 +92,8 @@ p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
 @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
 
 u_adjustment(x, z, t, p) = p.uₒ
-v_adjustment(x, z, t, p) = -sign(p.V∞)*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞a
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z*interval(z,abs(p.hu),p.Lz) + p.N²*p.γ*(p.hu-z)*interval(z,0,abs(p.hu))
+v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞a
+constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z*interval(z,abs(p.hu),p.Lz) - p.N²*p.γ*(p.hu-z)*interval(z,0,abs(p.hu))
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
