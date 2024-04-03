@@ -82,7 +82,7 @@ uₒ = 0 #γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = V∞ #γ*(N²*θ)/(f)*sin(ϕ)
 Nₒ = N²*(1-γ) # initial stratification
 fˢ=(f^2+θ^2*N²)^(0.5)
-ε = 0 #V∞ # adjustment parameter
+ε = V∞ #V∞ # adjustment parameter
 V∞a = V∞ + ε # m s⁻¹ # m s⁻¹
 
 p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
@@ -132,13 +132,13 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
 ns = 10^(-4) # standard deviation for noise
 
 # u₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)#ns*Random.randn()
-u₀(x, z) = ns*Random.randn()
+# u₀(x, z) = ns*Random.randn()
 # v₀(x, z) = 1e-4*randn()*exp(-(10*z)^2 / grid.Lz^2)
-w₀(x, z) = ns*Random.randn()
+# w₀(x, z) = ns*Random.randn()
 # bₒ(x,y,z) = 0.005*Random.randn()
 
-# set!(model)
-set!(model, u=u₀, w=w₀)
+set!(model)
+# set!(model, u=u₀, w=w₀)
 # set!(model, u=u₀, v=v₀, w=w₀)
 
 simulation = Simulation(model, Δt = 1, stop_time = 10*(2*pi)/f)
@@ -183,7 +183,7 @@ output = (; u, U, v, V, w, b, B)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_adj_test_short_no_a_p.nc",
+                                                          filename = path_name*"BBL_w_adj_test_short_a_no_p.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
