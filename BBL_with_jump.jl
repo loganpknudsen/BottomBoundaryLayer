@@ -63,18 +63,16 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 # grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # tilted domain parameters
-θ = 10^(-2) # degrees 
+θ = 10^(-1) # degrees 
 # ĝ = [θ, 0, 1] # gravity vector small angle
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
-gs  = ĝ[1]
-gc = ĝ[3]
-# realustic mid latitude for now
+# realistic mid latitude for now
 buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = -0.01 # m s⁻¹
+V∞ = 0.01 # m s⁻¹
 N² = 1e-6 # interior stratification
 f=coriolis.fz
 ϕ = 0
@@ -95,7 +93,7 @@ p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a,gs,gc)
 @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
 
 u_adjustment(x, z, t, p) = p.uₒ
-v_adjustment(x, z, t, p) = -p.γ*(p.gs * p.N²)/(p.f)*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞a
+v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞a
 constant_stratification(x, z, t, p) = p.N²*x*p.gs + p.N²*z*p.gc*interval(z,abs(p.hu),p.Lz) - p.N²*p.γ*(p.hu-z)*interval(z,0,abs(p.hu))
 
 U_field = BackgroundField(u_adjustment, parameters=p)
