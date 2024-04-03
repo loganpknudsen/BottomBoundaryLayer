@@ -63,8 +63,9 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 # grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # tilted domain parameters
-θ = 10^(-4) # degrees 
-ĝ = [θ, 0, 1] # gravity vector
+θ = 10^(-2) # degrees 
+# ĝ = [θ, 0, 1] # gravity vector small angle
+ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realustic mid latitude for now
 buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
@@ -85,7 +86,7 @@ fˢ=(f^2+θ^2*N²)^(0.5)
 ε = V∞ #V∞ # adjustment parameter
 V∞a = V∞ + ε # m s⁻¹ # m s⁻¹
 
-p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
+p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a,ĝ)
 
 # background flow with geostrophic and ageostrophic shear 
 
@@ -93,7 +94,7 @@ p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
 
 u_adjustment(x, z, t, p) = p.uₒ
 v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞a
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z*interval(z,abs(p.hu),p.Lz) - p.N²*p.γ*(p.hu-z)*interval(z,0,abs(p.hu))
+constant_stratification(x, z, t, p) = p.N²*x*p.ĝ[1] + p.N²*z*p.ĝ[3]*interval(z,abs(p.hu),p.Lz) - p.N²*p.γ*(p.hu-z)*interval(z,0,abs(p.hu))
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
