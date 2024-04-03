@@ -32,9 +32,9 @@ path_name = args["path"]
 # grid specifications
 arch = has_cuda_gpu() ? GPU() : CPU()
 
-Lx = 3000meters
+Lx = 2000meters
 Lz = 200meters
-Nx = 750
+Nx = 500
 Nz = 100
 
 # Creates a grid with near-constant spacing `refinement * Lz / Nz`
