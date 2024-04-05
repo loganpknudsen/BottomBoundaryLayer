@@ -73,12 +73,12 @@ p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 
 @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
 
-@inline sn_fn(t,p) = sin(p.fˢ*t)
-@inline cs_fn(t,p) = cos(p.fˢ*t)
+@inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
+@inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-@inline u_pert(t,p) = p.uₒ*cs_fn(t,p) -(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)*sn_fn(t,p)
-@inline v_pert(t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.f*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((p.fˢ^2- p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
-@inlinw b_pert(t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((1- p.N²*p.θ)*p.bₒ-p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
+@inline u_pert(x,z,t,p) = p.uₒ*cs_fn(t,p) -(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)*sn_fn(t,p)
+@inline v_pert(x,z,t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.f*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((p.fˢ^2- p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
+@inlinw b_pert(x,z,t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((1- p.N²*p.θ)*p.bₒ-p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
 
 u_adjustment(x, z, t, p) =  u_pert(t,p)*(p.hu-z)*interval(z,0,p.hu)
 v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)+p.V∞a + v_pert(t,p)*(p.hu-z)*interval(z,0,p.hu)
