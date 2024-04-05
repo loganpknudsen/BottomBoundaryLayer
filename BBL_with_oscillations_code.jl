@@ -37,23 +37,6 @@ Lz = 200meters
 Nx = 1000
 Nz = 100
 
-# Creates a grid with near-constant spacing `refinement * Lz / Nz`
-# near the bottom:
-# refinement = 1.8 # controls spacing near surface (higher means finer spaced)
-# stretching = 10  # controls rate of stretching at bottom
-
-# # "Warped" height coordinate
-# h(k) = (Nz + 1 - k) / Nz
-
-# # Linear near-surface generator
-# ζ(k) = 1 + (h(k) - 1) / refinement
-
-# # Bottom-intensified stretching function
-# Σ(k) = (1 - exp(-stretching * h(k))) / (1 - exp(-stretching))
-
-# # Generating function
-# z_faces(k) = - Lz * (ζ(k) * Σ(k) - 1)
-
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
                        x = (0, Lx),
@@ -98,9 +81,13 @@ p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz)
 @inline sn_fn(t,p) = sin(p.fˢ*t)
 @inline cs_fn(t,p) = cos(p.fˢ*t)
 
-u_adjustment(x, z, t, p) = (p.uₒ*cs_fn(t,p)+sn_fn(t,p)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ)*(p.hu-z)*interval(z,0,abs(p.hu))
-v_adjustment(x, z, t, p) = (p.vₒ-(p.f*p.uₒ)/p.fˢ*sn_fn(t,p)+(cs_fn(t,p)-1)*(p.f*p.vₒ-p.θ^2*p.Nₒ)/p.fˢ-sign(p.V∞)*(p.θ * p.N²)/(p.f))*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z*interval(z,abs(p.hu),p.Lz) + ((p.Nₒ*((1-(cs_fn(t,p)-1)*(p.θ^2*p.N²)/(p.fˢ)^2))+p.θ*p.N²*((p.uₒ)/p.fˢ*sn_fn(t,p)-(cs_fn(t,p)-1)*(p.f*p.vₒ)/(p.fˢ)^2))*(z+(sign(p.V∞)*p.θ*p.γ*p.hu)/(1-sign(p.V∞)*p.θ*p.γ)))*interval(z,0,abs(p.hu))
+@inline u_pert(t,p) = p.uₒ*cs_fn(t,p) -(p.f*p.vₒ+bₒ*p.θ)/(p.fˢ)*sn_fn(t,p)
+@inline v_pert(t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.f*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((p.fˢ^2- p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
+@inlinw b_pert(t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((1- p.N²*p.θ)*p.bₒ-p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
+
+u_adjustment(x, z, t, p) =  u_pert(t,p)
+v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)+p.V∞a + v_pert(t,p)
+constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z - p.N²*p.γ*(p.hu-z)*interval(z,0,p.hu)+ b_pert(t,p)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
