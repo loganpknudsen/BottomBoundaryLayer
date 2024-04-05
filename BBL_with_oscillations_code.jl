@@ -76,7 +76,7 @@ p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 @inline sn_fn(t,p) = sin(p.fˢ*t)
 @inline cs_fn(t,p) = cos(p.fˢ*t)
 
-@inline u_pert(t,p) = p.uₒ*cs_fn(t,p) -(p.f*p.vₒ+bₒ*p.θ)/(p.fˢ)*sn_fn(t,p)
+@inline u_pert(t,p) = p.uₒ*cs_fn(t,p) -(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)*sn_fn(t,p)
 @inline v_pert(t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.f*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((p.fˢ^2- p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
 @inlinw b_pert(t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((1- p.N²*p.θ)*p.bₒ-p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
 
