@@ -46,7 +46,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 # grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # tilted domain parameters
-θ = 10^(-1) # degrees 
+θ = 10^(-2) # degrees 
 # ĝ = [θ, 0, 1] # gravity vector small angle
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
@@ -57,16 +57,17 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # parameters
 V∞ = 0.1 # m s⁻¹
 N² = 1e-5 # interior stratification
-f=coriolis.fz
+f = coriolis.fz
 ϕ = 0
-hu = 100
-γ = (f*V∞)/(hu*θ*N²)
+S∞ = (N²*θ^2)/(f^2)
+γ = (1+S∞)^(-1)
+hu = (f*V∞)/(γ*N²*θ) # set to negative
 uₒ = 0 #γ*(N²*θ)/(f)*cos(ϕ)
-vₒ = γ*(θ * N²)/(f)#γ*(N²*θ)/(f)*sin(ϕ)
+vₒ = γ*(θ*N²)/(f) #γ*(N²*θ)/(f)*sin(ϕ)
 bₒ = 0 # initial stratification
 fˢ=(f^2+θ^2*N²)^(0.5)
 
-p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ,Lz)
+p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 
 # background flow with geostrophic and ageostrophic shear 
 
@@ -94,10 +95,10 @@ z₀ = 0.1 # m (roughness length)
 z₁ = znodes(grid, Center())[1] # Closest grid center to the bottom
 cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
 
-@inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
-@inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * (v + p.V∞)
+@inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu)+ p.V∞)^2) * u
+@inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu)+ p.V∞)^2) * (v-p.γ*(p.θ * p.N²)/(p.f)*(p.hu) + p.V∞)
 
-ps = (;cᴰ, V∞)
+ps = (;cᴰ, V∞a, hu, θ, f, N², γ)
 
 drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=ps)
 drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=ps)
