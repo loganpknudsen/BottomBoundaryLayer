@@ -65,7 +65,7 @@ vₒ = γ*(N²*θ)/(f)*sin(ϕ)
 Nₒ = N²*(1-θ*γ) # initial stratification
 fˢ=(f^2+θ^2*N²)^(0.5)
 
-p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz)
+p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ,Lz)
 
 # background flow with geostrophic and ageostrophic shear 
 
@@ -85,9 +85,9 @@ p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz)
 @inline v_pert(t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.f*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((p.fˢ^2- p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
 @inlinw b_pert(t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(t,p) -(p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(t,p)+((1- p.N²*p.θ)*p.bₒ-p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
 
-u_adjustment(x, z, t, p) =  u_pert(t,p)
-v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)+p.V∞a + v_pert(t,p)
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z - p.N²*p.γ*(p.hu-z)*interval(z,0,p.hu)+ b_pert(t,p)
+u_adjustment(x, z, t, p) =  u_pert(t,p)*(p.hu-z)*interval(z,0,p.hu)
+v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)+p.V∞a + v_pert(t,p)*(p.hu-z)*interval(z,0,p.hu)
+constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z - p.N²*p.γ*(p.hu-z)*interval(z,0,p.hu)+ b_pert(t,p)*(p.hu-z)*interval(z,0,p.hu)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
