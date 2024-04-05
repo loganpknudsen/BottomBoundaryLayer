@@ -28,6 +28,6 @@ module load julia
 module load cuda/11.8.0
 
 ### file to run
-julia --project BBL_with_jump.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
+julia --project BBL_with_jump_Boundary_Profile.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
 
 
