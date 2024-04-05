@@ -110,7 +110,7 @@ cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
 @inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞a)^2) * u
 @inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * (v + p.V∞)
 
-ps = (;cᴰ, V∞a)
+ps = (;cᴰ, V∞)
 
 drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=ps)
 drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=ps)
