@@ -37,23 +37,6 @@ Lz = 200meters
 Nx = 500
 Nz = 100
 
-# Creates a grid with near-constant spacing `refinement * Lz / Nz`
-# near the bottom:
-# refinement = 1.8 # controls spacing near surface (higher means finer spaced)
-# stretching = 10  # controls rate of stretching at bottom
-
-# # "Warped" height coordinate
-# h(k) = (Nz + 1 - k) / Nz
-
-# # Linear near-surface generator
-# ζ(k) = 1 + (h(k) - 1) / refinement
-
-# # Bottom-intensified stretching function
-# Σ(k) = (1 - exp(-stretching * h(k))) / (1 - exp(-stretching))
-
-# # Generating function
-# z_faces(k) = - Lz * (ζ(k) * Σ(k) - 1)
-
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
                        x = (0, Lx),

@@ -37,23 +37,6 @@ Lz = 200meters
 Nx = 500
 Nz = 100
 
-# Creates a grid with near-constant spacing `refinement * Lz / Nz`
-# near the bottom:
-# refinement = 1.8 # controls spacing near surface (higher means finer spaced)
-# stretching = 10  # controls rate of stretching at bottom
-
-# # "Warped" height coordinate
-# h(k) = (Nz + 1 - k) / Nz
-
-# # Linear near-surface generator
-# ζ(k) = 1 + (h(k) - 1) / refinement
-
-# # Bottom-intensified stretching function
-# Σ(k) = (1 - exp(-stretching * h(k))) / (1 - exp(-stretching))
-
-# # Generating function
-# z_faces(k) = - Lz * (ζ(k) * Σ(k) - 1)
-
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
                        x = (0, Lx),
@@ -185,7 +168,7 @@ output = (; u, U, v, V, w, b, B)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_adj_test_short_full.nc",
+                                                          filename = path_name*"BBL_w_adj_test_short_full_2.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
