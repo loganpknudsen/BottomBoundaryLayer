@@ -73,7 +73,7 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
 V∞ = 0.1 # m s⁻¹
-N² = 1e-4 # interior stratification
+N² = 1e-5 # interior stratification
 f = coriolis.fz
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
@@ -93,8 +93,9 @@ p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
 @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
 
 u_adjustment(x, z, t, p) = p.uₒ
-v_adjustment(x, z, t, p) = p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞a
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z*interval(z,abs(p.hu),p.Lz) - p.N²*p.γ*(p.hu-z)*interval(z,0,abs(p.hu))
+v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,abs(p.hu))*p.γ+p.V∞a
+constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z - p.N²*p.γ*(p.hu-z)*interval(z,0,abs(p.hu))
+# *interval(z,abs(p.hu),p.Lz)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
