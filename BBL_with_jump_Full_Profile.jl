@@ -69,7 +69,7 @@ fˢ=(f^2+θ^2*N²)^(0.5)
 ε = 0 #V∞ # adjustment parameter
 V∞a = V∞ + ε # m s⁻¹ # m s⁻¹
 
-p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
+p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,V∞a)
 
 # background flow with geostrophic and ageostrophic shear 
 
