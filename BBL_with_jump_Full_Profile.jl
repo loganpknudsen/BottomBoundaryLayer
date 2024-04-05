@@ -94,7 +94,7 @@ p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
 
 u_adjustment(x, z, t, p) = p.uₒ
 v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)+p.V∞a
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(z-p.hu)*interval(z,0,p.hu)
+constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z*interval(z,abs(p.hu),p.Lz) + p.N²*p.γ*(z-p.hu)*interval(z,0,p.hu)
 # *interval(z,abs(p.hu),p.Lz)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
@@ -185,7 +185,7 @@ output = (; u, U, v, V, w, b, B)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_adj_test_short_a_p_l.nc",
+                                                          filename = path_name*"BBL_w_adj_test_short_full.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
