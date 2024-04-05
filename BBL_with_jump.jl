@@ -93,7 +93,7 @@ p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,V∞a)
 @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
 
 u_adjustment(x, z, t, p) = p.uₒ
-v_adjustment(x, z, t, p) = p.γ*(p.θ * p.N²)/(p.f)*(z-p.hu)*interval(z,0,abs(p.hu))*p.γ+p.V∞a
+v_adjustment(x, z, t, p) = p.γ*(p.θ * p.N²)/(p.f)*(z-p.hu)*interval(z,0,abs(p.hu))+p.V∞a
 constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z - p.N²*p.γ*(z-p.hu)*interval(z,0,abs(p.hu))
 # *interval(z,abs(p.hu),p.Lz)
 
