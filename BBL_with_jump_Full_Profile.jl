@@ -46,7 +46,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 # grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # tilted domain parameters
-θ = 10^(-1) # degrees 
+θ = 10^(-2) # degrees 
 # ĝ = [θ, 0, 1] # gravity vector small angle
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 

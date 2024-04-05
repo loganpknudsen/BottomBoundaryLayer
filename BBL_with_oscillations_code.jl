@@ -32,9 +32,9 @@ path_name = args["path"]
 # grid specifications
 arch = has_cuda_gpu() ? GPU() : CPU()
 
-Lx = 3000meters
+Lx = 2000meters
 Lz = 200meters
-Nx = 1000
+Nx = 500
 Nz = 100
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
@@ -46,23 +46,24 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 # grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # tilted domain parameters
-θ = 10^(-4) # degrees 
-ĝ = [θ, 0, 1] # gravity vector
+θ = 10^(-1) # degrees 
+# ĝ = [θ, 0, 1] # gravity vector small angle
+ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realustic mid latitude for now
 buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = -0.01 # m s⁻¹
-N² = 1e-6 # interior stratification
+V∞ = 0.1 # m s⁻¹
+N² = 1e-5 # interior stratification
 f=coriolis.fz
 ϕ = 0
 hu = 100
 γ = (f*V∞)/(hu*θ*N²)
-uₒ = γ*(N²*θ)/(f)*cos(ϕ)
-vₒ = γ*(N²*θ)/(f)*sin(ϕ)
-Nₒ = N²*(1-θ*γ) # initial stratification
+uₒ = 0 #γ*(N²*θ)/(f)*cos(ϕ)
+vₒ = γ*(θ * N²)/(f)#γ*(N²*θ)/(f)*sin(ϕ)
+bₒ = 0 # initial stratification
 fˢ=(f^2+θ^2*N²)^(0.5)
 
 p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ,Lz)
@@ -70,13 +71,6 @@ p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ,Lz)
 # background flow with geostrophic and ageostrophic shear 
 
 @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
-# function interval(q,a,b)
-#     if a<=q<=b
-#         return 1
-#     else
-#         return 0
-#     end
-# end
 
 @inline sn_fn(t,p) = sin(p.fˢ*t)
 @inline cs_fn(t,p) = cos(p.fˢ*t)
