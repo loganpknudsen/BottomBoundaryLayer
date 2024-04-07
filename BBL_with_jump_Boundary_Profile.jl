@@ -55,7 +55,7 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = 0.1 # m s⁻¹
+V∞ = 0.01 # m s⁻¹
 N² = 1e-5 # interior stratification
 f = coriolis.fz
 ϕ = 0
@@ -76,7 +76,7 @@ p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,sa)
 
 u_adjustment(x, z, t, p) = p.uₒ
 v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)*p.sa+p.V∞
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z*interval(z,p.hu,p.Lz) + p.N²*p.γ*(z-p.hu)*interval(z,0,p.hu)
+constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(z-p.hu)*interval(z,0,p.hu)
 # *interval(z,abs(p.hu),p.Lz)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
@@ -90,10 +90,10 @@ z₀ = 0.1 # m (roughness length)
 z₁ = znodes(grid, Center())[1] # Closest grid center to the bottom
 cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
 
-@inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
-@inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * (v + p.V∞)
+@inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)*p.sa+ p.V∞)^2) * u
+@inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)*p.sa+ p.V∞)^2) * (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)*p.sa+ p.V∞)
 
-ps = (;cᴰ, V∞)
+ps = (;cᴰ, V∞, hu, θ, f, N², γ, sa)
 
 drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=ps)
 drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=ps)
@@ -125,7 +125,7 @@ set!(model)
 # set!(model, u=u₀, w=w₀)
 # set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 10*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 0.1*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
