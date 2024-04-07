@@ -34,7 +34,7 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 
 Lx = 2000meters
 Lz = 200meters
-Nx = 500
+Nx = 1000
 Nz = 100
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
