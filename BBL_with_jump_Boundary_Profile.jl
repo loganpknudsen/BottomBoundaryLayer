@@ -66,7 +66,7 @@ uₒ = 0 #γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = V∞ #γ*(N²*θ)/(f)*sin(ϕ)
 Nₒ = N²*(1-γ) # initial stratification
 fˢ=(f^2+θ^2*N²)^(0.5)
-sa = 0 # slope adjustment
+sa = 0.1 # slope adjustment
 
 p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,Lz,sa)
 
