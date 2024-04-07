@@ -66,7 +66,7 @@ uₒ = 0 #γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = V∞ #γ*(N²*θ)/(f)*sin(ϕ)
 Nₒ = N²*(1-γ) # initial stratification
 fˢ=(f^2+θ^2*N²)^(0.5)
-ε = 0 #V∞ # adjustment parameter
+ε = V∞ # adjustment parameter
 V∞a = V∞ + ε # m s⁻¹ # m s⁻¹
 
 p =(; N²,θ,f,V∞,hu,γ,uₒ,vₒ,Nₒ,fˢ,V∞a)
@@ -126,7 +126,7 @@ set!(model)
 # set!(model, u=u₀, w=w₀)
 # set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 0.2*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 10*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
