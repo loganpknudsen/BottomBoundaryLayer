@@ -60,7 +60,7 @@ N² = 1e-5 # interior stratification
 f = coriolis.fz
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
-γ =(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
+γ =(1+S∞)^(-1)
 hu = (f*V∞)/(γ*N²*θ) # set to negative
 uₒ = 0 #γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = γ*(θ*N²)/(f) #γ*(N²*θ)/(f)*sin(ϕ)
@@ -153,8 +153,13 @@ V = v + vb #+ V∞
 B = b + B∞
 # dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
 
+PV = ErtelPotentialVorticity(model, add_background=true)
+KE = KineticEnergy(model)
+ε = KineticEnergyDissipationRate(model)
+Ri = RichardsonNumber(model, add_background=true)
+Ro = RossbyNumber(model)
 
-output = (; u, U, v, V, w, b, B)
+output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
 
 # u,v,w = model.velocities
 
@@ -169,7 +174,7 @@ output = (; u, U, v, V, w, b, B)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BLL_w_O_test_updated_PV.nc",
+                                                          filename = path_name*"BLL_w_O_PV_check.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
