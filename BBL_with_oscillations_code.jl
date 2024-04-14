@@ -90,21 +90,28 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 
 # Boundary condition set up
 
-z₀ = 0.1 # m (roughness length)
-κ = 0.4 # von Karman constant
-z₁ = znodes(grid, Center())[1] # Closest grid center to the bottom
-cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
+# z₀ = 0.1 # m (roughness length)
+# κ = 0.4 # von Karman constant
+# z₁ = znodes(grid, Center())[1] # Closest grid center to the bottom
+# cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
 
-@inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu)+ p.V∞)^2) * u
-@inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu)+ p.V∞)^2) * (v-p.γ*(p.θ * p.N²)/(p.f)*(p.hu) + p.V∞)
+# @inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu)+ p.V∞)^2) * u
+# @inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu)+ p.V∞)^2) * (v-p.γ*(p.θ * p.N²)/(p.f)*(p.hu) + p.V∞)
 
-ps = (;cᴰ, V∞, hu, θ, f, N², γ)
+# ps = (;cᴰ, V∞, hu, θ, f, N², γ)
 
-drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=ps)
-drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=ps)
+# drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=ps)
+# drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=ps)
 
-u_bcs = FieldBoundaryConditions(bottom = drag_bc_u)
-v_bcs = FieldBoundaryConditions(bottom = drag_bc_v)
+# u_bcs = FieldBoundaryConditions(bottom = drag_bc_u)
+# v_bcs = FieldBoundaryConditions(bottom = drag_bc_v)
+
+# Free Slip Boundary Conditions
+
+free_slip_bcs = FluxBoundaryCondition(nothing)
+
+u_bcs = FieldBoundaryConditions(bottom = free_slip_bcs)
+v_bcs = FieldBoundaryConditions(bottom = free_slip_bcs)
 
 # boundary_conditions=(;b=buoyancy_grad),
 closure = ScalarDiffusivity(ν=1e-4, κ=1e-4)
