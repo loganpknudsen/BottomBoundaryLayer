@@ -180,7 +180,7 @@ output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
 # output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.1*(2*pi)/f),
+                                                          schedule = TimeInterval(0.05*(2*pi)/f),
                                                           filename = path_name*"BLL_w_O_PV_chec_low_visc.nc",
                                                           overwrite_existing = true)
 
