@@ -110,8 +110,8 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 
 free_slip_bcs = FluxBoundaryCondition(nothing)
 
-u_bcs = FieldBoundaryConditions(bottom = free_slip_bcs)
-v_bcs = FieldBoundaryConditions(bottom = free_slip_bcs)
+u_bcs = FieldBoundaryConditions(bottom = free_slip_bcs, top = free_slip_bcs)
+v_bcs = FieldBoundaryConditions(bottom = free_slip_bcs, top = free_slip_bcs)
 
 # boundary_conditions=(;b=buoyancy_grad),
 closure = ScalarDiffusivity(ν=5e-6, κ=5e-6)
@@ -134,7 +134,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 10*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
@@ -181,7 +181,7 @@ output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
-                                                          filename = path_name*"BLL_w_O_PV_chec_low_visc.nc",
+                                                          filename = path_name*"BLL_w_O_PV_chec_low_visc_shorter.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
