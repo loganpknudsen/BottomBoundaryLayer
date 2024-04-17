@@ -58,8 +58,8 @@ buoyancy_grad = FieldBoundaryConditions(top=b_bc,bottom=b_bc)
 # boundary_conditions=(;b=buoyancy_grad),
 
 Uₒ = (ps.S^2*ps.γ*200)/(coriolis.f)
-eddy_visc = (Uₒ*200)/(1*10^8)
-diffus = eddy_visc
+eddy_visc = 0#(Uₒ*200)/(1*10^8)
+diffus = 0#eddy_visc
 
 start_time = time_ns()
 
@@ -102,15 +102,16 @@ u,v,w = model.velocities
 output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
 
 ε = Field(KineticEnergyDissipationRate(model))
+KE = KineticEnergy(model)
 dBdz = Field(@at (Center, Center, Center) ∂z(model.tracers.b+model.background_fields.tracers.b))
 u_m_flux = u*w
 v_m_flux = v*w
 
-output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
+output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux, KE=KE))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.1*(2*pi)/ps.f),
-                                                          filename = path_name*"psi_base_test_test.nc",
+                                                          schedule = TimeInterval(0.05*(2*pi)/ps.f),
+                                                          filename = path_name*"psi_base_test_inviscid.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
