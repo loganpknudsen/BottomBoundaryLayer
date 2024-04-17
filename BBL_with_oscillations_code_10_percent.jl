@@ -63,7 +63,7 @@ S∞ = (N²*θ^2)/(f^2)
 γ = (θ^2+1)*(1+S∞*(θ^2+1))^(-1)
 hu = (f*V∞)/(γ*N²*θ) # set to negative
 uₒ = 0 #γ*(N²*θ)/(f)*cos(ϕ)
-vₒ = γ*(θ*N²)/(f) #γ*(N²*θ)/(f)*sin(ϕ)
+vₒ = γ*(θ*N²)/(f)*0.1 #γ*(N²*θ)/(f)*sin(ϕ)
 bₒ = 0 # initial stratification
 fˢ=(f^2+θ^2*N²)^(0.5)
 
@@ -182,7 +182,7 @@ output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BLL_w_O_PV_check_free_slip.nc",
+                                                          filename = path_name*"BLL_w_O_PV_check_free_slip_10_percent.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
