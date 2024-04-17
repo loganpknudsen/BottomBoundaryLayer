@@ -44,9 +44,9 @@ ps = (Nₒ = 81.7*coriolis.f, S = 7.7*coriolis.f, γ =0.6, ϕ = 0, f = coriolis.
 @inline sn_func(t,ps) = sin(ps.f*t-ps.ϕ)
 @inline phs_dff(t,ps) = cos(ps.ϕ)-cs_func(t,ps)
 
-U_func(x, y, z, t, ps) = (ps.S^2/ps.f)*(1+ps.γ*cs_func(t,ps))*z # current run is set on gamma=0.6
-V_func(x, y, z, t, ps) = -1*((ps.S^2*ps.γ)/ps.f)*sn_func(t,ps)*z # change to 0.6 on next run if current on collapses
-B_func(x, y, z, t, ps) = (ps.Nₒ^2-ps.γ*(ps.S^4/ps.f^2)*phs_dff(t,ps))*z - ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
+U_func(y, z, t, ps) = (ps.S^2/ps.f)*(1+ps.γ*cs_func(t,ps))*z # current run is set on gamma=0.6
+V_func(y, z, t, ps) = -1*((ps.S^2*ps.γ)/ps.f)*sn_func(t,ps)*z # change to 0.6 on next run if current on collapses
+B_func(y, z, t, ps) = (ps.Nₒ^2-ps.γ*(ps.S^4/ps.f^2)*phs_dff(t,ps))*z - ps.S^2*y #multiply by z since we integrate N^2 w.r.t z
 U = BackgroundField(U_func, parameters=ps)
 V = BackgroundField(V_func, parameters=ps)
 B = BackgroundField(B_func, parameters=ps)
