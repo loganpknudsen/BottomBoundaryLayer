@@ -60,7 +60,7 @@ N² = 1e-5 # interior stratification
 f = coriolis.fz
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
-γ = (θ^2+1)*(1+S∞*(θ^2+1))^(-1)
+γ = (1+S∞)^(-1)#(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
 hu = (f*V∞)/(γ*N²*θ) # set to negative
 uₒ = 0 #γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = γ*(θ*N²)/(f)*0.1 #γ*(N²*θ)/(f)*sin(ϕ)
@@ -114,7 +114,7 @@ u_bcs = FieldBoundaryConditions(bottom = free_slip_bcs, top = free_slip_bcs)
 v_bcs = FieldBoundaryConditions(bottom = free_slip_bcs, top = free_slip_bcs)
 
 # boundary_conditions=(;b=buoyancy_grad),
-closure = ScalarDiffusivity(ν=1e-4, κ=1e-4)
+closure = ScalarDiffusivity(ν=1e-5, κ=1e-5)
 
 start_time = time_ns()
 
