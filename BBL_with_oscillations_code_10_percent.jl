@@ -114,7 +114,7 @@ u_bcs = FieldBoundaryConditions(bottom = free_slip_bcs, top = free_slip_bcs)
 v_bcs = FieldBoundaryConditions(bottom = free_slip_bcs, top = free_slip_bcs)
 
 # boundary_conditions=(;b=buoyancy_grad),
-closure = ScalarDiffusivity(ν=1e-5, κ=1e-5)
+closure = ScalarDiffusivity(ν=1e-4, κ=1e-4)
 
 start_time = time_ns()
 
@@ -182,7 +182,7 @@ output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BLL_w_O_PV_check_free_slip_10_percent.nc",
+                                                          filename = path_name*"BLL_w_O_PV_check_free_slip_10_percent_og_visc.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
