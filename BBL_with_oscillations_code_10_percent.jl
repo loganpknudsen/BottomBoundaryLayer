@@ -63,8 +63,8 @@ S∞ = (N²*θ^2)/(f^2)
 γ = (1+S∞)^(-1)#(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
 hu = (f*V∞)/(γ*N²*θ) # set to negative
 fˢ=(f^2+θ^2*N²)^(0.5)
-uₒ = -γ*(N²*θ*fˢ)/(f^2)*0.1 #γ*(N²*θ)/(f)*cos(ϕ)
-vₒ = 0#γ*(N²*θ)/(f)*sin(ϕ)
+uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
+vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
 bₒ = 0 # initial stratification
 
 p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
@@ -134,7 +134,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 50*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
@@ -181,8 +181,8 @@ output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
 # output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BLL_w_O_PV_check_free_slip_10_percent_u_phase.nc",
+                                                          schedule = TimeInterval(0.25*(2*pi)/f),
+                                                          filename = path_name*"BBL_w_O_PV_check_free_slip_10_percent_the_long_one.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
