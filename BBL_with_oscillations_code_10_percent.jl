@@ -182,7 +182,7 @@ output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.25*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_PV_check_free_slip_10_percent_the_long_one.nc",
+                                                          filename = path_name*"BBL_w_O_10_Ri_4_3.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
