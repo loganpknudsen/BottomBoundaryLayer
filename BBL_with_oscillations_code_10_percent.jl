@@ -57,7 +57,7 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # parameters
 V∞ = 0.75 # m s⁻¹
 f = coriolis.fz
-N² = 3*f^2/(θ^2*4) # interior stratification
+N² = 1e-4 # interior stratification
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
 γ = (1+S∞)^(-1)#(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
@@ -134,7 +134,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 40*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
