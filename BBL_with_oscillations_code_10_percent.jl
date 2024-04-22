@@ -44,7 +44,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-θ = 10^(-1) # degrees 
+θ = 10^(-2) # degrees 
 # ĝ = [θ, 0, 1] # gravity vector small angle
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
@@ -53,9 +53,9 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = 0.1 # m s⁻¹
+V∞ = 0.05 # m s⁻¹
 f = coriolis.fz
-N² = 1e-4 # interior stratification
+N² = 5e-6 # interior stratification
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
 γ = (1+S∞)^(-1)#(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
