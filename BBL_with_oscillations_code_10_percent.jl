@@ -89,8 +89,8 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # Boundary condition set up
 # Free Slip Boundary Conditions
 
-b_bc_top= GradientBoundaryCondition(ps.N²)
-b_bc_bottom= GradientBoundaryCondition(ps.N²*(1-γ))
+b_bc_top= GradientBoundaryCondition(N²)
+b_bc_bottom= GradientBoundaryCondition(N²*(1-γ))
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top,bottom=b_bc_bottom)
 
 # boundary_conditions=(;b=buoyancy_grad),
