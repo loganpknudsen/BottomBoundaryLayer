@@ -40,10 +40,8 @@ Nz = 100
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
                        x = (0, Lx),
-                    #    z = z_faces
                        z = (0,Lz))
 
-# grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # tilted domain parameters
 θ = 10^(-1) # degrees 
@@ -73,12 +71,12 @@ p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 
 @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
 
-sn_fn(x,z,t,p) = sin(p.fˢ*t)
-cs_fn(x,z,t,p) = cos(p.fˢ*t)
+@inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
+@inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) -(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)*sn_fn(x,z,t,p)
-v_pert(x,z,t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) -(p.f*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+((p.fˢ^2- p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
-b_pert(x,z,t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) -(p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+((1- p.N²*p.θ)*p.bₒ-p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
+@inline u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) -(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)*sn_fn(x,z,t,p)
+@inline v_pert(x,z,t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) -(p.f*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+((p.fˢ^2- p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
+@inline b_pert(x,z,t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) -(p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+((1- p.N²*p.θ)*p.bₒ-p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
 
 u_adjustment(x, z, t, p) =  u_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
 v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)+p.V∞ + v_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
@@ -89,29 +87,11 @@ V_field = BackgroundField(v_adjustment, parameters=p)
 B_field = BackgroundField(constant_stratification, parameters=p)
 
 # Boundary condition set up
-
-# z₀ = 0.1 # m (roughness length)
-# κ = 0.4 # von Karman constant
-# z₁ = znodes(grid, Center())[1] # Closest grid center to the bottom
-# cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
-
-# @inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu)+ p.V∞)^2) * u
-# @inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v -p.γ*(p.θ * p.N²)/(p.f)*(p.hu)+ p.V∞)^2) * (v-p.γ*(p.θ * p.N²)/(p.f)*(p.hu) + p.V∞)
-
-# ps = (;cᴰ, V∞, hu, θ, f, N², γ)
-
-# drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=ps)
-# drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=ps)
-
-# u_bcs = FieldBoundaryConditions(bottom = drag_bc_u)
-# v_bcs = FieldBoundaryConditions(bottom = drag_bc_v)
-
 # Free Slip Boundary Conditions
 
-free_slip_bcs = FluxBoundaryCondition(nothing)
-
-u_bcs = FieldBoundaryConditions(bottom = free_slip_bcs, top = free_slip_bcs)
-v_bcs = FieldBoundaryConditions(bottom = free_slip_bcs, top = free_slip_bcs)
+b_bc_top= GradientBoundaryCondition(ps.N²)
+b_bc_bottom= GradientBoundaryCondition(ps.N²*(1-γ))
+buoyancy_grad = FieldBoundaryConditions(top=b_bc_top,bottom=b_bc_bottom)
 
 # boundary_conditions=(;b=buoyancy_grad),
 closure = ScalarDiffusivity(ν=1e-4, κ=1e-4)
@@ -120,9 +100,9 @@ start_time = time_ns()
 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
-                            advection = UpwindBiasedFifthOrder(),
+                            advection = WENO(),
                             tracers = :b,
-                            boundary_conditions = (; u=u_bcs, v=v_bcs),
+                            boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
 ns = 10^(-4) # standard deviation for noise
@@ -137,7 +117,7 @@ set!(model, u=u₀, v=v₀, w=w₀)
 simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
 
 
-wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.001) 
+wizard = TimeStepWizard(cfl=0.9, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 progress_message(sim) =
@@ -163,11 +143,11 @@ B = b + B∞
 PV = ErtelPotentialVorticity(model, add_background=true)
 KE = KineticEnergy(model)
 ε = KineticEnergyDissipationRate(model)
-Ri = RichardsonNumber(model, add_background=true)
-Ro = RossbyNumber(model)
+# Ri = RichardsonNumber(model, add_background=true)
+# Ro = RossbyNumber(model)
 
 
-output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
+output = (; u, U, v, V, w, b, B, PV, KE, ε) # , Ri, Ro
 
 # u,v,w = model.velocities
 
@@ -181,8 +161,8 @@ output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
 # output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.25*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_10_smaller_interior.nc",
+                                                          schedule = TimeInterval(0.1*(2*pi)/f),
+                                                          filename = path_name*"BBL_w_O_10_faster_run_update.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
