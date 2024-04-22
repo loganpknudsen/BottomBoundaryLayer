@@ -46,7 +46,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 # grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # tilted domain parameters
-θ = 10^(-2) # degrees 
+θ = 10^(-1) # degrees 
 # ĝ = [θ, 0, 1] # gravity vector small angle
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
@@ -55,7 +55,7 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = 0.75 # m s⁻¹
+V∞ = 0.1 # m s⁻¹
 f = coriolis.fz
 N² = 1e-4 # interior stratification
 ϕ = 0
@@ -182,7 +182,7 @@ output = (; u, U, v, V, w, b, B, PV, KE, ε, Ri, Ro)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.25*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_10_Ri_4_3.nc",
+                                                          filename = path_name*"BBL_w_O_10_smaller_interior.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
