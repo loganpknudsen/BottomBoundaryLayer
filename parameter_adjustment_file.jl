@@ -1,12 +1,4 @@
 using Oceananigans
-using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
-using Oceananigans.Grids: Center, Face
-using Oceananigans.Units
-using Random
-using Printf
-using ArgParse
-
-# grid = RectilinearGrid(arch; size=(1024, 200), y=(0,3000),z=(-200,0), topology=(Flat, Periodic, Bounded))
 
 # tilted domain parameters
 θ = 10^(-2) # degrees 
@@ -17,12 +9,17 @@ using ArgParse
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = 0.05 # m s⁻¹
+V∞ = 0.5 # m s⁻¹
 f = coriolis.fz
-N² = 5e-6 # interior stratification
+N² = 1e-4 # interior stratification
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
 γ = (1+S∞)^(-1)#(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
 hu = (f*V∞)/(γ*N²*θ) # set to negative
-print(hu)
-print((f^2)/(N²*(1-γ)^2))
+fˢ=(f^2+θ^2*N²)^(0.5)
+uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
+vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
+bₒ = vₒ*((θ*N²)/(f)) # initial stratification
+println("$(hu)")
+println("$((f^2)/(N²*(1-γ)^2))")
+println("$(bₒ)")

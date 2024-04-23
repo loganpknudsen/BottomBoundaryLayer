@@ -1,5 +1,5 @@
 using Oceananigans
-using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
+# using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 using Oceananigans.Grids: Center, Face
 using Oceananigans.Units
 using Random
@@ -34,8 +34,8 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 
 Lx = 2000meters
 Lz = 200meters
-Nx = 1000
-Nz = 100
+Nx = 500
+Nz = 50
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -53,9 +53,9 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = 0.05 # m s⁻¹
+V∞ = 0.5 # m s⁻¹
 f = coriolis.fz
-N² = 5e-6 # interior stratification
+N² = 1e-4 # interior stratification
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
 γ = (1+S∞)^(-1)#(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
@@ -63,7 +63,7 @@ hu = (f*V∞)/(γ*N²*θ) # set to negative
 fˢ=(f^2+θ^2*N²)^(0.5)
 uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
-bₒ = 0 # initial stratification
+bₒ = vₒ*((θ*N²)/(f)) # initial stratification
 
 p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 
@@ -90,8 +90,8 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # Free Slip Boundary Conditions
 
 b_bc_top= GradientBoundaryCondition(N²)
-b_bc_bottom= GradientBoundaryCondition(N²*(1-γ))
-buoyancy_grad = FieldBoundaryConditions(top=b_bc_top,bottom=b_bc_bottom)
+# b_bc_bottom= GradientBoundaryCondition(N²*(1-γ))
+buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # boundary_conditions=(;b=buoyancy_grad),
 closure = ScalarDiffusivity(ν=1e-4, κ=1e-4)
@@ -117,7 +117,7 @@ set!(model, u=u₀, v=v₀, w=w₀)
 simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
 
 
-wizard = TimeStepWizard(cfl=0.9, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
+wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 progress_message(sim) =
@@ -125,7 +125,7 @@ progress_message(sim) =
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
-simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(1*(2*pi)/f))
+simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(100)) # TimeInterval(0.1*(2*pi)/f)
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
@@ -142,12 +142,12 @@ B = b + B∞
 
 PV = ErtelPotentialVorticity(model, add_background=true)
 KE = KineticEnergy(model)
-ε = KineticEnergyDissipationRate(model)
+# ε = KineticEnergyDissipationRate(model)
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
 
 
-output = (; u, U, v, V, w, b, B, PV, KE, ε) # , Ri, Ro
+output = (; u, U, v, V, w, b, B, PV, KE) # , ε , Ri, Ro
 
 # u,v,w = model.velocities
 
@@ -162,7 +162,7 @@ output = (; u, U, v, V, w, b, B, PV, KE, ε) # , Ri, Ro
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_10_higher_Ri.nc",
+                                                          filename = path_name*"BBL_w_O_10_faster_attempt.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
