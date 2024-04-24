@@ -34,8 +34,8 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 
 Lx = 2000meters
 Lz = 200meters
-Nx = 750
-Nz = 75
+Nx = 500
+Nz = 100 # Two to one ratio similar to previous would be Nx = 500 Nz = 100
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
