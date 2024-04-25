@@ -64,7 +64,7 @@ hu = (f*V∞)/(γ*N²*θ) # set to negative
 fˢ=(f^2+θ^2*N²)^(0.5)
 uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
-bₒ = vₒ*((θ*N²)/(f)) # initial stratification
+bₒ = 0 #vₒ*((θ*N²)/(f)) # initial stratification
 
 p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 
@@ -167,5 +167,5 @@ simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
- 
+
 run!(simulation)
