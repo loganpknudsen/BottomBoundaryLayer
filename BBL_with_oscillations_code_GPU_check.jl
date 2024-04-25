@@ -104,7 +104,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             advection = WENO(),
                             tracers = :b,
                             boundary_conditions = (; b=buoyancy_grad),
-                            background_fields = (; u=U_field, v=V_field, b=B_field))
+                            background_fields = (; b=B_field)) # u=U_field, v=V_field,
 
 ns = 10^(-4) # standard deviation for noise
 
