@@ -70,21 +70,21 @@ p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 
 # background flow with geostrophic and ageostrophic shear 
 
-@inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
+# @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
 
-@inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
-@inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
+# @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
+# @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)*sn_fn(x,z,t,p)
-v_pert(x,z,t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) - (p.f*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+((p.fˢ^2-p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
-b_pert(x,z,t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) - (p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+p.bₒ-((p.N²*p.θ^2)*p.bₒ+p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
+# u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)*sn_fn(x,z,t,p)
+# v_pert(x,z,t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) - (p.f*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+((p.fˢ^2-p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
+# b_pert(x,z,t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) - (p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+p.bₒ-((p.N²*p.θ^2)*p.bₒ+p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
 
-u_adjustment(x, z, t, p) =  u_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
-v_adjustment(x, z, t, p) = p.V∞-p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu) + v_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(p.hu-z)*interval(z,0,p.hu) + b_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
+# u_adjustment(x, z, t, p) =  u_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
+# v_adjustment(x, z, t, p) = p.V∞-p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu) + v_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
+constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z #+ p.N²*p.γ*(p.hu-z)*interval(z,0,p.hu) + b_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
 
-U_field = BackgroundField(u_adjustment, parameters=p)
-V_field = BackgroundField(v_adjustment, parameters=p)
+# U_field = BackgroundField(u_adjustment, parameters=p)
+# V_field = BackgroundField(v_adjustment, parameters=p)
 B_field = BackgroundField(constant_stratification, parameters=p)
 
 # Boundary condition set up
@@ -95,7 +95,7 @@ b_bc_top= GradientBoundaryCondition(N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # boundary_conditions=(;b=buoyancy_grad),
-closure = ScalarDiffusivity(ν=1e-5, κ=1e-5)
+closure = ScalarDiffusivity(ν=1e-4, κ=1e-4)
 
 start_time = time_ns()
 
@@ -115,7 +115,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 10000)
+simulation = Simulation(model, Δt = 1, stop_time = 1000)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 

@@ -65,8 +65,13 @@ fˢ=(f^2+θ^2*N²)^(0.5)
 uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
 bₒ = 0 #vₒ*((θ*N²)/(f)) # initial stratification
+a = (f*vₒ+bₒ*θ)/(fˢ)
+b = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
+c = (f*uₒ)/(fˢ)
+d = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
+e = 
 
-p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
+p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ,a,b,c,d)
 
 # background flow with geostrophic and ageostrophic shear 
 
@@ -75,8 +80,8 @@ p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)*sn_fn(x,z,t,p)
-v_pert(x,z,t,p) = (p.f^2*p.vₒ+p.f*p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) - (p.f*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+((p.fˢ^2-p.f^2)*p.vₒ-p.f*p.bₒ*p.θ)/(p.fˢ)^2
+u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a*sn_fn(x,z,t,p)
+v_pert(x,z,t,p) = p.b*cs_fn(x,z,t,p) - p.c*sn_fn(x,z,t,p)+p.d
 b_pert(x,z,t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) - (p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+p.bₒ-((p.N²*p.θ^2)*p.bₒ+p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
 
 u_adjustment(x, z, t, p) =  u_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
