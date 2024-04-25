@@ -115,7 +115,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 1000)
+simulation = Simulation(model, Δt = 1, stop_time = 10000)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
@@ -132,12 +132,12 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 
 u, v, w = model.velocities
 # ub = model.background_fields.velocities.u
-# vb = model.background_fields.velocities.v
+vb = model.background_fields.velocities.v
 b = model.tracers.b
 B∞ = model.background_fields.tracers.b
 
 # U = u + ub
-# V = v + vb #+ V∞
+V = v + vb #+ V∞
 B = b + B∞
 # dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
 
@@ -148,7 +148,7 @@ KE = KineticEnergy(model)
 # Ro = RossbyNumber(model)
 
 
-output = (; u, v, w, b, B, PV, KE) # U, V, ε , Ri, Ro
+output = (; u, v, V, w, b, B, PV, KE) # U,  ε , Ri, Ro
 
 # u,v,w = model.velocities
 

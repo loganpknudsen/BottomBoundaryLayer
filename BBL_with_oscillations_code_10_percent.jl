@@ -54,39 +54,43 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = 0.5 # m s⁻¹
-f = coriolis.fz
-N² = 1e-4 # interior stratification
-ϕ = 0
-S∞ = (N²*θ^2)/(f^2)
-γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
-hu = (f*V∞)/(γ*N²*θ) # set to negative
-fˢ=(f^2+θ^2*N²)^(0.5)
-uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
-vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
-bₒ = 0 #vₒ*((θ*N²)/(f)) # initial stratification
-a = (f*vₒ+bₒ*θ)/(fˢ)
-b = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
-c = (f*uₒ)/(fˢ)
-d = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
-e = 
+const V∞ = 0.1 # m s⁻¹
+const f = coriolis.fz
+const N² = 2e-5 # interior stratification
+#ϕ = 0
+const S∞ = (N²*θ^2)/(f^2)
+const γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
+const hu = (f*V∞)/(γ*N²*θ) # set to negative
+const fˢ=(f^2+θ^2*N²)^(0.5)
+const uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
+const vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
+const bₒ = 0 #vₒ*((θ*N²)/(f)) # initial stratification
+const a1 = (f*vₒ+bₒ*θ)/(fˢ)
+const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
+const c1 = (f*uₒ)/(fˢ)
+const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
+const e1 = N²*θ*(f*vₒ+bₒ*θ)/(fˢ)^2
+const h1 = (N²*θ*uₒ)/(fˢ)
 
-p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ,a,b,c,d)
+
+p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
 
 # background flow with geostrophic and ageostrophic shear 
 
-@inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
+# @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
+
+@inline heaviside(x) = ifelse(x < 0, zero(x), one(x))
 
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a*sn_fn(x,z,t,p)
-v_pert(x,z,t,p) = p.b*cs_fn(x,z,t,p) - p.c*sn_fn(x,z,t,p)+p.d
-b_pert(x,z,t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) - (p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+p.bₒ-((p.N²*p.θ^2)*p.bₒ+p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
+u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p)
+v_pert(x,z,t,p) = p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1
+b_pert(x,z,t,p) = p.e1*cs_fn(x,z,t,p) - p.h1*sn_fn(x,z,t,p)+p.bₒ-p.e1
 
-u_adjustment(x, z, t, p) =  u_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
-v_adjustment(x, z, t, p) = -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu)+p.V∞ + v_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(p.hu-z)*interval(z,0,p.hu)+ b_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
+u_adjustment(x, z, t, p) =  u_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
+v_adjustment(x, z, t, p) = p.V∞-p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*heaviside(p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
+constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z #+ p.N²*p.γ*(p.hu-z)*heaviside(p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
