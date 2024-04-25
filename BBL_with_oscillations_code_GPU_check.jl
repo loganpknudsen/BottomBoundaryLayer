@@ -54,17 +54,16 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = 0.1 # m s⁻¹
-f = coriolis.fz
-N² = 2e-5 # interior stratification
-ϕ = 0
-S∞ = (N²*θ^2)/(f^2)
-γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
-hu = (f*V∞)/(γ*N²*θ) # set to negative
-fˢ=(f^2+θ^2*N²)^(0.5)
-uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
-vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
-bₒ = 0#vₒ*((θ*N²)/(f)) # initial stratification
+const V∞ = 0.1 # m s⁻¹
+const f = coriolis.fz
+const N² = 2e-5 # interior stratification
+const S∞ = (N²*θ^2)/(f^2)
+const γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
+const hu = (f*V∞)/(γ*N²*θ) # set to negative
+const fˢ=(f^2+θ^2*N²)^(0.5)
+const uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
+const vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
+const bₒ = 0#vₒ*((θ*N²)/(f)) # initial stratification
 
 p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 
@@ -80,7 +79,7 @@ p =(;N²,θ,f,V∞,hu,γ,uₒ,vₒ,bₒ,fˢ)
 # b_pert(x,z,t,p) = p.N²*p.θ*(p.f*p.vₒ+p.bₒ*p.θ)/(p.fˢ)^2*cs_fn(x,z,t,p) - (p.N²*p.θ*p.uₒ)/(p.fˢ)*sn_fn(x,z,t,p)+p.bₒ-((p.N²*p.θ^2)*p.bₒ+p.f*p.vₒ*p.θ*p.N²)/(p.fˢ)^2
 
 # u_adjustment(x, z, t, p) =  u_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
-# v_adjustment(x, z, t, p) = p.V∞-p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu) + v_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
+v_adjustment(x, z, t, p) = p.V∞#-p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*interval(z,0,p.hu) + v_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
 constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z #+ p.N²*p.γ*(p.hu-z)*interval(z,0,p.hu) + b_pert(x,z,t,p)*(p.hu-z)*interval(z,0,p.hu)
 
 # U_field = BackgroundField(u_adjustment, parameters=p)
