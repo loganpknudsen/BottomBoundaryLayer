@@ -115,10 +115,10 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 10*(2*pi)/f)
 
 
-wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
+wizard = TimeStepWizard(cfl=0.9, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 progress_message(sim) =
@@ -126,7 +126,7 @@ progress_message(sim) =
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
-simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(10000)) # TimeInterval(0.1*(2*pi)/f)
+simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1000)) # TimeInterval(0.1*(2*pi)/f)
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
@@ -163,7 +163,7 @@ output = (; u, U, v, V, w, b, B, PV, KE) # , ε , Ri, Ro
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_10_faster_attempt.nc",
+                                                          filename = path_name*"BBL_w_O_10_base.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
