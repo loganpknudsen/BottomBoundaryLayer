@@ -131,13 +131,13 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 # and add an output writer that saves the vertical velocity field every two iterations:
 
 u, v, w = model.velocities
-ub = model.background_fields.velocities.u
-vb = model.background_fields.velocities.v
+# ub = model.background_fields.velocities.u
+# vb = model.background_fields.velocities.v
 b = model.tracers.b
 B∞ = model.background_fields.tracers.b
 
-U = u + ub
-V = v + vb #+ V∞
+# U = u + ub
+# V = v + vb #+ V∞
 B = b + B∞
 # dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
 
@@ -148,7 +148,7 @@ KE = KineticEnergy(model)
 # Ro = RossbyNumber(model)
 
 
-output = (; u, U, v, V, w, b, B, PV, KE) # , ε , Ri, Ro
+output = (; u, v, w, b, B, PV, KE) # U, V, ε , Ri, Ro
 
 # u,v,w = model.velocities
 
