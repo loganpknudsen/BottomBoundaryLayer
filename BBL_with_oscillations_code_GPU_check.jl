@@ -83,7 +83,7 @@ u_adjustment(x, z, t, p) =  u_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
 v_adjustment(x, z, t, p) = p.V∞-p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*heaviside(p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
 constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(p.hu-z)*heaviside(p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
 
-# U_field = BackgroundField(u_adjustment, parameters=p)
+U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
 B_field = BackgroundField(constant_stratification, parameters=p)
 
