@@ -54,9 +54,9 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-const V∞ = 0.1 # m s⁻¹
+const V∞ = 0.01 # m s⁻¹
 const f = coriolis.fz
-const N² = 2e-5 # interior stratification
+const N² = 2e-6 # interior stratification
 const S∞ = (N²*θ^2)/(f^2)
 const γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
 const hu = (f*V∞)/(γ*N²*θ) # set to negative
@@ -90,9 +90,9 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # Boundary condition set up
 # Free Slip Boundary Conditions
 
-# b_bc_top= GradientBoundaryCondition(N²)
+b_bc_top= GradientBoundaryCondition(N²)
 # b_bc_bottom= GradientBoundaryCondition(N²*(1-γ))
-# buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
+buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # boundary_conditions=(;b=buoyancy_grad),
 closure = ScalarDiffusivity(ν=1e-4, κ=1e-4)
@@ -103,7 +103,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
                             advection = WENO(),
                             tracers = :b,
-                            # boundary_conditions = (; b=buoyancy_grad),
+                            boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; v=V_field, b=B_field)) # u=U_field,
 
 ns = 10^(-4) # standard deviation for noise
