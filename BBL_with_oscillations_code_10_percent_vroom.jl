@@ -64,7 +64,7 @@ const hu = (f*V∞)/(γ*N²*θ) # set to negative
 const fˢ=(f^2+θ^2*N²)^(0.5)
 const uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
 const vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
-const bₒ = 0 #vₒ*((θ*N²)/(f)) # initial stratification
+const bₒ = 0vₒ*((θ*N²)/(f)) # initial stratification
 const a1 = (f*vₒ+bₒ*θ)/(fˢ)
 const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
 const c1 = (f*uₒ)/(fˢ)
@@ -135,7 +135,7 @@ progress_message(sim) =
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
-simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1000)) # TimeInterval(0.1*(2*pi)/f)
+simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(100)) # TimeInterval(0.1*(2*pi)/f)
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
@@ -172,7 +172,7 @@ output = (; u, U, v, V, w, b, B, PV, KE) # , ε , Ri, Ro
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_10_base.nc",
+                                                          filename = path_name*"BBL_w_O_10_vroom.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
