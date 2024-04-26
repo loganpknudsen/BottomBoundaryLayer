@@ -1,7 +1,7 @@
 using Oceananigans
 
 # tilted domain parameters
-θ = 10^(-2) # degrees 
+θ = 10^(-4) # degrees 
 # ĝ = [θ, 0, 1] # gravity vector small angle
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
@@ -11,7 +11,7 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # parameters
 V∞ = 0.001 # m s⁻¹
 f = coriolis.fz
-N² = 1e-7 #1e-4 # interior stratification
+N² =1e-5 #1e-4 # interior stratification
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
 γ = (1+S∞)^(-1)#(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
@@ -26,10 +26,10 @@ RiPSI = (4)/(3*γ)#+(5*f^2*bₒ)/(3*N²^2*θ^2*γ^2)-(4*f*vₒ)/(3*N²*θ*γ)-(N
 ν = (V∞*hu)/(1.3*10^6)
 println("$(hu)")
 println("$((f^2)/(N²*(1-γ)^2))")
-println("$(bₒ)")
-println("v_o $(vₒ)")
-println("$(q)")
-println("$(γ)")
+# println("$(bₒ)")
+# println("v_o $(vₒ)")
+# println("$(q)")
+# println("$(γ)")
 println("$(Ri)")
 println("$(RiPSI)")
-println("$(ν)")
+# println("$(ν)")
