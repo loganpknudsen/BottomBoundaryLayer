@@ -54,9 +54,9 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-const V∞ = 0.1 # m s⁻¹
+const V∞ = 0.01 # m s⁻¹
 const f = coriolis.fz
-const N² = 2e-5 # interior stratification
+const N² = 1e-6 # interior stratification
 #ϕ = 0
 const S∞ = (N²*θ^2)/(f^2)
 const γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
@@ -64,7 +64,7 @@ const hu = (f*V∞)/(γ*N²*θ) # set to negative
 const fˢ=(f^2+θ^2*N²)^(0.5)
 const uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
 const vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
-const bₒ = 0 #vₒ*((θ*N²)/(f)) # initial stratification
+const bₒ = vₒ*((θ*N²)/(f))*0.5 # initial stratification
 const a1 = (f*vₒ+bₒ*θ)/(fˢ)
 const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
 const c1 = (f*uₒ)/(fˢ)
