@@ -60,7 +60,7 @@ const N² = 1e-5 # interior stratification
 #ϕ = 0
 const S∞ = (N²*θ^2)/(f^2)
 const γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
-const hu = (f*V∞)/(γ*N²*θ) # set to negative
+const hu = ceil((f*V∞)/(γ*N²*θ)) # set to negative
 const fˢ=(f^2+θ^2*N²)^(0.5)
 const uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
 const vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
@@ -172,7 +172,7 @@ output = (; u, U, v, V, w, b, B, PV, KE) # , ε , Ri, Ro
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_10_base.nc",
+                                                          filename = path_name*"BBL_w_O_10_base_test.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
