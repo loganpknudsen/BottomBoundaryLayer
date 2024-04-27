@@ -9,9 +9,9 @@ using Oceananigans
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters
-V∞ = 0.01 # m s⁻¹
+V∞ = 0.1 # m s⁻¹
 f = coriolis.fz
-N² =1e-6 #1e-4 # interior stratification
+N² =1e-5 #1e-4 # interior stratification
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
 γ = (1+S∞)^(-1)#(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
@@ -21,11 +21,11 @@ uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
 vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
 bₒ = vₒ*((θ*N²)/(f)) # initial stratification
 q = vₒ*(θ*N²)
-Ri = (f^2*(1-γ))/(N²*γ^2*θ^2)
+Ri = (N²*(1-γ))/((N²^2*γ^2*θ^2)/f^2)
 RiPSI = (4)/(3*γ)#+(5*f^2*bₒ)/(3*N²^2*θ^2*γ^2)-(4*f*vₒ)/(3*N²*θ*γ)-(N²*θ*bₒ+f*vₒ*N²*θ)/(3*γ*N²^2*θ^2)
 ν = (V∞*hu)/(1.3*10^6)
 println("$(hu)")
-# println("$((f^2)/(N²*(1-γ)^2))")
+println("$((f^2)/(N²*(1-γ)^2))")
 # println("$(bₒ)")
 # println("v_o $(vₒ)")
 # println("$(q)")
