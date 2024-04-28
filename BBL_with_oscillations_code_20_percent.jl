@@ -172,7 +172,7 @@ output = (; u, U, v, V, w, b, B, PV, KE) # , ε , Ri, Ro
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_10_base_test.nc",
+                                                          filename = path_name*"BBL_w_O_20_base_test.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
