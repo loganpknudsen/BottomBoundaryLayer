@@ -171,8 +171,8 @@ output = (; u, U, v, V, w, b, B, PV, KE) # , ε , Ri, Ro
 # output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.1*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_40_base_test.nc",
+                                                          schedule = TimeInterval(0.01*(2*pi)/f),
+                                                          filename = path_name*"BBL_w_O_40_base_test_hr.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
