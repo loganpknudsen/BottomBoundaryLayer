@@ -124,7 +124,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 10*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.9, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
