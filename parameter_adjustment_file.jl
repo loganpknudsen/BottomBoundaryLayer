@@ -11,7 +11,7 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # parameters
 V∞ = 0.1 # m s⁻¹
 f = coriolis.fz
-N² =1e-4 #1e-4 # interior stratification
+N² =1e-5 #1e-4 # interior stratification
 ϕ = 0
 S∞ = (N²*θ^2)/(f^2)
 γ = (1+S∞)^(-1)#(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
@@ -22,14 +22,28 @@ vₒ = γ*(N²*θ)/(f)*0.1#*sin(ϕ)
 bₒ = vₒ*((θ*N²)/(f)) # initial stratification
 q = vₒ*(θ*N²)
 Ri = (N²*(1-γ))/((N²^2*γ^2*θ^2)/f^2)
-RiPSI = (4)/(3*γ)#+(5*f^2*bₒ)/(3*N²^2*θ^2*γ^2)-(4*f*vₒ)/(3*N²*θ*γ)-(N²*θ*bₒ+f*vₒ*N²*θ)/(3*γ*N²^2*θ^2)
+RiPSI = (4)/(3*γ)-(4*f*vₒ)/(3*N²*θ*γ^2)+(5*f^2*bₒ)/(3*N²^2*θ^2*γ^2)-(bₒ-f*vₒ)/(3*N²*θ*γ)
+RiPSI2 =  4/(3*γ)+(f^2*bₒ)/(N²^2*θ^2*γ^2)+(f*vₒ)/(N²*θ*γ^2)*(f^2/(3*fˢ^2)-4/3)+(f^2*bₒ)/(3*fˢ^2*N²*θ*γ^2)
+Term1 = (4)/(3*γ)
+Term2 = (4*f*vₒ)/(3*N²*θ*γ^2)
+Term3 = (5*f^2*bₒ)/(3*N²^2*θ^2*γ^2)
+Term4 = (bₒ-f*vₒ)/(3*N²*θ*γ)
 ν = (V∞*hu)/(1.3*10^6)
 println("$(hu)")
-println("$((f^2)/(N²*(1-γ)^2))")
+# println("$((f^2)/(N²*(1-γ)^2))")
 # println("$(bₒ)")
 # println("v_o $(vₒ)")
 # println("$(q)")
 # println("$(γ)")
 println("$(Ri)")
-# println("$(RiPSI)")
+v = 1+S∞
+println("$(v)")
+q = (1+(f*vₒ)/(N²*θ)+bₒ/(N²*θ))/((4*f*vₒ)/(N²*θ)-(f^2*bₒ)/(3*N²^2*θ^2))
+println("$(RiPSI)")
+println("RiPsi 2 $(RiPSI2)")
+println("q $(q)")
+println("T1 $(Term1)")
+println("T2 $(Term2)")
+println("T3 $(Term3)")
+println("T4 $(Term4)")
 # println("$(ν)")
