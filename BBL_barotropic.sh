@@ -1,6 +1,6 @@
 #!/bin/bash -l
 ### Job Name
-#PBS -N BBL_w_o_10
+#PBS -N BBL_Barotropic
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
