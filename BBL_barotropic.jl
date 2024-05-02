@@ -56,7 +56,7 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # parameters
 const V∞ = 0 # m s⁻¹
 const f = coriolis.fz
-const N² = 2*f^2/θ^2 # interior stratification
+const N² = (3)*f^2/θ^2 # interior stratification
 #ϕ = 0
 const S∞ = (N²*θ^2)/(f^2)
 # const γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
