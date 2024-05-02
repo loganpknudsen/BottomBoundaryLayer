@@ -10,7 +10,7 @@
 ### To the casper queue
 #PBS -q casper
 ### output
-#PBS -o BBL_O_10.out
+#PBS -o BBL_barotropic.out
 ### error
 #PBS -j oe
 ### type of GPU
