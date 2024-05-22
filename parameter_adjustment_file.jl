@@ -38,7 +38,7 @@ println("$(hu)")
 println("$(Ri)")
 v = 1+S∞
 println("$(v)")
-q = (1+(f*vₒ)/(N²*θ)+bₒ/(N²*θ))/((4*f*vₒ)/(N²*θ)-(f^2*bₒ)/(3*N²^2*θ^2))
+q = (1+(f*vₒ)/(N²*θ)+bₒ/(N²*θ))/((4*f*vₒ)/(N²*θ)-(f^2*bₒ)/(N²^2*θ^2))
 println("$(RiPSI)")
 println("RiPsi 2 $(RiPSI2)")
 println("q $(q)")
