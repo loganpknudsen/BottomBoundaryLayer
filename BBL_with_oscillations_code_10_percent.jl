@@ -124,7 +124,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 40*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 50*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.9, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
@@ -135,7 +135,7 @@ progress_message(sim) =
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9))
 
-simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1000)) # TimeInterval(0.1*(2*pi)/f)
+simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(0.5*(2*pi)/f) ) # IterationInterval(1000) 
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
