@@ -153,8 +153,8 @@ B = b + B∞
 PV = ErtelPotentialVorticity(model, add_background=true)
 KE = KineticEnergy(model)
 E = KineticEnergyDissipationRate(model)
-AGSPu = u*w*u_pert(x,z,t,p)
-AGSPv = v*w*v_pert(x,z,t,p)
+AGSPu = u*w*u_pert(0,0,sim.model.clock.time,p)
+AGSPv = v*w*v_pert(0,0,sim.model.clock.time,p)
 AGSP = AGSPu + AGSPv
 GSP = - v*w*γ*(θ * N²)/(f)
 BFLUX = w*b
