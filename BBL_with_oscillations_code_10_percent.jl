@@ -63,7 +63,7 @@ const γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
 const hu = ceil((f*V∞)/(γ*N²*θ)) # set to negative
 const fˢ=(f^2+θ^2*N²)^(0.5)
 const uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
-const vₒ = γ*(N²*θ)/(f)*0.4#*sin(ϕ)
+const vₒ = γ*(N²*θ)/(f)*0.5#*sin(ϕ)
 const bₒ = vₒ*((θ*N²)/(f))*0.1 # initial stratification
 const a1 = (f*vₒ+bₒ*θ)/(fˢ)
 const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
@@ -124,7 +124,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 40*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.9, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
@@ -152,12 +152,18 @@ B = b + B∞
 
 PV = ErtelPotentialVorticity(model, add_background=true)
 KE = KineticEnergy(model)
-# ε = KineticEnergyDissipationRate(model)
+E = KineticEnergyDissipationRate(model)
+AGSPu = u*w*u_pert(x,z,t,p)
+AGSPv = v*w*v_pert(x,z,t,p)
+AGSP = AGSPu + AGSPv
+GSP = - v*w*γ*(θ * N²)/(f)
+BFLUX = w*b
+k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
 
 
-output = (; u, U, v, V, w, b, B, PV, KE) # , ε , Ri, Ro
+output = (; u, U, v, V, w, b, B, PV, KE, E, AGSP, GSP, BFLUX, k) # , ε , Ri, Ro
 
 # u,v,w = model.velocities
 
@@ -171,8 +177,8 @@ output = (; u, U, v, V, w, b, B, PV, KE) # , ε , Ri, Ro
 # output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.01*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_40_base_test_hr.nc",
+                                                          schedule = TimeInterval(0.05*(2*pi)/f),
+                                                          filename = path_name*"BBL_w_O_50_base_test.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
