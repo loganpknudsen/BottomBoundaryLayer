@@ -144,6 +144,7 @@ ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 b = model.tracers.b
 B∞ = model.background_fields.tracers.b
+p = model.pressures.pHY′
 
 U = u + ub
 V = v + vb #+ V∞
@@ -158,12 +159,16 @@ AGSPv = v*w*v_pert(0,0,simulation.model.clock.time,p)
 AGSP = AGSPu + AGSPv
 GSP = - v*w*γ*(θ * N²)/(f)
 BFLUX = w*b
+dpudx = Field(@at (Center, Center, Center) ∂x(p*u))
+dpvdy = Field(@at (Center, Center, Center) ∂y(p*v))
+dpudz = Field(@at (Center, Center, Center) ∂z(p*w))
+PWORK= -1*(dpudx+dpvdy+dpudz)
 k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
 
 
-output = (; u, U, v, V, w, b, B, PV, KE, E, AGSP, GSP, BFLUX, k) # , ε , Ri, Ro
+output = (; u, U, v, V, w, b, B, PV, KE, E, AGSP, GSP, BFLUX, PWORK, k) # , ε , Ri, Ro
 
 # u,v,w = model.velocities
 
@@ -177,8 +182,8 @@ output = (; u, U, v, V, w, b, B, PV, KE, E, AGSP, GSP, BFLUX, k) # , ε , Ri, Ro
 # output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_50_base_test.nc",
+                                                          schedule = TimeInterval(0.01*(2*pi)/f),
+                                                          filename = path_name*"BBL_w_O_50_base_test_w_p.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
