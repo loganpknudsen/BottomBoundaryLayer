@@ -144,7 +144,7 @@ ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 b = model.tracers.b
 B∞ = model.background_fields.tracers.b
-p = model.pressures.pHY′
+pr = model.pressures.pHY′
 
 U = u + ub
 V = v + vb #+ V∞
@@ -159,9 +159,9 @@ AGSPv = v*w*v_pert(0,0,simulation.model.clock.time,p)
 AGSP = AGSPu + AGSPv
 GSP = - v*w*γ*(θ * N²)/(f)
 BFLUX = w*b
-dpudx = Field(@at (Center, Center, Center) ∂x(p*u))
-dpvdy = Field(@at (Center, Center, Center) ∂y(p*v))
-dpudz = Field(@at (Center, Center, Center) ∂z(p*w))
+dpudx = Field(@at (Center, Center, Center) ∂x(pr*u))
+dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
+dpudz = Field(@at (Center, Center, Center) ∂z(pr*w))
 PWORK= -1*(dpudx+dpvdy+dpudz)
 k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
 # Ri = RichardsonNumber(model, add_background=true)
