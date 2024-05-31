@@ -171,22 +171,17 @@ k = 0.5*(uh^2+v^2+wh^2) # pertubation kinetic energy
 # Ro = RossbyNumber(model)
 
 
-output = (; u, U, v, V, w, b, B, PV, KE, E, AGSP, GSP, BFLUX, PWORK, k, dbdz, dBdz) # , ε , Ri, Ro
-
-# u,v,w = model.velocities
-
-# output = (;u,v,w,model.tracers.b,U=(model.background_fields.velocities.u+0*u),V=(model.background_fields.velocities.v+0*v),B=(model.background_fields.tracers.b+0*model.tracers.b))
-
-# ε = Field(KineticEnergyDissipationRate(model))
-# dBdz = Field(@at (Center, Center, Center) ∂z(model.tracers.b+model.background_fields.tracers.b))
-# u_m_flux = u*w
-# v_m_flux = v*w
-
-# output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
+output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
+output2 = (; KE, E, AGSP, GSP, BFLUX, PWORK, k)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
+                                                          schedule = TimeInterval(0.05*(2*pi)/f),
+                                                          filename = path_name*"BBL_w_O_updated_diagnostics_flow_terms.nc",
+                                                          overwrite_existing = true)
+
+simulation.output_writers[:fields] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_updated_diagnostics.nc",
+                                                          filename = path_name*"BBL_w_O_updated_diagnostics_TKE_terms.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
