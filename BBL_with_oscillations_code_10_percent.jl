@@ -124,10 +124,10 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 35*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 25*(2*pi)/f)
 
 
-wizard = TimeStepWizard(cfl=0.9, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
+wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 progress_message(sim) =
@@ -185,7 +185,7 @@ output = (; u, U, v, V, w, b, B, PV, KE, E, AGSP, GSP, BFLUX, PWORK, k, dbdz, dB
 # output = merge(output, (; E=ε, N2=dBdz, UM=u_m_flux, VM=v_m_flux,))
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.01*(2*pi)/f),
+                                                          schedule = TimeInterval(0.005*(2*pi)/f),
                                                           filename = path_name*"BBL_w_O_updated_diagnostics.nc",
                                                           overwrite_existing = true)
 
