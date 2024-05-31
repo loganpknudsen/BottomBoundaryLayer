@@ -149,26 +149,29 @@ pr = model.pressures.pHY′
 U = u + ub
 V = v + vb #+ V∞
 B = b + B∞
-# dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
 
+dbdz = Field(@at (Center, Center, Center) ∂z(b))
+dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
 PV = ErtelPotentialVorticity(model, add_background=true)
 KE = KineticEnergy(model)
 E = KineticEnergyDissipationRate(model)
-AGSPu = u*w*u_pert(0,0,simulation.model.clock.time,p)
-AGSPv = v*w*v_pert(0,0,simulation.model.clock.time,p)
+uh = u-θ*w
+wh = θ*u+w
+AGSPu = (uh*wh-θ*uh*uh)*u_pert(0,0,simulation.model.clock.time,p)
+AGSPv = (v*wh-θ*uh*v)*v_pert(0,0,simulation.model.clock.time,p)
 AGSP = AGSPu + AGSPv
-GSP = - v*w*γ*(θ * N²)/(f)
-BFLUX = w*b
-dpudx = Field(@at (Center, Center, Center) ∂x(pr*u))
+GSP = - (v*wh-θ*uh*v)*γ*(θ * N²)/(f)
+BFLUX = (θ*uh+wh)*b
+dpudx = Field(@at (Center, Center, Center) ∂x(pr*uh))
 dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
-dpudz = Field(@at (Center, Center, Center) ∂z(pr*w))
+dpudz = Field(@at (Center, Center, Center) ∂z(pr*wh))
 PWORK= -1*(dpudx+dpvdy+dpudz)
-k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
+k = 0.5*(uh^2+v^2+wh^2) # pertubation kinetic energy
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
 
 
-output = (; u, U, v, V, w, b, B, PV, KE, E, AGSP, GSP, BFLUX, PWORK, k) # , ε , Ri, Ro
+output = (; u, U, v, V, w, b, B, PV, KE, E, AGSP, GSP, BFLUX, PWORK, k, dbdz, dBdz) # , ε , Ri, Ro
 
 # u,v,w = model.velocities
 
@@ -183,7 +186,7 @@ output = (; u, U, v, V, w, b, B, PV, KE, E, AGSP, GSP, BFLUX, PWORK, k) # , ε ,
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.01*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_50_base_test_w_p.nc",
+                                                          filename = path_name*"BBL_w_O_updated_diagnostics.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
