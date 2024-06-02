@@ -157,15 +157,16 @@ KE = KineticEnergy(model)
 E = KineticEnergyDissipationRate(model)
 uh = u-θ*w
 wh = θ*u+w
-AGSPu = (uh*wh-θ*uh*uh)*u_pert(0,0,simulation.model.clock.time,p)
-AGSPv = (v*wh-θ*uh*v)*v_pert(0,0,simulation.model.clock.time,p)
-AGSP = AGSPu + AGSPv
-GSP = - (v*wh-θ*uh*v)*γ*(θ * N²)/(f)
-BFLUX = (θ*uh+wh)*b
-dpudx = Field(@at (Center, Center, Center) ∂x(pr*uh))
-dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
+AGSPu = (u*w-θ*w*w)*u_pert(0,0,simulation.model.clock.time,p)
+AGSPv = (v*w)*v_pert(0,0,simulation.model.clock.time,p)
+AGSPw = ((θ^2+θ^4)*u*w+(θ^3+θ)*w*w)*u_pert(0,0,simulation.model.clock.time,p)
+AGSP = AGSPu + AGSPv + AGSPw
+GSP = - (v*w)*γ*(θ * N²)/(f)
+BFLUX = (wh)*b
+dpudx = Field(@at (Center, Center, Center) ∂z(-θ*pr*uh))
+# dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
 dpudz = Field(@at (Center, Center, Center) ∂z(pr*wh))
-PWORK= -1*(dpudx+dpvdy+dpudz)
+PWORK= -1*(dpudx+dpudz)
 k = 0.5*(uh^2+v^2+wh^2) # pertubation kinetic energy
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
@@ -184,6 +185,4 @@ simulation.output_writers[:fields] = NetCDFOutputWriter(model, output2;
                                                           filename = path_name*"BBL_w_O_updated_diagnostics_TKE_terms.nc",
                                                           overwrite_existing = true)
 
-# With initial conditions set and an output writer at the ready, we run the simulation
-
-run!(simulation)
+# With initial conditions set and an outp
