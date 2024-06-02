@@ -185,4 +185,6 @@ simulation.output_writers[:fields] = NetCDFOutputWriter(model, output2;
                                                           filename = path_name*"BBL_w_O_updated_diagnostics_TKE_terms.nc",
                                                           overwrite_existing = true)
 
-# With initial conditions set and an o
+# With initial conditions set and an output writer at the ready, we run the simulation
+
+run!(simulation)
