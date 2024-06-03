@@ -166,7 +166,7 @@ BFLUX = (wh)*b
 dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*uh))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
 dpudz = Field(@at (Center, Center, Center) ∂z(pr*wh))
-PWORK= -1*(-1*dpudx+dpudz)
+PWORK= (dpudx-dpudz)
 k = 0.5*(uh^2+v^2+wh^2) # pertubation kinetic energy
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
@@ -180,7 +180,7 @@ simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           filename = path_name*"BBL_w_O_updated_diagnostics_flow_terms.nc",
                                                           overwrite_existing = true)
 
-simulation.output_writers[:fields] = NetCDFOutputWriter(model, output2;
+simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
                                                           filename = path_name*"BBL_w_O_updated_diagnostics_TKE_terms.nc",
                                                           overwrite_existing = true)
