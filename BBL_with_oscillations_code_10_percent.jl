@@ -150,24 +150,22 @@ U = u + ub
 V = v + vb #+ V∞
 B = b + B∞
 
-dbdz = Field(@at (Center, Center, Center) ∂z(b))
-dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞))
-PV = ErtelPotentialVorticity(model, add_background=true)
-KE = KineticEnergy(model)
-E = KineticEnergyDissipationRate(model)
-uh = u-θ*w
-wh = θ*u+w
-AGSPu = (u*w-θ*w*w)*u_pert(0,0,simulation.model.clock.time,p)
+dbdz = Field(@at (Center, Center, Center) ∂z(b)) #stratification pertubation calculation
+dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞)) # stratification total calculation
+PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
+KE = KineticEnergy(model) # total kinetic energy calculation
+E = KineticEnergyDissipationRate(model) # kinetic energy dissaption calcualtion
+k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
+AGSPu = (u*w)*u_pert(0,0,simulation.model.clock.time,p) # AGSP contribution 
 AGSPv = (v*w)*v_pert(0,0,simulation.model.clock.time,p)
-AGSPw = ((θ^2+θ^4)*u*w+(θ^3+θ)*w*w)*u_pert(0,0,simulation.model.clock.time,p)
-AGSP = AGSPu + AGSPv + AGSPw
-GSP = -1*(v*w)*γ*(θ * N²)/(f)
-BFLUX = (wh)*b
-dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*uh))
+# AGSPw = ((θ^2+θ^4)*u*w+(θ^3+θ)*w*w)*u_pert(0,0,simulation.model.clock.time,p)
+AGSP = AGSPu + AGSPv 
+GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
+BFLUX = (θ*u+w)*b # flux from buoyancy
+dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
-dpudz = Field(@at (Center, Center, Center) ∂z(pr*wh))
-PWORK= (dpudx-dpudz)
-k = 0.5*(uh^2+v^2+wh^2) # pertubation kinetic energy
+dpudz = Field(@at (Center, Center, Center) ∂z(pr*w))
+PWORK= (dpudx-dpudz) # work due to pressure
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
 
