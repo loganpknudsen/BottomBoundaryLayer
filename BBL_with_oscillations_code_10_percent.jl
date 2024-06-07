@@ -104,7 +104,8 @@ b_bc_top= GradientBoundaryCondition(N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # boundary_conditions=(;b=buoyancy_grad),
-closure = ScalarDiffusivity(ν=1e-4, κ=1e-4)
+ν = 1e-4
+closure = ScalarDiffusivity(ν=ν, κ=1e-4)
 
 start_time = time_ns()
 
