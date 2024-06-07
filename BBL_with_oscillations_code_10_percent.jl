@@ -168,7 +168,7 @@ dpwdz = Field(@at (Center, Center, Center) ∂z(pr*w))
 dkwdz = Field(@at (Center, Center, Center) ∂z(k*w))
 PWORK= -1*dpwdz # work due to pressure
 KTRANS = -1*dkwdz
-dk2dz2 = Field(@at (Center, Center, Center) ∂z(Field(@at (Center, Center, Center) ∂z(pr*w))))
+dk2dz2 = Field(@at (Center, Center, Center) ∂z(∂z(pr*w)))
 KDISS = ν*dk2dz2
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
