@@ -179,12 +179,12 @@ output2 = (; KE, E, AGSP, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_updated_diagnostics_flow_terms.nc",
+                                                          filename = path_name*"BBL_w_O_updated_diagnostics_extra_flow_terms.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_updated_diagnostics_TKE_terms.nc",
+                                                          filename = path_name*"BBL_w_O_updated_diagnostics_extra_TKE_terms.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
