@@ -45,7 +45,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-θ = 10^(-1) # degrees 
+θ = 10^(-2) # degrees 
 # ĝ = [θ, 0, 1] # gravity vector small angle
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
@@ -56,15 +56,15 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # parameters
 const V∞ = 0.1 # m s⁻¹
 const f = coriolis.fz
-const N² = (4)*f^2/θ^2 # interior stratification
+const N² = 1e-5 # interior stratification
 #ϕ = 0
 const S∞ = (N²*θ^2)/(f^2)
 # const γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
 const hu = 100
-const fˢ=(f^2+θ^2*N²)^(0.5)
+const fˢ=(f^2+θ^2*N²)^(0.5)*0.1
 const uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
-const vₒ = 0.001 #*sin(ϕ)
-const bₒ = 0 # vₒ*((θ*N²)/(f))*0.1 # initial stratification
+const vₒ = (0.5*V∞)/hu #*sin(ϕ)
+const bₒ = 0.1*vₒ*(θ*N²/f) # vₒ*((θ*N²)/(f))*0.1 # initial stratification
 const a1 = (f*vₒ+bₒ*θ)/(fˢ)
 const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
 const c1 = (f*uₒ)/(fˢ)
@@ -124,7 +124,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 20*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 25*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
