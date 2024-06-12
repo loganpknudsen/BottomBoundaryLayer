@@ -84,7 +84,7 @@ p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p)
+u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p) # shear
 v_pert(x,z,t,p) = p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1
 b_pert(x,z,t,p) = p.e1*cs_fn(x,z,t,p) - p.h1*sn_fn(x,z,t,p)+p.bₒ-p.e1
 
@@ -157,10 +157,14 @@ PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity c
 KE = KineticEnergy(model) # total kinetic energy calculation
 E = KineticEnergyDissipationRate(model) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
-AGSPu = (u*w)*u_pert(0,0,simulation.model.clock.time,p) # AGSP contribution 
-AGSPv = (v*w)*v_pert(0,0,simulation.model.clock.time,p)
+uz = Field(@at (Center, Center, Center) ∂z(u)) 
+vz = Field(@at (Center, Center, Center) ∂z(v)) 
+wz = Field(@at (Center, Center, Center) ∂z(w)) 
+AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)-uz) # AGSP contribution 
+AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p)-vz)
+AGSPw = -(w*w)*wz
 # AGSPw = ((θ^2+θ^4)*u*w+(θ^3+θ)*w*w)*u_pert(0,0,simulation.model.clock.time,p)
-AGSP = AGSPu + AGSPv 
+AGSP = AGSPu + AGSPv + AGSPw
 GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
 BFLUX = (w)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
