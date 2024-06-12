@@ -89,7 +89,7 @@ v_pert(x,z,t,p) = p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1
 b_pert(x,z,t,p) = p.e1*cs_fn(x,z,t,p) - p.h1*sn_fn(x,z,t,p)+p.bₒ-p.e1
 
 u_adjustment(x, z, t, p) =  u_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
-v_adjustment(x, z, t, p) = p.V∞-v_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
+v_adjustment(x, z, t, p) = p.V∞+v_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
 constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + b_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
@@ -99,7 +99,7 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # Boundary condition set up
 # Free Slip Boundary Conditions
 
-b_bc_top= GradientBoundaryCondition(N²)
+b_bc_top = GradientBoundaryCondition(N²)
 # b_bc_bottom= GradientBoundaryCondition(N²*(1-γ))
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
