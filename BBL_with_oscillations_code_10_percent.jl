@@ -164,9 +164,9 @@ AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)-uz) # AGSP contribution
 AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p)-vz)
 AGSPw = -(w*w)*wz
 # AGSPw = ((θ^2+θ^4)*u*w+(θ^3+θ)*w*w)*u_pert(0,0,simulation.model.clock.time,p)
-AGSP = AGSPu + AGSPv + AGSPw
+# AGSP = AGSPu + AGSPv + AGSPw
 GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
-BFLUX = (w)*b # flux from buoyancy
+BFLUX = (w+θ*u)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
 dpwdz = Field(@at (Center, Center, Center) ∂z(pr*w))
@@ -180,7 +180,7 @@ KDISS = ν*dk2dz2
 
 
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
-output2 = (; KE, E, AGSP, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
+output2 = (; KE, E, AGSPu, AGSPv, AGSPw, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
