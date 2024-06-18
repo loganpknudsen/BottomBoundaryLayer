@@ -157,14 +157,14 @@ PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity c
 KE = KineticEnergy(model) # total kinetic energy calculation
 E = KineticEnergyDissipationRate(model) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
-uz = Field(@at (Center, Center, Center) ∂z(u)) 
-vz = Field(@at (Center, Center, Center) ∂z(v)) 
-wz = Field(@at (Center, Center, Center) ∂z(w)) 
-AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)-uz) # AGSP contribution 
-AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p)-vz)
-AGSPw = -(w*w)*wz
+# uz = Field(@at (Center, Center, Center) ∂z(u)) 
+# vz = Field(@at (Center, Center, Center) ∂z(v)) 
+# wz = Field(@at (Center, Center, Center) ∂z(w)) 
+AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))#-uz) # AGSP contribution 
+AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))#-vz)
+# AGSPw = -(w*w)*wz
 # AGSPw = ((θ^2+θ^4)*u*w+(θ^3+θ)*w*w)*u_pert(0,0,simulation.model.clock.time,p)
-# AGSP = AGSPu + AGSPv + AGSPw
+AGSP = AGSPu + AGSPv #+ AGSPw
 GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
 BFLUX = (w+θ*u)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
@@ -180,7 +180,7 @@ KDISS = ν*dk2dz2
 
 
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
-output2 = (; KE, E, AGSPu, AGSPv, AGSPw, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
+output2 = (; KE, E, AGSP, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
