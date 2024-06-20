@@ -157,23 +157,24 @@ PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity c
 KE = KineticEnergy(model) # total kinetic energy calculation
 E = KineticEnergyDissipationRate(model) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
-uz = Field(@at (Center, Center, Center) ∂z(u)) 
+uh = u - θ*w
+wh = w + θ*u
+uz = Field(@at (Center, Center, Center) ∂z(uh)) 
 vz = Field(@at (Center, Center, Center) ∂z(v)) 
-wz = Field(@at (Center, Center, Center) ∂z(w)) 
-AGSPup = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)-uz) # AGSP contribution 
-AGSPvp = (v*w)*(v_pert(0,0,simulation.model.clock.time,p)-vz)
-AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)) # AGSP contribution 
-AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))
-AGSPwp = -(w*w)*wz
+wz = Field(@at (Center, Center, Center) ∂z(wh))
+AGSPu = (uh*wh)*(u_pert(0,0,simulation.model.clock.time,p)-uz) # AGSP contribution 
+AGSPv = (v*wh)*(v_pert(0,0,simulation.model.clock.time,p)-vz)
+# AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)) # AGSP contribution 
+# AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))
+AGSPw = -(wh*wh)*wz
 # AGSPw = ((θ^2+θ^4)*u*w+(θ^3+θ)*w*w)*u_pert(0,0,simulation.model.clock.time,p)
-AGSPp = AGSPup + AGSPvp + AGSPwp
-AGSP = AGSPu + AGSPv
+AGSP = AGSPu + AGSPv + AGSPw
 GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
-BFLUX = (w)*b # flux from buoyancy
+BFLUX = (wh)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
-dpwdz = Field(@at (Center, Center, Center) ∂z(pr*w))
-dkwdz = Field(@at (Center, Center, Center) ∂z(k*w))
+dpwdz = Field(@at (Center, Center, Center) ∂z(pr*wh))
+dkwdz = Field(@at (Center, Center, Center) ∂z(k*wh))
 PWORK= -1*dpwdz # work due to pressure
 KTRANS = -1*dkwdz
 dk2dz2 = Field(@at (Center, Center, Center) ∂z(∂z(k)))
@@ -183,7 +184,7 @@ KDISS = ν*dk2dz2
 
 
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
-output2 = (; KE, E, AGSP, AGSPp, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
+output2 = (; KE, E, AGSP, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
