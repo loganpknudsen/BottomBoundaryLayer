@@ -34,9 +34,9 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
 Lx = 2000meters
-Lz = 200meters
+Lz = 300meters
 Nx = 500
-Nz = 100 # Two to one ratio similar to previous would be Nx = 500 Nz = 100
+Nz = 150 # Two to one ratio similar to previous would be Nx = 500 Nz = 100
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -164,10 +164,7 @@ vz = Field(@at (Center, Center, Center) ∂z(v))
 wz = Field(@at (Center, Center, Center) ∂z(wh))
 AGSPu = (uh*wh)*(u_pert(0,0,simulation.model.clock.time,p)-uz) # AGSP contribution 
 AGSPv = (v*wh)*(v_pert(0,0,simulation.model.clock.time,p)-vz)
-# AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)) # AGSP contribution 
-# AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))
 AGSPw = -(wh*wh)*wz
-# AGSPw = ((θ^2+θ^4)*u*w+(θ^3+θ)*w*w)*u_pert(0,0,simulation.model.clock.time,p)
 AGSP = AGSPu + AGSPv + AGSPw
 GSP = -1*(v*wh)*γ*(θ * N²)/(f) # geostrophic shear production
 BFLUX = (wh)*b # flux from buoyancy
