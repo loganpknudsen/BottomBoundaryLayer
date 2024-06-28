@@ -140,10 +140,18 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 
 # and add an output writer that saves the vertical velocity field every two iterations:
 
-u, v, w = model.velocities
+ua, va, wa = model.velocities
+um = Average(ua, dims=[1])
+vm = Average(va, dims=[1])
+wm = Average(wa, dims=[1])
+u = ua - um
+v = va - vm
+w = wa - wm
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
-b = model.tracers.b
+ba = model.tracers.b
+bm = Average(ba, dims=[1])
+b = ba - bm
 B∞ = model.background_fields.tracers.b
 pr = model.pressures.pHY′
 
@@ -154,24 +162,24 @@ B = b + B∞
 dbdz = Field(@at (Center, Center, Center) ∂z(b)) #stratification pertubation calculation
 dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞)) # stratification total calculation
 PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
-KE = KineticEnergy(model) # total kinetic energy calculation
+# KE = KineticEnergy(model) # total kinetic energy calculation
 E = KineticEnergyDissipationRate(model) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
-uh = u - θ*w
-wh = w + θ*u
-uz = Field(@at (Center, Center, Center) ∂z(uh)) 
-vz = Field(@at (Center, Center, Center) ∂z(v)) 
-wz = Field(@at (Center, Center, Center) ∂z(wh))
-AGSPu = (uh*wh)*(u_pert(0,0,simulation.model.clock.time,p)-uz)+θ*(uh*uh)*uz # AGSP contribution 
-AGSPv = (v*wh)*(v_pert(0,0,simulation.model.clock.time,p)-vz)+θ*(uh*v)*vz
-AGSPw = -(wh*wh)*wz+θ*(uh*wh)*wz
-AGSP = AGSPu + AGSPv + AGSPw
-GSP = -1*(v*wh)*γ*(θ * N²)/(f) # geostrophic shear production
-BFLUX = (wh)*b # flux from buoyancy
+# uh = u - θ*w
+# wh = w + θ*u
+# uz = Field(@at (Center, Center, Center) ∂z(u)) 
+# vz = Field(@at (Center, Center, Center) ∂z(v)) 
+# wz = Field(@at (Center, Center, Center) ∂z(w))
+AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)) # AGSP contribution 
+AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))
+# AGSPw = -(wh*wh)*wz #+θ*(wh*wh)*(u_pert(0,0,simulation.model.clock.time,p))
+AGSP = AGSPu + AGSPv# + AGSPw
+GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
+BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
-dpwdz = Field(@at (Center, Center, Center) ∂z(pr*wh))
-dkwdz = Field(@at (Center, Center, Center) ∂z(k*wh))
+dpwdz = Field(@at (Center, Center, Center) ∂z(pr*w))
+dkwdz = Field(@at (Center, Center, Center) ∂z(k*w))
 PWORK= -1*dpwdz # work due to pressure
 KTRANS = -1*dkwdz
 dk2dz2 = Field(@at (Center, Center, Center) ∂z(∂z(k)))
@@ -181,7 +189,7 @@ KDISS = ν*dk2dz2
 
 
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
-output2 = (; KE, E, AGSP, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
+output2 = (; E, AGSP, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
