@@ -142,16 +142,16 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 # and add an output writer that saves the vertical velocity field every two iterations:
 
 ua, va, wa = model.velocities
-um = Average(ua, dims=1)
-vm = Average(va, dims=1)
-wm = Average(wa, dims=1)
+um = Field(@at (Center, Center, Center) Average(ua, dims=1))
+vm = Field(@at (Center, Center, Center) Average(va, dims=1))
+wm =Field(@at (Center, Center, Center) Average(wa, dims=1))
 u = ua - um
 v = va - vm
 w = wa - wm
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 ba = model.tracers.b
-bm = Average(ba, dims=1)
+bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = ba - bm
 B∞ = model.background_fields.tracers.b
 pr = model.pressures.pHY′
