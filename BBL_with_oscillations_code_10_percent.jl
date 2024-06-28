@@ -1,5 +1,6 @@
 using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
+using Oceananigans.AbstractOperations: @at, Average
 using Oceananigans.Grids: Center, Face
 using Oceananigans.Units
 using Random
