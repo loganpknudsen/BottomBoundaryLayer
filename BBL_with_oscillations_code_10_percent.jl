@@ -144,7 +144,7 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 ua, va, wa = model.velocities
 um = Field(@at (Center, Center, Center) Average(ua, dims=1))
 vm = Field(@at (Center, Center, Center) Average(va, dims=1))
-wm =Field(@at (Center, Center, Center) Average(wa, dims=1))
+wm = Field(@at (Center, Center, Center) Average(wa, dims=1))
 u = ua - um
 v = va - vm
 w = wa - wm
@@ -155,6 +155,8 @@ bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = ba - bm
 B∞ = model.background_fields.tracers.b
 pr = model.pressures.pHY′
+wmpm = Field(@at (Center, Center, Center) Average(wa*pr, dims=1))
+wp = wa*pr-wmpm
 
 U = u + ub
 V = v + vb #+ V∞
@@ -164,8 +166,11 @@ dbdz = Field(@at (Center, Center, Center) ∂z(b)) #stratification pertubation c
 dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞)) # stratification total calculation
 PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
 # KE = KineticEnergy(model) # total kinetic energy calculation
-E = KineticEnergyDissipationRate(model) # kinetic energy dissaption calcualtion
+E = KineticEnergyDissipationRate(model; U = u, V = v, W = w, location=(Center,Center,Center)) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
+ka = 0.5*(ua^2+va^2+wa^2)
+wmkm = Field(@at (Center, Center, Center) Average(wa*ka, dims=1))
+wk = wa*ka-wmkm
 # uh = u - θ*w
 # wh = w + θ*u
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
@@ -179,8 +184,8 @@ GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
 BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
-dpwdz = Field(@at (Center, Center, Center) ∂z(pr*w))
-dkwdz = Field(@at (Center, Center, Center) ∂z(k*w))
+dpwdz = Field(@at (Center, Center, Center) ∂z(wp))
+dkwdz = Field(@at (Center, Center, Center) ∂z(wk))
 PWORK= -1*dpwdz # work due to pressure
 KTRANS = -1*dkwdz
 dk2dz2 = Field(@at (Center, Center, Center) ∂z(∂z(k)))
