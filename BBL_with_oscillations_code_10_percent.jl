@@ -156,7 +156,7 @@ b = ba - bm
 B∞ = model.background_fields.tracers.b
 pr = model.pressures.pHY′
 wmpm = Field(@at (Center, Center, Center) Average(wa*pr, dims=1))
-wp = wa*pr-wmpm
+wp = wa*pr - wmpm
 
 U = u + ub
 V = v + vb #+ V∞
@@ -166,11 +166,11 @@ dbdz = Field(@at (Center, Center, Center) ∂z(b)) #stratification pertubation c
 dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞)) # stratification total calculation
 PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
 # KE = KineticEnergy(model) # total kinetic energy calculation
-E = KineticEnergyDissipationRate(model; U = u, V = v, W = w, location=(Center,Center,Center)) # kinetic energy dissaption calcualtion
-k = 0.5*(u^2+v^2+w^2) # pertubation kinetic energy
-ka = 0.5*(ua^2+va^2+wa^2)
+E = KineticEnergyDissipationRate(model; U = u, V = v, W = w) # kinetic energy dissaption calcualtion
+k = 0.5*(u^2 + v^2 + w^2) # pertubation kinetic energy
+ka = 0.5*(ua^2 + va^2 + wa^2)
 wmkm = Field(@at (Center, Center, Center) Average(wa*ka, dims=1))
-wk = wa*ka-wmkm
+wk = wa*ka - wmkm
 # uh = u - θ*w
 # wh = w + θ*u
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
