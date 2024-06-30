@@ -155,9 +155,9 @@ bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = ba - bm
 B∞ = model.background_fields.tracers.b
 prx, pry, prz = model.pressures.pHY′
-wapr = wa*pr
+wapr = wa*prz
 wmpm = Field(@at (Center, Center, Center) Average(wapr, dims=1))
-wp = wa*pr - wmpm
+wp = wa*prz - wmpm
 
 U = u + ub
 V = v + vb #+ V∞
