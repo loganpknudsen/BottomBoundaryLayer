@@ -154,8 +154,8 @@ ba = model.tracers.b
 bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = ba - bm
 B∞ = model.background_fields.tracers.b
-prx, pry, prz = model.pressures.pHY′
-wapr = wa*prz
+pr = model.pressures.pHY′
+wapr = wa*pr
 wmpm = Field(@at (Center, Center, Center) Average(wapr, dims=1))
 wp = wa*prz - wmpm
 
@@ -170,9 +170,9 @@ PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity c
 E = KineticEnergyDissipationRate(model; U = u, V = v, W = w) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2 + v^2 + w^2) # pertubation kinetic energy
 ka = 0.5*(ua^2 + va^2 + wa^2)
-waka = wa*ka
-wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
-wk = wa*ka - wmkm
+# waka = wa*ka
+# wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
+# wk = wa*ka - wmkm
 # uh = u - θ*w
 # wh = w + θ*u
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
@@ -188,7 +188,7 @@ BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
 dpwdz = Field(@at (Center, Center, Center) ∂z(wp))
 dkwdz = Field(@at (Center, Center, Center) ∂z(wk))
-PWORK= -1*dpwdz # work due to pressure
+# PWORK= -1*dpwdz # work due to pressure
 KTRANS = -1*dkwdz
 dk2dz2 = Field(@at (Center, Center, Center) ∂z(∂z(k)))
 KDISS = ν*dk2dz2
@@ -197,7 +197,7 @@ KDISS = ν*dk2dz2
 
 
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
-output2 = (; E, AGSP, GSP, BFLUX, PWORK, k, KTRANS, KDISS)
+output2 = (; E, AGSP, GSP, BFLUX, k, KTRANS, KDISS) #PWORK,
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
