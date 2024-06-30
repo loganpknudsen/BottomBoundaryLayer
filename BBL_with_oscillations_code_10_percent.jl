@@ -155,7 +155,8 @@ bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = ba - bm
 B∞ = model.background_fields.tracers.b
 pr = model.pressures.pHY′
-wmpm = Field(@at (Center, Center, Center) Average(wa*pr, dims=1))
+wapr = wa*pr
+wmpm = Field(@at (Center, Center, Center) Average(wapr, dims=1))
 wp = wa*pr - wmpm
 
 U = u + ub
@@ -166,15 +167,16 @@ dbdz = Field(@at (Center, Center, Center) ∂z(b)) #stratification pertubation c
 dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞)) # stratification total calculation
 PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
 # KE = KineticEnergy(model) # total kinetic energy calculation
-E = KineticEnergyDissipationRate(model) # kinetic energy dissaption calcualtion
+E = KineticEnergyDissipationRate(model; U = u, V = v, W = w) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2 + v^2 + w^2) # pertubation kinetic energy
 ka = 0.5*(ua^2 + va^2 + wa^2)
-wmkm = Field(@at (Center, Center, Center) Average(wa*ka, dims=1))
+waka = wa*ka
+wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
 wk = wa*ka - wmkm
 # uh = u - θ*w
 # wh = w + θ*u
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
-# vz = Field(@at (Center, Center, Center) ∂z(v)) 
+# vz = Field(@at (Center, Center, Center)ß ∂z(v)) 
 # wz = Field(@at (Center, Center, Center) ∂z(w))
 AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)) # AGSP contribution 
 AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))
