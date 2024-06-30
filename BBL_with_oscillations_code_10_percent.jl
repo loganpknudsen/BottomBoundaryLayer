@@ -166,7 +166,7 @@ dbdz = Field(@at (Center, Center, Center) ∂z(b)) #stratification pertubation c
 dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞)) # stratification total calculation
 PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
 # KE = KineticEnergy(model) # total kinetic energy calculation
-E = KineticEnergyDissipationRate(model; U = u, V = v, W = w) # kinetic energy dissaption calcualtion
+E = KineticEnergyDissipationRate(model) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2 + v^2 + w^2) # pertubation kinetic energy
 ka = 0.5*(ua^2 + va^2 + wa^2)
 wmkm = Field(@at (Center, Center, Center) Average(wa*ka, dims=1))
