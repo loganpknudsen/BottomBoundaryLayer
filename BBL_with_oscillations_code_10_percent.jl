@@ -6,7 +6,7 @@ using Oceananigans.Units
 using Random
 using Printf
 using ArgParse
-using CUDA: has_cuda_gpu
+using CUDA.jl: has_cuda_gpu
 using Oceanostics
 
 function parse_commandline()
