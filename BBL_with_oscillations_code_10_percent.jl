@@ -155,9 +155,9 @@ bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = ba - bm
 B∞ = model.background_fields.tracers.b
 pr = model.pressures.pHY′
-wapr = wa*pr
-wmpm = Field(@at (Center, Center, Center) Average(wapr, dims=1))
-wp = wa*prz - wmpm
+# wapr = wa*pr
+# wmpm = Field(@at (Center, Center, Center) Average(wapr, dims=1))
+# wp = wa*prz - wmpm
 
 U = u + ub
 V = v + vb #+ V∞
@@ -170,9 +170,9 @@ PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity c
 E = KineticEnergyDissipationRate(model; U = u, V = v, W = w) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2 + v^2 + w^2) # pertubation kinetic energy
 ka = 0.5*(ua^2 + va^2 + wa^2)
-# waka = wa*ka
-# wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
-# wk = wa*ka - wmkm
+waka = wa*ka
+wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
+wk = wa*ka - wmkm
 # uh = u - θ*w
 # wh = w + θ*u
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
@@ -186,7 +186,7 @@ GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
 BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
-dpwdz = Field(@at (Center, Center, Center) ∂z(wp))
+# dpwdz = Field(@at (Center, Center, Center) ∂z(wp))
 dkwdz = Field(@at (Center, Center, Center) ∂z(wk))
 # PWORK= -1*dpwdz # work due to pressure
 KTRANS = -1*dkwdz

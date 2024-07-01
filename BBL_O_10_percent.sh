@@ -7,8 +7,8 @@
 #PBS -l select=1:ncpus=1:ngpus=1
 ### Run Time
 #PBS -l walltime=20:00:00
-### To the casper queue
-#PBS -q casper
+### To the derecho queue
+#PBS -q derecho
 ### output
 #PBS -o BBL_O_10.out
 ### error
