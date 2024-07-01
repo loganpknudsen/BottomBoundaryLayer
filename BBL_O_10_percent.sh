@@ -8,7 +8,7 @@
 ### Run Time
 #PBS -l walltime=20:00:00
 ### To the derecho queue
-#PBS -q derecho
+#PBS -q main
 ### output
 #PBS -o BBL_O_10.out
 ### error
