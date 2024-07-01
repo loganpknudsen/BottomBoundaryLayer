@@ -7,14 +7,14 @@
 #PBS -l select=1:ncpus=1:ngpus=1
 ### Run Time
 #PBS -l walltime=20:00:00
-### To the derecho queue
-#PBS -q main
+### To the casper queue
+#PBS -q casper
 ### output
 #PBS -o BBL_O_10.out
 ### error
 #PBS -j oe
 ### type of GPU
-###PBS -l gpu_type=a100
+#PBS -l gpu_type=v100
 ### email 
 #PBS -M knudsen@umd.edu
 #PBS -m abe
