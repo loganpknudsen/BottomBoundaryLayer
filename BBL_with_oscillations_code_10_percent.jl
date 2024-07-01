@@ -170,7 +170,7 @@ PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity c
 E = KineticEnergyDissipationRate(model; U = u, V = v, W = w) # kinetic energy dissaption calcualtion
 k = 0.5*(u^2 + v^2 + w^2) # pertubation kinetic energy
 ka = 0.5*(ua^2 + va^2 + wa^2)
-# waka = wa*ka
+waka = wa*ka
 # wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
 # wk = wa*ka - wmkm
 # uh = u - θ*w
