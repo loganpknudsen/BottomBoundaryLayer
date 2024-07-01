@@ -189,7 +189,7 @@ BFLUX = (w+u*θ)*b # flux from buoyancy
 dpwdz = Field(@at (Center, Center, Center) ∂z(wp))
 # dkwdz = Field(@at (Center, Center, Center) ∂z(wk))
 PWORK= -1*dpwdz # work due to pressure
-KTRANS = -1*dkwdz
+# KTRANS = -1*dkwdz
 dk2dz2 = Field(@at (Center, Center, Center) ∂z(∂z(k)))
 KDISS = ν*dk2dz2
 # Ri = RichardsonNumber(model, add_background=true)
