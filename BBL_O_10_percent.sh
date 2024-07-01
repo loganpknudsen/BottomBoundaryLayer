@@ -14,7 +14,7 @@
 ### error
 #PBS -j oe
 ### type of GPU
-###PBS -l gpu_type=v100
+#PBS -l gpu_type=a100
 ### email 
 #PBS -M knudsen@umd.edu
 #PBS -m abe
