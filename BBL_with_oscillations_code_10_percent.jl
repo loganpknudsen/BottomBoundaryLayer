@@ -172,7 +172,7 @@ k = 0.5*(u^2 + v^2 + w^2) # pertubation kinetic energy
 ka = 0.5*(ua^2 + va^2 + wa^2)
 waka = wa*ka
 wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
-# wk = wa*ka - wmkm
+wk = wa*ka - wmkm
 # uh = u - θ*w
 # wh = w + θ*u
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
