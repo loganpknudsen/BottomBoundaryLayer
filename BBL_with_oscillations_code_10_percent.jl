@@ -197,7 +197,7 @@ KDISS = ν*dk2dz2
 
 
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
-output2 = (; E, AGSP, GSP, BFLUX, k, PWORK, KDISS) #
+output2 = (; E, AGSP, GSP, BFLUX, k, PWORK, KDISS, KTRANS) #
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
