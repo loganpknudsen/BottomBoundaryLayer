@@ -197,7 +197,8 @@ KDISS = ν*dk2dz2
 
 
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
-output2 = (; E, AGSP, GSP, BFLUX, k, PWORK, KDISS) #
+output2 = (; E, AGSP, GSP, BFLUX, k, PWORK) #
+output3 = (;KTRANS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
@@ -207,6 +208,11 @@ simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
                                                           filename = path_name*"BBL_w_O_updated_diagnostics_extra_TKE_terms_correct.nc",
+                                                          overwrite_existing = true)
+
+simulation.output_writers[:ktransport] = NetCDFOutputWriter(model, output3;
+                                                          schedule = TimeInterval(0.005*(2*pi)/f),
+                                                          filename = path_name*"KTRANS.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
