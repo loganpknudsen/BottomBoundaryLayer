@@ -178,10 +178,16 @@ wk = wa*ka - wmkm
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
 # vz = Field(@at (Center, Center, Center)ß ∂z(v)) 
 # wz = Field(@at (Center, Center, Center) ∂z(w))
-AGSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)) # AGSP contribution 
-AGSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))
-# AGSPw = -(wh*wh)*wz #+θ*(wh*wh)*(u_pert(0,0,simulation.model.clock.time,p))
-AGSP = AGSPu + AGSPv# + AGSPw
+dumdz = Field(@at (Center, Center, Center) ∂z(um))
+dvmdz = Field(@at (Center, Center, Center) ∂z(vm))
+dwmdz = Field(@at (Center, Center, Center) ∂z(wm))
+WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)) # AGSP contribution 
+WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))
+AGSPu = -1*(u*w)*(dumdz) # AGSP contribution 
+AGSPv = -1*(v*w)*(dvmdz)
+AGSPw = -1*(w*w)*(dwmdz) #+θ*(wh*wh)*(u_pert(0,0,simulation.model.clock.time,p))
+WSP = WSPu + WSPv# + AGSPw
+AGSP = AGSPu + AGSPv + AGSPw
 GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
 BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
@@ -197,7 +203,7 @@ KDISS = ν*dk2dz2
 
 
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
-output2 = (; E, AGSP, GSP, BFLUX, k, PWORK) #
+output2 = (; E, AGSP, GSP, BFLUX, k, WSP, PWORK) #
 # output3 = (;KTRANS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
