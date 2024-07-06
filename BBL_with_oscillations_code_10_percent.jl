@@ -154,10 +154,10 @@ ba = model.tracers.b
 bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = ba - bm
 B∞ = model.background_fields.tracers.b
-pr = model.pressures.pHY′
-wapr = wa*pr
-wmpm = Field(@at (Center, Center, Center) Average(wapr, dims=1))
-wp = wa*pr - wmpm
+# pr = model.pressures.pHY′
+# wapr = wa*pr
+# wmpm = Field(@at (Center, Center, Center) Average(wapr, dims=1))
+# wp = wa*pr - wmpm
 
 U = u + ub
 V = v + vb #+ V∞
@@ -168,42 +168,46 @@ dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞)) # stratification total c
 PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
 # KE = KineticEnergy(model) # total kinetic energy calculation
 E = KineticEnergyDissipationRate(model; U = u, V = v, W = w) # kinetic energy dissaption calcualtion
-k = 0.5*(u^2 + v^2 + w^2) # pertubation kinetic energy
 ka = 0.5*(ua^2 + va^2 + wa^2)
-waka = wa*ka
-wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
-wk = wa*ka - wmkm
+km= Field(@at (Center, Center, Center) Average(ka, dims=1))
+k = ka - km
+# waka = wa*ka
+# wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
+# wk = wa*ka - wmkm
 # uh = u - θ*w
 # wh = w + θ*u
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
 # vz = Field(@at (Center, Center, Center)ß ∂z(v)) 
 # wz = Field(@at (Center, Center, Center) ∂z(w))
-dumdz = Field(@at (Center, Center, Center) ∂z(um))
-dvmdz = Field(@at (Center, Center, Center) ∂z(vm))
-dwmdz = Field(@at (Center, Center, Center) ∂z(wm))
-WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)) # AGSP contribution 
-WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))
-AGSPu = -1*(u*w)*(dumdz) # AGSP contribution 
-AGSPv = -1*(v*w)*(dvmdz)
-AGSPw = -1*(w*w)*(dwmdz) #+θ*(wh*wh)*(u_pert(0,0,simulation.model.clock.time,p))
+upx = Field(@at (Center, Center, Center) Average(u, dims=1))
+vpx = Field(@at (Center, Center, Center) Average(v, dims=1))
+wpx = Field(@at (Center, Center, Center) Average(u, dims=1))
+dudz = Field(@at (Center, Center, Center) ∂z(upx))
+dvdz = Field(@at (Center, Center, Center) ∂z(vpx))
+dwdz = Field(@at (Center, Center, Center) ∂z(wpx))
+WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))*heaviside(p.hu-simulation.model.grid.zC)  # AGSP contribution 
+WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))*heaviside(p.hu-simulation.model.grid.zC)
+AGSPu = -1*(u*w)*(dudz) # AGSP contribution 
+AGSPv = -1*(v*w)*(dvdz)
+AGSPw = -1*(w*w)*(dwdz) #+θ*(wh*wh)*(u_pert(0,0,simulation.model.clock.time,p))
 WSP = WSPu + WSPv# + AGSPw
 AGSP = AGSPu + AGSPv + AGSPw
-GSP = -1*(v*w)*γ*(θ * N²)/(f) # geostrophic shear production
+GSP = -1*(v*w)*(γ*(θ * N²)/(f))*heaviside(p.hu-simulation.model.grid.zC) # geostrophic shear production
 BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
-dpwdz = Field(@at (Center, Center, Center) ∂z(wp))
-dkwdz = Field(@at (Center, Center, Center) ∂z(wk))
-PWORK= -1*dpwdz # work due to pressure
-KTRANS = -1*dkwdz
-dk2dz2 = Field(@at (Center, Center, Center) ∂z(∂z(k)))
-KDISS = ν*dk2dz2
+# dpwdz = Field(@at (Center, Center, Center) ∂z(wp))
+# dkwdz = Field(@at (Center, Center, Center) ∂z(wk))
+# PWORK= -1*dpwdz # work due to pressure
+# KTRANS = -1*dkwdz
+# dk2dz2 = Field(@at (Center, Center, Center) ∂z(∂z(k)))
+# KDISS = ν*dk2dz2
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
 
 
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
-output2 = (; E, AGSP, GSP, BFLUX, k, WSP, PWORK) #
+output2 = (; E, AGSP, GSP, BFLUX, k, WSP) #
 # output3 = (;KTRANS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
