@@ -185,14 +185,15 @@ wpx = Field(@at (Center, Center, Center) Average(u, dims=1))
 dudz = Field(@at (Center, Center, Center) ∂z(upx))
 dvdz = Field(@at (Center, Center, Center) ∂z(vpx))
 dwdz = Field(@at (Center, Center, Center) ∂z(wpx))
-WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))*heaviside(p.hu-simulation.model.grid.zC)  # AGSP contribution 
-WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))*heaviside(p.hu-simulation.model.grid.zC)
+zC = znodes(grid, Center())
+WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))*heaviside(p.hu-zC)  # AGSP contribution 
+WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))*heaviside(p.hu-zC)
 AGSPu = -1*(u*w)*(dudz) # AGSP contribution 
 AGSPv = -1*(v*w)*(dvdz)
 AGSPw = -1*(w*w)*(dwdz) #+θ*(wh*wh)*(u_pert(0,0,simulation.model.clock.time,p))
 WSP = WSPu + WSPv# + AGSPw
 AGSP = AGSPu + AGSPv + AGSPw
-GSP = -1*(v*w)*(γ*(θ * N²)/(f))*heaviside(p.hu-simulation.model.grid.zC) # geostrophic shear production
+GSP = -1*(v*w)*(γ*(θ * N²)/(f))*heaviside(p.hu-zC) # geostrophic shear production
 BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
@@ -212,12 +213,12 @@ output2 = (; E, AGSP, GSP, BFLUX, k, WSP) #
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_updated_diagnostics_extra_flow_terms_correct.nc",
+                                                          filename = path_name*"BBL_w_O_updated_diagnostics_extra_flow_terms.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_updated_diagnostics_extra_TKE_terms_correct.nc",
+                                                          filename = path_name*"BBL_w_O_updated_diagnostics_extra_TKE_terms.nc",
                                                           overwrite_existing = true)
 
 # simulation.output_writers[:ktransport] = NetCDFOutputWriter(model, output3;
