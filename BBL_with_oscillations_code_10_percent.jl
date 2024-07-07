@@ -8,6 +8,7 @@ using Printf
 using ArgParse
 using CUDA: has_cuda_gpu
 using Oceanostics
+using TransmuteDims
 
 function parse_commandline()
     s = ArgParseSettings()
@@ -186,7 +187,8 @@ dudz = Field(@at (Center, Center, Center) ∂z(upx))
 dvdz = Field(@at (Center, Center, Center) ∂z(vpx))
 dwdz = Field(@at (Center, Center, Center) ∂z(wpx))
 zC = znodes(grid, Center())
-const hv = permutedims(repeat(heaviside(hu.*ones(100,)-zC),1,1,500),[3,2,1])
+@inline builder(z,h) = transmute(repeat(heaviside(h.*ones(100,)-z),1,1,500),[3,2,1])
+const hv = builder(zC,hu)
 WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)).*hv  # AGSP contribution 
 WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p)).*hv
 AGSPu = -1*(u*w)*(dudz) # AGSP contribution 
