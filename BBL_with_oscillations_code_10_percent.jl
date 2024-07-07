@@ -8,6 +8,7 @@ using Printf
 using ArgParse
 using CUDA: has_cuda_gpu
 using Oceanostics
+CUDA.allowscalar(true)
 # using TransmuteDims
 
 function parse_commandline()
@@ -127,7 +128,7 @@ w₀(x, z) = ns*Random.randn()
 
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 25*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 0.01*(2*pi)/f)
 
 
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
