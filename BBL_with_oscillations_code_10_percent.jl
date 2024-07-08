@@ -141,11 +141,10 @@ progress_message(sim) =
 simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(10000) ) # TimeInterval(0.5*(2*pi)/f) 
 
 # and add an output writer that saves the vertical velocity field every two iterations:
-@inline function bottom_mask(x,z)
-  return heaviside(hu-z)
-end
+@inline bottom_mask(x,z)= heaviside(hu-z)
+
 full_mask(x,z) = bottom_mask(x,z)
-umask = Oceananigans.Fields.FunctionField{Face,Center,Center}(full_mask,model.grid)
+umask = Oceananigans.Fields.FunctionField{Center,Center,Center}(full_mask,model.grid)
 vmask = Oceananigans.Fields.FunctionField{Center,Face,Center}(full_mask,model.grid)
 ua, va, wa = model.velocities
 um = Field(@at (Center, Center, Center) Average(ua, dims=1))
