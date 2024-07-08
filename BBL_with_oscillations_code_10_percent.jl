@@ -143,22 +143,24 @@ progress_message(sim) =
 simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(10000) ) # TimeInterval(0.5*(2*pi)/f) 
 
 # and add an output writer that saves the vertical velocity field every two iterations:
-
-ua = model.velocities.u.data
-va = model.velocities.v.data
-wa = model.velocities.w.data
+@inline function bottom_mask(x,z)
+  return heaviside(hu-z)
+end
+full_mask(x,z) = bottom_mask(x,z)
+mask = Oceananigans.Fields.FunctionField{Center,Center,Center}(full_mask,model.grid)
+ua, va, wa = model.velocities
 um = Field(@at (Center, Center, Center) Average(ua, dims=1))
 vm = Field(@at (Center, Center, Center) Average(va, dims=1))
 wm = Field(@at (Center, Center, Center) Average(wa, dims=1))
 u = ua - um
 v = va - vm
 w = wa - wm
-ub = model.background_fields.velocities.u.data
-vb = model.background_fields.velocities.v.data
-ba = model.tracers.b.data
+ub = model.background_fields.velocities.u
+vb = model.background_fields.velocities.v
+ba = model.tracers.b
 bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = ba - bm
-B∞ = model.background_fields.tracers.b.data
+B∞ = model.background_fields.tracers.b
 # pr = model.pressures.pHY′
 # wapr = wa*pr
 # wmpm = Field(@at (Center, Center, Center) Average(wapr, dims=1))
@@ -193,14 +195,14 @@ dwdz = Field(@at (Center, Center, Center) ∂z(wpx))
 zC = znodes(grid, Center())
 @inline builder(z,h) = permutedims(heaviside(h.*ones(100,)-z).*ones(100,1,500),(3,2,1))
 const hv = builder(zC,hu)
-WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p)).*hv  # AGSP contribution 
-WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p)).*hv
+WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))*mask #.*hv  # AGSP contribution 
+WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))*mask #.*hv
 AGSPu = -1*(u*w)*(dudz) # AGSP contribution 
 AGSPv = -1*(v*w)*(dvdz)
 AGSPw = -1*(w*w)*(dwdz) #+θ*(wh*wh)*(u_pert(0,0,simulation.model.clock.time,p))
 WSP = WSPu + WSPv# + AGSPw
 AGSP = AGSPu + AGSPv + AGSPw
-GSP = -1*(v*w)*(γ*(θ * N²)/(f)).*hv # geostrophic shear production
+GSP = -1*(v*w)*(γ*(θ * N²)/(f))*mask#.*hv # geostrophic shear production
 BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
