@@ -8,13 +8,13 @@
 ### Run Time
 #PBS -l walltime=20:00:00
 ### To the casper queue
-#PBS -q casper
+#PBS -q main
 ### output
 #PBS -o BBL_O_10.out
 ### error
 #PBS -j oe
 ### type of GPU
-#PBS -l gpu_type=v100
+#PBS -l gpu_type=a100
 ### email 
 #PBS -M knudsen@umd.edu
 #PBS -m abe
