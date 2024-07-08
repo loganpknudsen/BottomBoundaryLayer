@@ -7,7 +7,7 @@ using Random
 using Printf
 using ArgParse
 using CUDA: has_cuda_gpu
-using CUDA
+using CUDA 
 using Oceanostics
 # CUDA.allowscalar(true)
 # using TransmuteDims
@@ -167,7 +167,7 @@ B∞ = model.background_fields.tracers.b
 # wp = wa*pr - wmpm
 
 U = u + ub
-V = v + vb #+ V∞
+V = v + vb
 B = b + B∞
 
 dbdz = Field(@at (Center, Center, Center) ∂z(b)) #stratification pertubation calculation
