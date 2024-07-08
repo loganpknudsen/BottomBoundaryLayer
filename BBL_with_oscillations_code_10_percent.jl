@@ -145,7 +145,7 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
   return heaviside(hu-z)
 end
 full_mask(x,z) = bottom_mask(x,z)
-umask = Oceananigans.Fields.FunctionField{Center,Center,Center}(full_mask,model.grid)
+umask = Oceananigans.Fields.FunctionField{Face,Center,Center}(full_mask,model.grid)
 vmask = Oceananigans.Fields.FunctionField{Center,Face,Center}(full_mask,model.grid)
 ua, va, wa = model.velocities
 um = Field(@at (Center, Center, Center) Average(ua, dims=1))
