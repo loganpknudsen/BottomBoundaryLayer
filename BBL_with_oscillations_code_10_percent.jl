@@ -81,7 +81,7 @@ p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
 
 # @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
 
-@inline heaviside(x) = ifelse.(x .< 0, zero.(x), one.(x))
+@inline heaviside(x) = ifelse(x < 0, zero(x), one(x))
 
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
