@@ -7,7 +7,7 @@ using Random
 using Printf
 using ArgParse
 using CUDA: has_cuda_gpu
-using CUDA
+using CUDA.jl
 using Oceanostics
 # CUDA.allowscalar(true)
 # using TransmuteDims
@@ -192,9 +192,9 @@ wpx = Field(@at (Center, Center, Center) Average(u, dims=1))
 dudz = Field(@at (Center, Center, Center) ∂z(upx))
 dvdz = Field(@at (Center, Center, Center) ∂z(vpx))
 dwdz = Field(@at (Center, Center, Center) ∂z(wpx))
-zC = znodes(grid, Center())
-@inline builder(z,h) = permutedims(heaviside(h.*ones(100,)-z).*ones(100,1,500),(3,2,1))
-const hv = builder(zC,hu)
+# zC = znodes(grid, Center())
+# @inline builder(z,h) = permutedims(heaviside(h.*ones(100,)-z).*ones(100,1,500),(3,2,1))
+# const hv = builder(zC,hu)
 WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))*mask #.*hv  # AGSP contribution 
 WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))*mask #.*hv
 AGSPu = -1*(u*w)*(dudz) # AGSP contribution 
