@@ -9,7 +9,7 @@ using ArgParse
 using CUDA: has_cuda_gpu
 using CUDA
 using Oceanostics
-CUDA.allowscalar(true)
+# CUDA.allowscalar(true)
 # using TransmuteDims
 
 function parse_commandline()
