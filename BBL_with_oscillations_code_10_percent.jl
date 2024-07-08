@@ -7,7 +7,7 @@ using Random
 using Printf
 using ArgParse
 using CUDA: has_cuda_gpu
-using CUDA.jl
+using CUDA.jl#master
 using Oceanostics
 # CUDA.allowscalar(true)
 # using TransmuteDims
