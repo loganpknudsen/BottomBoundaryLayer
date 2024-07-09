@@ -1,3 +1,4 @@
+### Load in Packages
 using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 using Oceananigans.AbstractOperations: @at, Average
@@ -10,6 +11,7 @@ using CUDA: has_cuda_gpu
 using CUDA 
 using Oceanostics
 
+# Path file is saved under
 function parse_commandline()
     s = ArgParseSettings()
     @add_arg_table s begin
@@ -29,7 +31,6 @@ end
 
 path_name = args["path"]
 
-# made grid correct shape, need to modify z boundaries to make sure they are no slip
 
 # grid specifications
 arch = has_cuda_gpu() ? GPU() : CPU()
@@ -38,7 +39,7 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 Lx = 2000meters
 Lz = 200meters
 Nx = 500
-Nz = 100 # Two to one ratio similar to previous would be Nx = 500 Nz = 100
+Nz = 100 # Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -48,41 +49,39 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 # tilted domain parameters
 θ = 10^(-2) # degrees 
-# ĝ = [θ, 0, 1] # gravity vector small angle
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
-# realustic mid latitude for now
+# realistic mid latitude for now
 buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
-# parameters
-const V∞ = 0.1 # m s⁻¹
-const f = coriolis.fz
+# parameters for simulation
+const V∞ = 0.1 # m s⁻¹ interior velocity
+const f = coriolis.fz # coriolis parameter
 const N² = 1e-5 # interior stratification
-#ϕ = 0
-const S∞ = (N²*θ^2)/(f^2)
-const γ = (1+S∞)^(-1) #(θ^2+1)*(1+S∞*(θ^2+1))^(-1)
-const hu = ceil((f*V∞)/(γ*N²*θ)) # set to negative
-const fˢ=(f^2+θ^2*N²)^(0.5)
-const uₒ = 0#γ*(N²*θ)/(f)*cos(ϕ)
-const vₒ = γ*(N²*θ)/(f)*0.5#*sin(ϕ)
-const bₒ = vₒ*((θ*N²)/(f))*0.1 # initial stratification
-const a1 = (f*vₒ+bₒ*θ)/(fˢ)
+const S∞ = (N²*θ^2)/(f^2) # sloep burger number
+const γ = (1+S∞)^(-1) # 0 PV parameter
+const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
+const fˢ=(f^2+θ^2*N²)^(0.5) # modified oscillation
+const uₒ = 0 # Initial u shear perturbation
+const vₒ = γ*(N²*θ)/(f)*0.5 # Initial v shear perturbation
+const bₒ = vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
+const a1 = (f*vₒ+bₒ*θ)/(fˢ) # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
 const c1 = (f*uₒ)/(fˢ)
 const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
 const e1 = N²*θ*(f*vₒ+bₒ*θ)/(fˢ)^2
 const h1 = (N²*θ*uₒ)/(fˢ)
 
-
+# array of paramerers for background function
 p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
 
 # background flow with geostrophic and ageostrophic shear 
 
-# @inline interval(x,a,b) = ifelse(a<=x<=b, one(x), zero(x))
-
+# heaviside function for boundary layer
 @inline heaviside(x) = ifelse(x < 0, zero(x), one(x))
 
+# oscillation functions for background
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
@@ -105,12 +104,13 @@ b_bc_top= GradientBoundaryCondition(N²)
 # b_bc_bottom= GradientBoundaryCondition(N²*(1-γ))
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
-# boundary_conditions=(;b=buoyancy_grad),
+# diffusitivity and viscosity values for closure
 ν = 1e-4
 closure = ScalarDiffusivity(ν=ν, κ=1e-4)
 
 start_time = time_ns()
 
+# model set up 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
                             advection = WENO(),
@@ -120,19 +120,22 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
 
 ns = 10^(-4) # standard deviation for noise
 
+# initial conditions to start instability
 u₀(x, z) = ns*Random.randn()
 v₀(x, z) = ns*Random.randn()
 w₀(x, z) = ns*Random.randn()
 # bₒ(x,y,z) = 0.005*Random.randn()
 
+# set simulation and decide run time
 set!(model, u=u₀, v=v₀, w=w₀)
 
 simulation = Simulation(model, Δt = 1, stop_time = 0.01*(2*pi)/f)
 
-
+# time step wizard
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
+# progress message to check time step size
 progress_message(sim) =
         @printf("i: %04d, t: %s, Δt: %s, wall time: %s\n",
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
@@ -140,11 +143,12 @@ progress_message(sim) =
 
 simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(10000) ) # TimeInterval(0.5*(2*pi)/f) 
 
-# and add an output writer that saves the vertical velocity field every two iterations:
-@inline bottom_mask(x,z)= heaviside(hu-z)
+# diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
+@inline bottom_mask(x,z)= heaviside(hu-z) # mask functions to contrict to boundary layer
 full_mask(x,z) = bottom_mask(x,z)
-# umask = Oceananigans.Fields.FunctionField{Center,Center,Center}(full_mask,model.grid)
-# vmask = Oceananigans.Fields.FunctionField{Center,Face,Center}(full_mask,model.grid)
+umask = Oceananigans.Fields.FunctionField{Center,Center,Center}(full_mask,model.grid)
+vmask = Oceananigans.Fields.FunctionField{Center,Face,Center}(full_mask,model.grid)
+# calculate the pertubation in velocity
 ua, va, wa = model.velocities
 um = Field(@at (Center, Center, Center) Average(ua, dims=1))
 vm = Field(@at (Center, Center, Center) Average(va, dims=1))
@@ -152,6 +156,7 @@ wm = Field(@at (Center, Center, Center) Average(wa, dims=1))
 u = ua - um
 v = va - vm
 w = wa - wm
+# background fields
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 ba = model.tracers.b
@@ -174,7 +179,7 @@ PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity c
 E = KineticEnergyDissipationRate(model; U = u, V = v, W = w) # kinetic energy dissaption calcualtion
 ka = 0.5*(ua^2 + va^2 + wa^2)
 km= Field(@at (Center, Center, Center) Average(ka, dims=1))
-k = ka - km
+k = ka - km # TKE calculation
 # waka = wa*ka
 # wmkm = Field(@at (Center, Center, Center) Average(waka, dims=1))
 # wk = wa*ka - wmkm
@@ -183,23 +188,26 @@ k = ka - km
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
 # vz = Field(@at (Center, Center, Center)ß ∂z(v)) 
 # wz = Field(@at (Center, Center, Center) ∂z(w))
+### AGSP calculation
 upx = Field(@at (Center, Center, Center) Average(u, dims=1))
 vpx = Field(@at (Center, Center, Center) Average(v, dims=1))
 wpx = Field(@at (Center, Center, Center) Average(u, dims=1))
 dudz = Field(@at (Center, Center, Center) ∂z(upx))
 dvdz = Field(@at (Center, Center, Center) ∂z(vpx))
 dwdz = Field(@at (Center, Center, Center) ∂z(wpx))
+AGSPu = -1*(u*w)*(dudz) # AGSP contribution 
+AGSPv = -1*(v*w)*(dvdz)
+AGSPw = -1*(w*w)*(dwdz) 
+AGSP = AGSPu + AGSPv + AGSPw
 # zC = znodes(grid, Center())
 # @inline builder(z,h) = permutedims(heaviside(h.*ones(100,)-z).*ones(100,1,500),(3,2,1))
 # const hv = builder(zC,hu)
-WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))#*umask #.*hv  # AGSP contribution 
-WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))#*vmask #.*hv
-AGSPu = -1*(u*w)*(dudz) # AGSP contribution 
-AGSPv = -1*(v*w)*(dvdz)
-AGSPw = -1*(w*w)*(dwdz) #+θ*(wh*wh)*(u_pert(0,0,simulation.model.clock.time,p))
+### wave shear production calculation
+WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))*umask # AGSP contribution 
+WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))*vmask 
 WSP = WSPu + WSPv# + AGSPw
-AGSP = AGSPu + AGSPv + AGSPw
-GSP = -1*(v*w)*(γ*(θ * N²)/(f))#*vmask#.*hv # geostrophic shear production
+
+GSP = -1*(v*w)*(γ*(θ * N²)/(f))*vmask # geostrophic shear production
 BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
@@ -212,7 +220,7 @@ BFLUX = (w+u*θ)*b # flux from buoyancy
 # Ri = RichardsonNumber(model, add_background=true)
 # Ro = RossbyNumber(model)
 
-
+# output writers
 output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
 output2 = (; E, AGSP, GSP, BFLUX, k, WSP) #
 # output3 = (;KTRANS)
