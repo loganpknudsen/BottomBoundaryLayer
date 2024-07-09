@@ -48,7 +48,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-θ = 10^(-2) # degrees 
+θ = 5.5*10^(-3) # degrees 
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
@@ -129,7 +129,7 @@ w₀(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 0.01*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 25*(2*pi)/f)
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
@@ -144,10 +144,10 @@ progress_message(sim) =
 simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(10000) ) # TimeInterval(0.5*(2*pi)/f) 
 
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
-@inline bottom_mask(x,z)= heaviside(hu-z) # mask functions to contrict to boundary layer
-full_mask(x,z) = bottom_mask(x,z)
-umask = Oceananigans.Fields.FunctionField{Center,Center,Center}(full_mask,model.grid)
-vmask = Oceananigans.Fields.FunctionField{Center,Face,Center}(full_mask,model.grid)
+# @inline bottom_mask(x,z)= heaviside(hu-z) # mask functions to contrict to boundary layer
+# full_mask(x,z) = bottom_mask(x,z)
+# umask = Oceananigans.Fields.FunctionField{Center,Center,Center}(full_mask,model.grid)
+# vmask = Oceananigans.Fields.FunctionField{Center,Face,Center}(full_mask,model.grid)
 # calculate the pertubation in velocity
 ua, va, wa = model.velocities
 um = Field(@at (Center, Center, Center) Average(ua, dims=1))
@@ -186,7 +186,7 @@ k = ka - km # TKE calculation
 # uh = u - θ*w
 # wh = w + θ*u
 # uz = Field(@at (Center, Center, Center) ∂z(u)) 
-# vz = Field(@at (Center, Center, Center)ß ∂z(v)) 
+# vz = Field(@at (Center, Center, Center) ∂z(v)) 
 # wz = Field(@at (Center, Center, Center) ∂z(w))
 ### AGSP calculation
 upx = Field(@at (Center, Center, Center) Average(u, dims=1))
@@ -203,11 +203,11 @@ AGSP = AGSPu + AGSPv + AGSPw
 # @inline builder(z,h) = permutedims(heaviside(h.*ones(100,)-z).*ones(100,1,500),(3,2,1))
 # const hv = builder(zC,hu)
 ### wave shear production calculation
-WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))*umask # AGSP contribution 
-WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))*vmask 
+WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))#*umask # AGSP contribution 
+WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))#*vmask 
 WSP = WSPu + WSPv# + AGSPw
 
-GSP = -1*(v*w)*(γ*(θ * N²)/(f))*vmask # geostrophic shear production
+GSP = -1*(v*w)*(γ*(θ * N²)/(f))#*vmask # geostrophic shear production
 BFLUX = (w+u*θ)*b # flux from buoyancy
 # dpudx = Field(@at (Center, Center, Center) ∂z(θ*pr*u))
 # dpvdy = Field(@at (Center, Center, Center) ∂y(pr*v))
