@@ -172,8 +172,8 @@ U = u + ub
 V = v + vb
 B = b + B∞
 
-dbdz = Field(@at (Center, Center, Center) ∂z(b)) #stratification pertubation calculation
-dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞)) # stratification total calculation
+# dbdz = Field(@at (Center, Center, Center) ∂z(b)) #stratification pertubation calculation
+# dBdz = Field(@at (Center, Center, Center) ∂z(b+B∞)) # stratification total calculation
 PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
 # KE = KineticEnergy(model) # total kinetic energy calculation
 E = KineticEnergyDissipationRate(model; U = u, V = v, W = w) # kinetic energy dissaption calcualtion
@@ -221,18 +221,18 @@ BFLUX = (w+u*θ)*b # flux from buoyancy
 # Ro = RossbyNumber(model)
 
 # output writers
-output = (; u, U, v, V, w, b, B, PV, dbdz, dBdz) # , ε , Ri, Ro
+output = (; u, U, v, V, w, b, B, PV) # , dbdz, dBdz, ε , Ri, Ro
 output2 = (; E, AGSP, GSP, BFLUX, k, WSP) #
 # output3 = (;KTRANS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_updated_diagnostics_extra_flow_terms.nc",
+                                                          filename = path_name*"BBL_w_O_diagnostics_flow_terms.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_updated_diagnostics_extra_TKE_terms.nc",
+                                                          filename = path_name*"BBL_w_O_diagnostics_TKE_terms.nc",
                                                           overwrite_existing = true)
 
 # simulation.output_writers[:ktransport] = NetCDFOutputWriter(model, output3;
