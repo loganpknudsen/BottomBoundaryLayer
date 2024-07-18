@@ -1,3 +1,5 @@
+using Pkg
+Pkg.instantiate()
 using Oceananigans
 # using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 # using Oceananigans.AbstractOperations: @at, Average
