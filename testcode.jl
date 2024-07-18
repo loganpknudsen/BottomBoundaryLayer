@@ -1,3 +1,6 @@
+using Pkg
+Pkg.rm("Oceananigans")
+Pkg.add("Oceananigans")
 using Oceananigans
 # using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 # using Oceananigans.AbstractOperations: @at, Average
