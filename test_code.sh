@@ -24,7 +24,7 @@ module --force purge
 module load ncarenv/23.10 gcc/12.2.0
 module load ncarcompilers/1.0.0
 module load netcdf/4.9.2 openmpi/4.1.6 
-module load julia/1.10.4
+module load julia@v1.10.4
 module load cuda/11.8.0
 
 ### file to run
