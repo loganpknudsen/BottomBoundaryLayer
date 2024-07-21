@@ -7,6 +7,7 @@
 # using Printf
 # using ArgParse
 # using CUDA: has_cuda_gpu
+versioninfo()
 using CUDA 
 # using Oceanostics
 
