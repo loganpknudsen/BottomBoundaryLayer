@@ -1,4 +1,4 @@
-using Oceananigans
+# using Oceananigans
 # using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 # using Oceananigans.AbstractOperations: @at, Average
 # using Oceananigans.Grids: Center, Face
@@ -7,6 +7,6 @@ using Oceananigans
 # using Printf
 # using ArgParse
 # using CUDA: has_cuda_gpu
-# using CUDA 
+using CUDA 
 # using Oceanostics
 
