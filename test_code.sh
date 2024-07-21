@@ -24,10 +24,10 @@ module --force purge
 module load ncarenv/23.10 gcc/12.2.0
 module load ncarcompilers/1.0.0
 module load netcdf/4.9.2 openmpi/4.1.6 
-module --ignore_cache load julia/1.10.4
+module load julia/1.10.4
 module load cuda/11.8.0
 
 ### file to run
-julia --project testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
+julia --project="/glade/u/home/knudsenl/.juliaup/bin/julia" testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
 
 
