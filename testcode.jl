@@ -1,5 +1,6 @@
 using Pkg
 Pkg.activate(".")
+Pkg.include("YgJCI/.pkg")
 Pkg.add("CUDA")
 Pkg.add("Oceananigans")
 Pkg.add("Oceanostics")
