@@ -1,4 +1,5 @@
 using Pkg
+Pkg.activate(".")
 Pkg.add("CUDA")
 Pkg.add("Oceananigans")
 Pkg.add("Oceanostics")
