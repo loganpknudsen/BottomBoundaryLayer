@@ -28,6 +28,6 @@ module load julia/1.10
 module load cuda/11.8.0
 
 ### file to run
-julia --project="/glade/derecho/scratch/knudsenl/BottomBoundaryLayer/.juliaup/bin" testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
+julia --project testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
 
 
