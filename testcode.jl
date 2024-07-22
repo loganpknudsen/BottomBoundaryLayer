@@ -1,3 +1,10 @@
+using Pkg
+Pkg.add("CUDA")
+Pkg.add("Oceananigans")
+Pkg.add("Oceanostics")
+Pkg.add("Random")
+Pkg.add("Printf")
+Pkg.add("ArgParse")
 # using Oceananigans
 # using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 # using Oceananigans.AbstractOperations: @at, Average
@@ -7,7 +14,7 @@
 # using Printf
 # using ArgParse
 # using CUDA: has_cuda_gpu
-versioninfo()
+# versioninfo()
 using CUDA 
 # using Oceanostics
 
