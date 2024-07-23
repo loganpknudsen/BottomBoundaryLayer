@@ -20,16 +20,12 @@
 #PBS -m abe
 
 ## Clear environent and Load all the modules needed
-### module --force purge
-### module load ncarenv/23.10 gcc/12.2.0
-### module load ncarcompilers/1.0.0
-### module load netcdf/4.9.2 openmpi/4.1.6 
-### module load julia/1.10
-### module load cuda/12.2.1
 module --force purge
-module --ignore-cache load ncarenv/23.10 gcc ncarcompilers netcdf
-module --ignore-cache load cuda
-module --ignore-cache load julia/1.9
+module load ncarenv/23.10 gcc/12.2.0
+module load ncarcompilers/1.0.0
+module load netcdf/4.9.2 openmpi/4.1.6 
+module load julia/1.10
+module load cuda/12.2.1
 
 ### file to run
 julia --project testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
