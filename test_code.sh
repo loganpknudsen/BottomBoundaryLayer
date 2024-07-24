@@ -10,7 +10,7 @@
 ### To the casper queue
 #PBS -q casper
 ### output
-#PBS -o BBL_O_10.out
+#PBS -o testcode.out
 ### error
 #PBS -j oe
 ### type of GPU
@@ -24,10 +24,8 @@ module --force purge
 module load ncarenv/23.10 gcc/12.2.0
 module load ncarcompilers/1.0.0
 module load netcdf/4.9.2 openmpi/4.1.6 
-module load julia/1.9.2
+### module load julia/1.10
 module load cuda/12.2.1
 
 ### file to run
-julia --project BBL_with_oscillations_code_10_percent.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
-
-
+/glade/derecho/scratch/knudsenl/BottomBoundaryLayer/.juliaup/bin/julia --project="/glade/derecho/scratch/knudsenl/BottomBoundaryLayer/" testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
