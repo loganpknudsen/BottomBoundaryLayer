@@ -29,5 +29,3 @@ module load cuda/12.2.1
 
 ### file to run
 /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/.juliaup/bin/julia --project="." testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
-
-
