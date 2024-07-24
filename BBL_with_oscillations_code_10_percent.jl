@@ -225,7 +225,6 @@ BFLUX = (w+u*θ)*b # flux from buoyancy
 # output writers
 output = (; u, U, v, V, w, b, B, PV) # , dbdz, dBdz, ε , Ri, Ro
 output2 = (; E, AGSP, GSP, BFLUX, k, WSP) #
-# output3 = (;KTRANS)
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
@@ -237,10 +236,6 @@ simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           filename = path_name*"BBL_w_O_diagnostics_TKE_terms.nc",
                                                           overwrite_existing = true)
 
-# simulation.output_writers[:ktransport] = NetCDFOutputWriter(model, output3;
-#                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-#                                                           filename = path_name*"KTRANS.nc",
-#                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
 
