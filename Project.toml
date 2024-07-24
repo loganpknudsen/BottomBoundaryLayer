@@ -1,2 +1,8 @@
 [deps]
+ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
+MKL = "33e6dc65-8f57-5167-99aa-e5a354878fb2"
+Oceananigans = "9e8cae18-63c1-5223-a75c-80ca9d6e9a09"
+Oceanostics = "d0ccf422-c8fb-49b5-a76d-74acdde946ac"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
