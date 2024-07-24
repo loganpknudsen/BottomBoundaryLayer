@@ -56,16 +56,6 @@ grid = RectilinearGrid(topology = (Periodic, Flat, Bounded),
 
 # Let's make sure the grid spacing is both finer and near-uniform at the bottom,
 
-using CairoMakie
-
-lines(zspacings(grid, Center()), znodes(grid, Center()),
-      axis = (ylabel = "Depth (m)",
-              xlabel = "Vertical spacing (m)"))
-
-scatter!(zspacings(grid, Center()), znodes(grid, Center()))
-
-current_figure() #hide
-
 # ## Tilting the domain
 #
 # We use a domain that's tilted with respect to gravity by
