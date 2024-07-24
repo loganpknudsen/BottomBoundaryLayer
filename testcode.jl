@@ -1,5 +1,5 @@
-# using Pkg
-# Pkg.activate(".")
-# Pkg.add("CUDA")
-# Pkg.instantiate()
+using Pkg
+Pkg.add("Oceananigans")
+Pkg.instantiate()
 using CUDA
+using Oceananigans
