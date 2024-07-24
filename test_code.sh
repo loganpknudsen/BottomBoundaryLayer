@@ -28,4 +28,4 @@ module load netcdf/4.9.2 openmpi/4.1.6
 module load cuda/12.2.1
 
 ### file to run
-/glade/derecho/scratch/knudsenl/BottomBoundaryLayer/.juliaup/bin/julia --project="." testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
+/glade/derecho/scratch/knudsenl/BottomBoundaryLayer/.juliaup/bin/julia --project="/glade/derecho/scratch/knudsenl/BottomBoundaryLayer/" testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/

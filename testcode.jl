@@ -1,12 +1,12 @@
-using Pkg
-Pkg.activate(".")
-Pkg.add("Oceananigans")
-Pkg.add("CUDA")
-Pkg.add("Random")
-Pkg.add("Printf")
-Pkg.add("ArgParse")
-Pkg.add("Oceanostics")
-Pkg.instantiate()
+# using Pkg
+# Pkg.activate(".")
+# Pkg.add("Oceananigans")
+# Pkg.add("CUDA")
+# Pkg.add("Random")
+# Pkg.add("Printf")
+# Pkg.add("ArgParse")
+# Pkg.add("Oceanostics")
+# Pkg.instantiate()
 
 using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
