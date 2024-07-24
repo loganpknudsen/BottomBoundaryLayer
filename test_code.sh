@@ -24,8 +24,8 @@ module --force purge
 module load ncarenv/23.10 gcc/12.2.0
 module load ncarcompilers/1.0.0
 module load netcdf/4.9.2 openmpi/4.1.6 
-### module load julia/1.10
+module load julia/1.10
 module load cuda/12.2.1
 
-### file to run
-/glade/derecho/scratch/knudsenl/BottomBoundaryLayer/.juliaup/bin/julia --project="/glade/derecho/scratch/knudsenl/BottomBoundaryLayer/" testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
+### file to run /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/.juliaup/bin/julia
+julia --project="/glade/derecho/scratch/knudsenl/BottomBoundaryLayer/cuda_test" testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
