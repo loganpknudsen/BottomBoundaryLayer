@@ -28,6 +28,6 @@ module load julia/1.10
 module load cuda/12.2.1
 
 ### file to run
-julia --project testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
+julia --project="." testcode.jl /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/
 
 
