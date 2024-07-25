@@ -1,5 +1,4 @@
 using Pkg
-Pkg.add("Oceananigans")
 Pkg.instantiate()
 # # Tilted bottom boundary layer example
 #
