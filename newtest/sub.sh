@@ -16,7 +16,7 @@
 ### type of GPU
 #PBS -l gpu_type=v100
 ### email 
-#PBS -M wenegrat@umd.edu
+#PBS -M knudsen@umd.edu
 #PBS -m abe
 
 
