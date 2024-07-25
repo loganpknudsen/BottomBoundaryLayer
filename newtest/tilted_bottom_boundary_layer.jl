@@ -155,7 +155,7 @@ set!(model, u=noise, w=noise)
 # or diffusive time scaling, depending on which is shorter.
 
 Δt₀ = 0.5 * minimum([minimum_zspacing(grid) / V∞, minimum_zspacing(grid)^2/κ])
-simulation = Simulation(model, Δt = Δt₀, stop_time = 1day)
+simulation = Simulation(model, Δt = Δt₀, stop_time = 0.5day)
 
 # We use a `TimeStepWizard` to adapt our time-step,
 
