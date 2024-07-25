@@ -4,7 +4,7 @@
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
-#PBS -l select=1:ncpus=1:ngpus=1
+#PBS -l select=1:ncpus=1:mem=80GB:ngpus=1
 ### Run Time
 #PBS -l walltime=00:20:00
 ### To the casper queue
@@ -26,4 +26,4 @@ module --ignore-cache load cuda
 module --ignore-cache load julia/1.9
 ### file to run
 
-julia --pkgimages=no --project=. tilted_bottom_boundary_layer.jl
+julia --pkgimages=no --project=. internaltide.jl
