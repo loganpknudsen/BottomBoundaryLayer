@@ -1,0 +1,203 @@
+=>> PBS: job killed: walltime 688 exceeded limit 600
+
+[37566] signal (15): Terminated
+in expression starting at /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/newtest/tilted_bottom_boundary_layer.jl:200
+madvise at /lib64/libc.so.6 (unknown line)
+jl_gc_free_page at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc-pages.c:308
+sweep_page at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:1547 [inlined]
+sweep_pool_page at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:1646 [inlined]
+sweep_pool_pagetable0 at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:1666 [inlined]
+sweep_pool_pagetable1 at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:1686 [inlined]
+sweep_pool_pagetable at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:1716 [inlined]
+gc_sweep_pool at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:1797
+_jl_gc_collect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:3540
+ijl_gc_collect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:3706
+maybe_collect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:1078 [inlined]
+jl_gc_pool_alloc_inner at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:1443 [inlined]
+jl_gc_pool_alloc_noinline at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:1504 [inlined]
+jl_gc_alloc_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/julia_internal.h:460 [inlined]
+jl_gc_alloc at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gc.c:3753
+ijl_alloc_svec_uninit at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/simplevector.c:60
+inst_datatype_inner at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/jltypes.c:1668
+intersect_tuple at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2888 [inlined]
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3246
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2782
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2782
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2782
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2782
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2782
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2782
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2782
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2782
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2765
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_unionall_ at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2716
+intersect_unionall at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:2782
+intersect at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3232
+intersect_all at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3322
+jl_type_intersection_env_s at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/subtype.c:3550
+jl_typemap_intersection_node_visitor at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/typemap.c:457
+jl_typemap_intersection_visitor at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/typemap.c:624
+jl_typemap_intersection_array_visitor at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/typemap.c:407
+jl_typemap_intersection_visitor at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/typemap.c:586
+ml_matches at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gf.c:3253
+ijl_matching_methods at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.9.2-mjeadxih745lj3s24lbol2ou7lpwqtse/spack-src/src/gf.c:2153
+_methods_by_ftype at ./reflection.jl:952 [inlined]
+_findall at ./compiler/methodtable.jl:107 [inlined]
+#findall#275 at ./compiler/methodtable.jl:76 [inlined]
+findall at ./compiler/methodtable.jl:75 [inlined]
+#findall#277 at ./compiler/methodtable.jl:123
+findall at ./compiler/methodtable.jl:114 [inlined]
+find_matching_methods at ./compiler/abstractinterpretation.jl:336
+abstract_call_gf_by_type at ./compiler/abstractinterpretation.jl:80
+abstract_call at ./compiler/abstractinterpretation.jl:2017
+abstract_apply at ./compiler/abstractinterpretation.jl:1566
+abstract_call_known at ./compiler/abstractinterpretation.jl:1855
+unknown function (ip: 0x14f34e55914e)
+unknown function (ip: 0x14f34e53e189)
+unknown function (ip: 0x14f34e53e0f6)
+abstract_call at ./compiler/abstractinterpretation.jl:2020
+abstract_call at ./compiler/abstractinterpretation.jl:1999
+abstract_eval_statement_expr at ./compiler/abstractinterpretation.jl:2183
+abstract_eval_statement at ./compiler/abstractinterpretation.jl:2396
+abstract_eval_basic_statement at ./compiler/abstractinterpretation.jl:2658
+typeinf_local at ./compiler/abstractinterpretation.jl:2867
+typeinf_nocycle at ./compiler/abstractinterpretation.jl:2955
+_typeinf at ./compiler/typeinfer.jl:246
+typeinf at ./compiler/typeinfer.jl:216
+typeinf_edge at ./compiler/typeinfer.jl:932
+abstract_call_method at ./compiler/abstractinterpretation.jl:611
+abstract_call_gf_by_type at ./compiler/abstractinterpretation.jl:152
+abstract_call_known at ./compiler/abstractinterpretation.jl:1949
+unknown function (ip: 0x14f34e55914e)
+unknown function (ip: 0x14f34e53e189)
+unknown function (ip: 0x14f34e53e0f6)
+abstract_call at ./compiler/abstractinterpretation.jl:2020
+abstract_call at ./compiler/abstractinterpretation.jl:1999
+abstract_eval_statement_expr at ./compiler/abstractinterpretation.jl:2183
+abstract_eval_statement at ./compiler/abstractinterpretation.jl:2396
+abstract_eval_basic_statement at ./compiler/abstractinterpretation.jl:2682
+typeinf_local at ./compiler/abstractinterpretation.jl:2867
+typeinf_nocycle at ./compiler/abstractinterpretation.jl:2955
+_typeinf at ./compiler/typeinfer.jl:246
+typeinf at ./compiler/typeinfer.jl:216
+typeinf_edge at ./compiler/typeinfer.jl:932
+abstract_call_method at ./compiler/abstractinterpretation.jl:611
+abstract_call_gf_by_type at ./compiler/abstractinterpretation.jl:152
+abstract_call_known at ./compiler/abstractinterpretation.jl:1949
+unknown function (ip: 0x14f34e55914e)
+unknown function (ip: 0x14f34e53e189)
+unknown function (ip: 0x14f34e53e0f6)
+abstract_call at ./compiler/abstractinterpretation.jl:2020
+abstract_call at ./compiler/abstractinterpretation.jl:1999
+abstract_eval_statement_expr at ./compiler/abstractinterpretation.jl:2183
+unknown function (ip: (nil))
+Allocations: 1288529041 (Pool: 1288459468; Big: 69573); GC: 15114
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+ERROR: LoadError: MethodError: no method matching Float64()
+
+Closest candidates are:
+  (::Type{T})(!Matched::AbstractChar) where T<:Union{AbstractChar, Number}
+   @ Base char.jl:50
+  (::Type{T})(!Matched::Base.TwicePrecision) where T<:Number
+   @ Base twiceprecision.jl:266
+  (::Type{T})(!Matched::Complex) where T<:Real
+   @ Base complex.jl:44
+  ...
+
+Stacktrace:
+ [1] time_discretization
+   @ ~/.julia/packages/Oceananigans/thcPW/src/TurbulenceClosures/implicit_explicit_time_discretization.jl:30 [inlined]
+ [2] NonhydrostaticModel(; grid::RectilinearGrid{Float64, Periodic, Flat, Bounded, Float64, Float64, OffsetArrays.OffsetVector{Float64, Vector{Float64}}, OffsetArrays.OffsetVector{Float64, StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}}, StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}, OffsetArrays.OffsetVector{Float64, Vector{Float64}}, CPU}, clock::Clock{Float64, Float64}, advection::UpwindBiased{3, Float64, Nothing, Nothing, Nothing, UpwindBiased{2, Float64, Nothing, Nothing, Nothing, UpwindBiased{1, Float64, Nothing, Nothing, Nothing, Nothing, Centered{1, Float64, Nothing, Nothing, Nothing, Nothing}}, Centered{1, Float64, Nothing, Nothing, Nothing, Nothing}}, Centered{2, Float64, Nothing, Nothing, Nothing, Centered{1, Float64, Nothing, Nothing, Nothing, Nothing}}}, buoyancy::Buoyancy{BuoyancyTracer, Tuple{Float64, Float64, Float64}}, coriolis::ConstantCartesianCoriolis{Float64}, stokes_drift::Nothing, forcing::NamedTuple{(), Tuple{}}, closure::ScalarDiffusivity{Float64, Float64, Float64, Float64, 1}, boundary_conditions::NamedTuple{(:u, :v, :b), Tuple{FieldBoundaryConditions{Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Oceananigans.BoundaryConditions.ContinuousBoundaryFunction{Nothing, Nothing, Nothing, Nothing, typeof(drag_u), NamedTuple{(:cᴰ, :V∞), Tuple{Float64, Float64}}, Tuple{Symbol, Symbol}, Nothing, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}}, FieldBoundaryConditions{Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Oceananigans.BoundaryConditions.ContinuousBoundaryFunction{Nothing, Nothing, Nothing, Nothing, typeof(drag_v), NamedTuple{(:cᴰ, :V∞), Tuple{Float64, Float64}}, Tuple{Symbol, Symbol}, Nothing, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}}, FieldBoundaryConditions{Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, BoundaryCondition{Oceananigans.BoundaryConditions.Gradient, Float64}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Oceananigans.BoundaryConditions.DefaultBoundaryCondition{BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}}}}, tracers::Symbol, timestepper::Symbol, background_fields::NamedTuple{(:b,), Tuple{BackgroundField{typeof(constant_stratification), NamedTuple{(:ĝ, :N²), Tuple{Vector{Float64}, Float64}}}}}, particles::Nothing, biogeochemistry::Nothing, velocities::Nothing, hydrostatic_pressure_anomaly::Nothing, nonhydrostatic_pressure::Field{Center, Center, Center, Nothing, RectilinearGrid{Float64, Periodic, Flat, Bounded, Float64, Float64, OffsetArrays.OffsetVector{Float64, Vector{Float64}}, OffsetArrays.OffsetVector{Float64, StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}}, StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}, OffsetArrays.OffsetVector{Float64, Vector{Float64}}, CPU}, Tuple{Colon, Colon, Colon}, OffsetArrays.OffsetArray{Float64, 3, Array{Float64, 3}}, Float64, FieldBoundaryConditions{BoundaryCondition{Oceananigans.BoundaryConditions.Periodic, Nothing}, BoundaryCondition{Oceananigans.BoundaryConditions.Periodic, Nothing}, Nothing, Nothing, BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}, BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}, BoundaryCondition{Oceananigans.BoundaryConditions.Flux, Nothing}}, Nothing, Oceananigans.Fields.FieldBoundaryBuffers{Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing}}, diffusivity_fields::Nothing, pressure_solver::Nothing, immersed_boundary::Nothing, auxiliary_fields::NamedTuple{(), Tuple{}})
+   @ Oceananigans.Models.NonhydrostaticModels ~/.julia/packages/Oceananigans/thcPW/src/Models/NonhydrostaticModels/nonhydrostatic_model.jl:199
+ [3] top-level scope
+   @ /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/newtest/tilted_bottom_boundary_layer.jl:138
+in expression starting at /glade/derecho/scratch/knudsenl/BottomBoundaryLayer/newtest/tilted_bottom_boundary_layer.jl:138
