@@ -50,21 +50,21 @@ grid = ImmersedBoundaryGrid(underlying_grid, GridFittedBottom(bottom))
 
 # Let's see how the domain with the bathymetry is.
 
-x = xnodes(grid, Center())
-bottom_boundary = interior(grid.immersed_boundary.bottom_height, :, 1, 1)
-top_boundary = 0*x
+# x = xnodes(grid, Center())
+# bottom_boundary = interior(grid.immersed_boundary.bottom_height, :, 1, 1)
+# top_boundary = 0*x
 
-using CairoMakie
+# using CairoMakie
 
-fig = Figure(size = (700, 200))
-ax = Axis(fig[1, 1],
-          xlabel="x [km]",
-          ylabel="z [m]",
-          limits=((-grid.Lx/2e3, grid.Lx/2e3), (-grid.Lz, 0)))
+# fig = Figure(size = (700, 200))
+# ax = Axis(fig[1, 1],
+#           xlabel="x [km]",
+#           ylabel="z [m]",
+#           limits=((-grid.Lx/2e3, grid.Lx/2e3), (-grid.Lz, 0)))
 
-band!(ax, x/1e3, bottom_boundary, top_boundary, color = :mediumblue)
+# band!(ax, x/1e3, bottom_boundary, top_boundary, color = :mediumblue)
 
-fig
+# fig
 
 # Now we want to add a barotropic tide forcing. For example, to add the lunar semi-diurnal ``M_2`` tide 
 # we need to add forcing in the ``u``-momentum equation of the form:
