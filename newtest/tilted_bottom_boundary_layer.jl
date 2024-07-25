@@ -117,7 +117,7 @@ const V∞ = 0.1 # m s⁻¹
 const z₀ = 0.1 # m (roughness length)
 const κ1 = 0.4  # von Karman constant
 
-z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
+z₁ = first(znodes(grid, Center)) # Closest grid center to the bottom
 cᴰ = (κ1 / log(z₁ / z₀))^2 # Drag coefficient
 
 @inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
