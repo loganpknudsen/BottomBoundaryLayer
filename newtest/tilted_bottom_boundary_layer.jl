@@ -1,4 +1,5 @@
 using Pkg
+Pkg.activate(".")
 Pkg.instantiate()
 # # Tilted bottom boundary layer example
 #
