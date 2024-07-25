@@ -27,27 +27,27 @@
 using Oceananigans
 using Oceananigans.Units
 
-Lx = 200meters
-Lz = 100meters
-Nx = 64
-Nz = 64
+const Lx = 200meters
+const Lz = 100meters
+const Nx = 64
+const Nz = 64
 
 ## Creates a grid with near-constant spacing `refinement * Lz / Nz`
 ## near the bottom:
-refinement = 1.8 # controls spacing near surface (higher means finer spaced)
-stretching = 10  # controls rate of stretching at bottom 
+const refinement = 1.8 # controls spacing near surface (higher means finer spaced)
+const tretching = 10  # controls rate of stretching at bottom 
 
 ## "Warped" height coordinate
-h(k) = (Nz + 1 - k) / Nz
+@inline h(k) = (Nz + 1 - k) / Nz
 
 ## Linear near-surface generator
-ζ(k) = 1 + (h(k) - 1) / refinement
+@inline ζ(k) = 1 + (h(k) - 1) / refinement
 
 ## Bottom-intensified stretching function 
-Σ(k) = (1 - exp(-stretching * h(k))) / (1 - exp(-stretching))
+@inline Σ(k) = (1 - exp(-stretching * h(k))) / (1 - exp(-stretching))
 
 ## Generating function
-z_faces(k) = - Lz * (ζ(k) * Σ(k) - 1)
+@inline z_faces(k) = - Lz * (ζ(k) * Σ(k) - 1)
 
 grid = RectilinearGrid(topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -60,7 +60,7 @@ grid = RectilinearGrid(topology = (Periodic, Flat, Bounded),
 #
 # We use a domain that's tilted with respect to gravity by
 
-θ = 3 # degrees
+const θ = 3 # degrees
 
 # so that ``x`` is the along-slope direction, ``z`` is the across-slope direction that
 # is perpendicular to the bottom, and the unit vector anti-aligned with gravity is
@@ -85,7 +85,7 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # _perturbations_ away from the constant density stratification by imposing
 # a constant stratification as a `BackgroundField`,
 
-N² = 1e-5 # s⁻² # background vertical buoyancy gradient
+const N² = 1e-5 # s⁻² # background vertical buoyancy gradient
 B∞_field = BackgroundField(constant_stratification, parameters=(; ĝ, N² = N²))
 
 # We choose to impose a bottom boundary condition of zero *total* diffusive buoyancy
@@ -108,9 +108,9 @@ b_bcs = FieldBoundaryConditions(bottom = negative_background_diffusive_flux)
 # We include the background flow in the drag calculation,
 # which is the only effect the background flow enters the problem,
 
-V∞ = 0.1 # m s⁻¹
-z₀ = 0.1 # m (roughness length)
-κ = 0.4  # von Karman constant
+const V∞ = 0.1 # m s⁻¹
+const z₀ = 0.1 # m (roughness length)
+const κ = 0.4  # von Karman constant
 
 z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
 cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
@@ -131,8 +131,8 @@ v_bcs = FieldBoundaryConditions(bottom = drag_bc_v)
 # and a constant viscosity and diffusivity. Here we use a smallish value
 # of ``10^{-4} \, \rm{m}^2\, \rm{s}^{-1}``.
 
-ν = 1e-4
-κ = 1e-4
+const ν = 1e-4
+const κ = 1e-4
 closure = ScalarDiffusivity(ν=ν, κ=κ)
 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
