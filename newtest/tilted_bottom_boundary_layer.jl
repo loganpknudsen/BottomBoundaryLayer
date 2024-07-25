@@ -26,6 +26,7 @@
 
 using Oceananigans
 using Oceananigans.Units
+using CUDA
 
 const Lx = 200meters
 const Lz = 100meters
