@@ -37,6 +37,7 @@ M² = 1e-7 # [s⁻²] horizontal buoyancy gradient
 Δy = 100kilometers # width of the region of the front
 Δb = Δy * M²       # buoyancy jump associated with the front
 ϵb = 1e-2 * Δb     # noise amplitude
+b = model.tracers.b
 
 bᵢ(x, y, z) = N² * z + Δb * ramp(y, Δy) + ϵb * randn()
 
