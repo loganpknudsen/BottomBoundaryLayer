@@ -115,8 +115,8 @@ const κ1 = 0.4  # von Karman constant
 z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
 cᴰ = (κ1 / log(z₁ / z₀))^2 # Drag coefficient
 
-@inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
-@inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * (v + p.V∞)
+drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
+drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * (v + p.V∞)
 
 drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=(; cᴰ, V∞))
 drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=(; cᴰ, V∞))
@@ -131,8 +131,8 @@ v_bcs = FieldBoundaryConditions(bottom = drag_bc_v)
 # and a constant viscosity and diffusivity. Here we use a smallish value
 # of ``10^{-4} \, \rm{m}^2\, \rm{s}^{-1}``.
 
-const ν = 1e-4
-const κ = 1e-4
+ν = 1e-4
+κ = 1e-4
 closure = ScalarDiffusivity(ν, κ)
 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
