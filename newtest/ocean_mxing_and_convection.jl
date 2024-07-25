@@ -48,6 +48,7 @@ Qᵘ = - ρₐ / ρₒ * cᴰ * u₁₀ * abs(u₁₀) # m² s⁻²
 u_bcs = FieldBoundaryConditions(top = FluxBoundaryCondition(Qᵘ))
 @inline Qˢ(x, y, t, S, evaporation_rate) = - evaporation_rate * S # [salinity unit] m s⁻¹
 evaporation_rate = 1e-3 / hour # m s⁻¹
+evaporation_bc = FluxBoundaryCondition(Qˢ, field_dependencies=:S, parameters=evaporation_rate)
 S_bcs = FieldBoundaryConditions(top=evaporation_bc)
 model = NonhydrostaticModel(; grid, buoyancy,
                             advection = UpwindBiasedFifthOrder(),
