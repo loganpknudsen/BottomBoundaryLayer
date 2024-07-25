@@ -8,7 +8,7 @@
 ### Run Time
 #PBS -l walltime=10:00:00
 ### To the casper queue
-#PBS -q gpudev
+#PBS -q casper
 ### output
 #PBS -o Sim.out
 ### error
