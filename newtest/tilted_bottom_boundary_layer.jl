@@ -35,7 +35,7 @@ const Nz = 64
 ## Creates a grid with near-constant spacing `refinement * Lz / Nz`
 ## near the bottom:
 const refinement = 1.8 # controls spacing near surface (higher means finer spaced)
-const tretching = 10  # controls rate of stretching at bottom 
+const stretching = 10  # controls rate of stretching at bottom 
 
 ## "Warped" height coordinate
 @inline h(k) = (Nz + 1 - k) / Nz
