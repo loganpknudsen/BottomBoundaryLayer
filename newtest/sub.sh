@@ -6,7 +6,7 @@
 ### Resources
 #PBS -l select=1:ncpus=16:mem=80GB:ngpus=1
 ### Run Time
-#PBS -l walltime=00:10:00
+#PBS -l walltime=00:20:00
 ### To the casper queue
 #PBS -q gpudev
 ### output
