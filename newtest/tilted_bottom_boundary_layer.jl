@@ -164,17 +164,17 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(4))
 
 # and also we add another callback to print a progress message,
 
-using Printf
+# using Printf
 
-start_time = time_ns() # so we can print the total elapsed wall time
+# start_time = time_ns() # so we can print the total elapsed wall time
 
-progress_message(sim) =
-    @printf("Iteration: %04d, time: %s, Δt: %s, max|w|: %.1e m s⁻¹, wall time: %s\n",
-            iteration(sim), prettytime(time(sim)),
-            prettytime(sim.Δt), maximum(abs, sim.model.velocities.w),
-            prettytime((time_ns() - start_time) * 1e-9))
+# progress_message(sim) =
+#     @printf("Iteration: %04d, time: %s, Δt: %s, max|w|: %.1e m s⁻¹, wall time: %s\n",
+#             iteration(sim), prettytime(time(sim)),
+#             prettytime(sim.Δt), maximum(abs, sim.model.velocities.w),
+#             prettytime((time_ns() - start_time) * 1e-9))
 
-simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(200))
+# simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(200))
 
 # ## Add outputs to the simulation
 #
