@@ -26,9 +26,6 @@
 
 using Oceananigans
 using Oceananigans.Units
-using Oceananigans.Grids: Center, Face
-using CUDA
-using CUDA: has_cuda_gpu
 
 const Lx = 200meters
 const Lz = 100meters
@@ -52,11 +49,7 @@ const stretching = 10  # controls rate of stretching at bottom
 ## Generating function
 @inline z_faces(k) = - Lz * (ζ(k) * Σ(k) - 1)
 
-# grid specifications
-arch = has_cuda_gpu() ? GPU() : CPU()
-@info("Arch => $arch")
-
-grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
+grid = RectilinearGrid(topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
                        x = (0, Lx),
                        z = z_faces)
@@ -119,7 +112,7 @@ const V∞ = 0.1 # m s⁻¹
 const z₀ = 0.1 # m (roughness length)
 const κ1 = 0.4  # von Karman constant
 
-z₁ = 1 # Closest grid center to the bottom
+z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
 cᴰ = (κ1 / log(z₁ / z₀))^2 # Drag coefficient
 
 @inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
@@ -138,15 +131,15 @@ v_bcs = FieldBoundaryConditions(bottom = drag_bc_v)
 # and a constant viscosity and diffusivity. Here we use a smallish value
 # of ``10^{-4} \, \rm{m}^2\, \rm{s}^{-1}``.
 
-ν = 1e-4
-κ = 1e-4
+const ν = 1e-4
+const κ = 1e-4
 closure = ScalarDiffusivity(ν, κ)
 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
-                            advection = WENO(),
+                            advection = UpwindBiasedFifthOrder(),
                             tracers = :b,
-                            boundary_conditions = (; u=u_bcs, v=v_bcs, b=b_bcs),
+                            boundary_conditions = (u=u_bcs, v=v_bcs, b=b_bcs),
                             background_fields = (; b=B∞_field))
 
 # Let's introduce a bit of random noise at the bottom of the domain to speed up the onset of
