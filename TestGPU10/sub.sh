@@ -26,4 +26,4 @@ module --ignore-cache load cuda
 module --ignore-cache load julia/1.10.2
 ### file to run
 
-julia --pkgimages=no --project=. tilted_bottom_boundary_layer.jl
+julia --pkgimages=no --project=. test.jl
