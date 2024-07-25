@@ -26,4 +26,4 @@ module --ignore-cache load cuda
 module --ignore-cache load julia/1.9
 ### file to run
 
-julia --project=. tilted_bottom_boundary_layer.jl
+julia --pkgimages=no --project=. baroclinic_adjustment.jl
