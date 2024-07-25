@@ -4,9 +4,9 @@
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
-#PBS -l select=1:ncpus=16:mem=80GB:ngpus=1
+#PBS -l select=1:ncpus=16:mem=80GB
 ### Run Time
-#PBS -l walltime=00:30:00
+#PBS -l walltime=10:00:00
 ### To the casper queue
 #PBS -q gpudev
 ### output
@@ -26,4 +26,4 @@ module --ignore-cache load cuda
 module --ignore-cache load julia/1.10.2
 ### file to run
 
-julia --pkgimages=no --project=. test.jl
+julia --pkgimages=no --project=. BBL_with_oscillations_code_10_percent.jl
