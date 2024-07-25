@@ -1,8 +1,7 @@
-# # Internal wave example
+# # Internal tide by a seamount
 #
-# In this example, we initialize an internal wave packet in two-dimensions
-# and watch it propagate. This example illustrates how to set up a two-dimensional
-# model, set initial conditions, and how to use `BackgroundField`s.
+# In this example, we show how internal tide is generated from a barotropic tidal flow
+# sloshing back and forth over a sea mount.
 #
 # ## Install dependencies
 #
@@ -13,119 +12,179 @@
 # pkg"add Oceananigans, CairoMakie"
 # ```
 
-# ## The physical domain
-#
-# First, we pick a resolution and domain size. We use a two-dimensional domain
-# that's periodic in ``(x, z)`` and is `Flat` in ``y``:
-
 using Oceananigans
+using Oceananigans.Units
 
-grid = RectilinearGrid(size=(128, 128), x=(-π, π), z=(-π, π), topology=(Periodic, Flat, Periodic))
+# ## Grid
 
-# ## Internal wave parameters
+# We create an `ImmersedBoundaryGrid` wrapped around an underlying two-dimensional `RectilinearGrid`
+# that is periodic in ``x`` and bounded in ``z``.
+
+Nx, Nz = 250, 125
+
+H = 2kilometers
+
+underlying_grid = RectilinearGrid(size = (Nx, Nz),
+                                  x = (-1000kilometers, 1000kilometers),
+                                  z = (-H, 0),
+                                  halo = (4, 4),
+                                  topology = (Periodic, Flat, Bounded))
+
+# Now we can create the non-trivial bathymetry. We use `GridFittedBottom` that gets as input either
+# *(i)* a two-dimensional function whose arguments are the grid's native horizontal coordinates and
+# it returns the ``z`` of the bottom, or *(ii)* a two-dimensional array with the values of ``z`` at
+# the bottom cell centers.
 #
-# Inertia-gravity waves propagate in fluids that are both _(i)_ rotating, and
-# _(ii)_ density-stratified. We use Oceananigans' Coriolis abstraction
-# to implement a background rotation rate:
-
-coriolis = FPlane(f=0.2)
-
-# On an `FPlane`, the domain is idealized as rotating at a constant rate with
-# rotation period `2π/f`. `coriolis` is passed to `NonhydrostaticModel` below.
-# Our units are arbitrary.
-
-# We use Oceananigans' `background_fields` abstraction to define a background
-# buoyancy field `B(z) = N^2 * z`, where `z` is the vertical coordinate
-# and `N` is the "buoyancy frequency". This means that the modeled buoyancy field
-# perturbs the basic state `B(z)`.
-
-## Background fields are functions of `x, y, z, t`, and optional parameters.
-## Here we have one parameter, the buoyancy frequency
-
-N = 1       # buoyancy frequency [s⁻¹]
-B_func(x, z, t, N) = N^2 * z
-B = BackgroundField(B_func, parameters=N)
-
-# We are now ready to instantiate our model. We pass `grid`, `coriolis`,
-# and `B` to the `NonhydrostaticModel` constructor.
-# We add a small amount of `IsotropicDiffusivity` to keep the model stable
-# during time-stepping, and specify that we're using a single tracer called
-# `b` that we identify as buoyancy by setting `buoyancy=BuoyancyTracer()`.
-
-model = NonhydrostaticModel(; grid, coriolis,
-                            advection = CenteredFourthOrder(),
-                            timestepper = :RungeKutta3,
-                            closure = ScalarDiffusivity(ν=1e-6, κ=1e-6),
-                            tracers = :b,
-                            buoyancy = BuoyancyTracer(),
-                            background_fields = (; b=B)) # `background_fields` is a `NamedTuple`
-
-# ## A Gaussian wavepacket
-#
-# Next, we set up an initial condition that excites an internal wave that propates
-# through our rotating, stratified fluid. This internal wave has the pressure field
+# In this example we'd like to have a Gaussian hill at the center of the domain.
 #
 # ```math
-# p(x, z, t) = a(x, z) \, \cos(k x + m z - ω t) \, .
+# h(x) = -H + h_0 \exp(-x^2 / 2σ^2)
+# ```
+
+h₀ = 250meters
+width = 20kilometers
+hill(x) = h₀ * exp(-x^2 / 2width^2)
+bottom(x) = - H + hill(x)
+
+grid = ImmersedBoundaryGrid(underlying_grid, GridFittedBottom(bottom))
+
+# Let's see how the domain with the bathymetry is.
+
+x = xnodes(grid, Center())
+bottom_boundary = interior(grid.immersed_boundary.bottom_height, :, 1, 1)
+top_boundary = 0*x
+
+using CairoMakie
+
+fig = Figure(size = (700, 200))
+ax = Axis(fig[1, 1],
+          xlabel="x [km]",
+          ylabel="z [m]",
+          limits=((-grid.Lx/2e3, grid.Lx/2e3), (-grid.Lz, 0)))
+
+band!(ax, x/1e3, bottom_boundary, top_boundary, color = :mediumblue)
+
+fig
+
+# Now we want to add a barotropic tide forcing. For example, to add the lunar semi-diurnal ``M_2`` tide 
+# we need to add forcing in the ``u``-momentum equation of the form:
+# ```math
+# F_0 \sin(\omega_2 t)
+# ```
+# where ``\omega_2 = 2π / T_2``, with ``T_2 = 12.421 \,\mathrm{hours}`` the period of the ``M_2`` tide.
+
+# The excursion parameter is a nondimensional number that expresses the ratio of the flow movement
+# due to the tide compared to the size of the width of the hill.
+#
+# ```math
+# \epsilon = \frac{U_{\mathrm{tidal}} / \omega_2}{\sigma}
+# ```
+# 
+# We prescribe the excursion parameter which, in turn, implies a tidal velocity ``U_{\mathrm{tidal}}``
+# which then allows us to determing the tidal forcing amplitude ``F_0``. For the last step, we
+# use Fourier decomposition on the inviscid, linearized momentum equations to determine the
+# flow response for a given tidal forcing. Doing so we get that for the sinusoidal forcing above,
+# the tidal velocity and tidal forcing amplitudes are related via:
+#
+# ```math
+# U_{\mathrm{tidal}} = \frac{\omega_2}{\omega_2^2 - f^2} F_0
 # ```
 #
-# where ``m`` is the vertical wavenumber, ``k`` is the horizontal wavenumber,
-# ``ω`` is the wave frequncy, and ``a(x, z)`` is a Gaussian envelope.
-# The internal wave dispersion relation links the wave numbers ``k`` and ``m``,
-# the Coriolis parameter ``f``, and the buoyancy frequency ``N``:
+# Now we have the way to find the value of the tidal forcing amplitude that would correspond to a
+# given excursion parameter. The Coriolis frequency is needed, so we start by constructing a Coriolis on an ``f``-plane at the
+# mid-latitudes.
 
-# Non-dimensional internal wave parameters
-m = 16      # vertical wavenumber
-k = 8       # horizontal wavenumber
-f = coriolis.f
+coriolis = FPlane(latitude = -45)
 
-## Dispersion relation for inertia-gravity waves
-ω² = (N^2 * k^2 + f^2 * m^2) / (k^2 + m^2)
+# Now we have everything we require to construct the tidal forcing given a value of the
+# excursion parameter.
 
-ω = sqrt(ω²)
+T₂ = 12.421hours
+ω₂ = 2π / T₂ # radians/sec
+
+ϵ = 0.1 # excursion parameter
+
+U_tidal = ϵ * ω₂ * width
+
+tidal_forcing_amplitude = U_tidal * (ω₂^2 - coriolis.f^2) / ω₂
+
+@inline tidal_forcing(x, z, t, p) = p.tidal_forcing_amplitude * sin(p.ω₂ * t)
+
+u_forcing = Forcing(tidal_forcing, parameters=(; tidal_forcing_amplitude, ω₂))
+
+# ## Model
+
+# We built a `HydrostaticFreeSurfaceModel`:
+
+model = HydrostaticFreeSurfaceModel(; grid, coriolis,
+                                      buoyancy = BuoyancyTracer(),
+                                      tracers = :b,
+                                      momentum_advection = WENO(),
+                                      tracer_advection = WENO(),
+                                      forcing = (; u = u_forcing))
+
+# We initialize the model with the tidal flow and a linear stratification.
+
+uᵢ(x, z) = U_tidal
+
+Nᵢ² = 1e-4  # [s⁻²] initial buoyancy frequency / stratification
+bᵢ(x, z) = Nᵢ² * z
+
+set!(model, u=uᵢ, b=bᵢ)
+
+# Now let's built a `Simulation`.
+
+Δt = 5minutes
+stop_time = 4days
+
+simulation = Simulation(model; Δt, stop_time)
+
+# We add a callback to print a message about how the simulation is going,
+
+using Printf
+
+wall_clock = Ref(time_ns())
+
+function progress(sim)
+    elapsed = 1e-9 * (time_ns() - wall_clock[])
+
+    msg = @sprintf("iteration: %d, time: %s, wall time: %s, max|w|: %6.3e, m s⁻¹\n",
+                   iteration(sim), prettytime(sim), prettytime(elapsed),
+                   maximum(abs, sim.model.velocities.w))
+
+    wall_clock[] = time_ns()
+
+    @info msg
+
+    return nothing
+end
+
+add_callback!(simulation, progress, name=:progress, IterationInterval(200))
 nothing #hide
 
-# We define a Gaussian envelope for the wave packet so that we can
-# observe wave propagation.
+# ## Diagnostics/Output
 
-## Some Gaussian parameters
-gaussian_amplitude = 1e-9
-gaussian_width = grid.Lx / 15
+# Add some diagnostics. Instead of ``u`` we save the deviation of ``u`` from its instantaneous
+# domain average, ``u' = u - (L_x H)^{-1} \int u \, \mathrm{d}x \mathrm{d}z``. We also save
+# the stratification ``N^2 = \partial_z b``.
 
-## A Gaussian envelope centered at `(x, z) = (0, 0)`
-a(x, z) = gaussian_amplitude * exp( -( x^2 + z^2 ) / 2gaussian_width^2 )
-nothing #hide
+b = model.tracers.b
+u, v, w = model.velocities
 
-# An inertia-gravity wave is a linear solution to the Boussinesq equations.
-# In order that our initial condition excites an inertia-gravity wave, we
-# initialize the velocity and buoyancy perturbation fields to be consistent
-# with the pressure field ``p = a \, \cos(kx + mx - ωt)`` at ``t=0``.
-# These relations are sometimes called the "polarization
-# relations". At ``t=0``, the polarization relations yield
+U = Field(Average(u))
 
-u₀(x, z) = a(x, z) * k * ω   / (ω^2 - f^2) * cos(k * x + m * z)
-v₀(x, z) = a(x, z) * k * f   / (ω^2 - f^2) * sin(k * x + m * z)
-w₀(x, z) = a(x, z) * m * ω   / (ω^2 - N^2) * cos(k * x + m * z)
-b₀(x, z) = a(x, z) * m * N^2 / (ω^2 - N^2) * sin(k * x + m * z)
+u′ = u - U
 
-set!(model, u=u₀, v=v₀, w=w₀, b=b₀)
+N² = ∂z(b)
 
-# Recall that the buoyancy `b` is a perturbation, so that the total buoyancy field
-# is ``N^2 z + b``.
+filename = "internal_tide"
+save_fields_interval = 30minutes
 
-# ## A wave packet on the loose
-#
-# We're ready to release the packet. We build a simulation with a constant time-step,
+simulation.output_writers[:fields] = JLD2OutputWriter(model, (; u, u′, w, b, N²);
+                                                      filename,
+                                                      schedule = TimeInterval(save_fields_interval),
+                                                      overwrite_existing = true)
 
-simulation = Simulation(model, Δt = 0.1 * 2π/ω, stop_iteration = 20)
-
-# and add an output writer that saves the vertical velocity field every two iterations:
-
-filename = "internal_wave.jld2"
-simulation.output_writers[:velocities] = JLD2OutputWriter(model, model.velocities; filename,
-                                                          schedule = IterationInterval(1),
-                                                          overwrite_existing = true)
-
-# With initial conditions set and an output writer at the ready, we run the simulation
+# We are ready -- let's run!
 
 run!(simulation)
