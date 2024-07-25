@@ -1,3 +1,5 @@
+using Pkg
+Pkg.instantiate()
 # # Tilted bottom boundary layer example
 #
 # This example simulates a two-dimensional oceanic bottom boundary layer

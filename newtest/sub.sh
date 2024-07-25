@@ -21,9 +21,9 @@
 
 
 module --force purge
-module --ignore-cache load ncarenv/23.10 gcc ncarcompilers netcdf
+module --ignore-cache load ncarenv/23.09 gcc ncarcompilers netcdf
 module --ignore-cache load cuda
 module --ignore-cache load julia/1.9
 ### file to run
 
-julia --pkgimages=no --project=. baroclinic_adjustment.jl
+julia --pkgimages=no --project=. tilted_bottom_boundary_layer.jl
