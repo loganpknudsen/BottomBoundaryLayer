@@ -49,7 +49,11 @@ const stretching = 10  # controls rate of stretching at bottom
 ## Generating function
 @inline z_faces(k) = - Lz * (ζ(k) * Σ(k) - 1)
 
-grid = RectilinearGrid(topology = (Periodic, Flat, Bounded),
+# grid specifications
+arch = has_cuda_gpu() ? GPU() : CPU()
+@info("Arch => $arch")
+
+grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
                        x = (0, Lx),
                        z = z_faces)
@@ -110,10 +114,10 @@ b_bcs = FieldBoundaryConditions(bottom = negative_background_diffusive_flux)
 
 const V∞ = 0.1 # m s⁻¹
 const z₀ = 0.1 # m (roughness length)
-const κ = 0.4  # von Karman constant
+const κ1 = 0.4  # von Karman constant
 
 z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
-cᴰ = (κ / log(z₁ / z₀))^2 # Drag coefficient
+cᴰ = (κ1 / log(z₁ / z₀))^2 # Drag coefficient
 
 @inline drag_u(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * u
 @inline drag_v(x, t, u, v, p) = - p.cᴰ * √(u^2 + (v + p.V∞)^2) * (v + p.V∞)
@@ -133,7 +137,7 @@ v_bcs = FieldBoundaryConditions(bottom = drag_bc_v)
 
 const ν = 1e-4
 const κ = 1e-4
-closure = ScalarDiffusivity(ν=ν, κ=κ)
+closure = ScalarDiffusivity(ν, κ)
 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
