@@ -35,15 +35,15 @@ path_name = args["path"]
 
 
 # grid specifications
-arch = has_cuda_gpu() ? GPU() : CPU()
-@info("Arch => $arch")
+# arch = has_cuda_gpu() ? GPU() : CPU()
+# @info("Arch => $arch")
 
 Lx = 2000meters
 Lz = 200meters
 Nx = 500
 Nz = 100 # Note to self, maintain 2 to 1 resolution ration
-
-grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
+# arch;
+grid = RectilinearGrid( topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
                        x = (0, Lx),
                        z = (0,Lz))
