@@ -21,7 +21,7 @@
 
 
 module --force purge
-module --ignore-cache load ncarenv/23.09 gcc ncarcompilers netcdf
+module --ignore-cache load ncarenv/23.10 gcc ncarcompilers netcdf
 module --ignore-cache load cuda
 module --ignore-cache load julia/1.9
 ### file to run
