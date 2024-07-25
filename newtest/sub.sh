@@ -14,7 +14,7 @@
 ### error
 #PBS -e Sim.err
 ### type of GPU
-#PBS -l gpu_type=v100
+#PBS -l gpu_type=a100
 ### email 
 #PBS -M knudsen@umd.edu
 #PBS -m abe
@@ -26,4 +26,4 @@ module --ignore-cache load cuda
 module --ignore-cache load julia/1.9
 ### file to run
 
-julia --pkgimages=no --project=. internaltide.jl
+julia --pkgimages=no --project=. internalwave.jl
