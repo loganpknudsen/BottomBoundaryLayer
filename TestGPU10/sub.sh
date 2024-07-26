@@ -4,7 +4,7 @@
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
-#PBS -l select=1:ncpus=16:mem=80GB
+#PBS -l select=1:ncpus=16:mem=100GB
 ### Run Time
 #PBS -l walltime=10:00:00
 ### To the casper queue
@@ -16,7 +16,7 @@
 ### type of GPU
 #PBS -l gpu_type=v100
 ### email 
-#PBS -M wenegrat@umd.edu
+#PBS -M knudsen@umd.edu
 #PBS -m abe
 
 
