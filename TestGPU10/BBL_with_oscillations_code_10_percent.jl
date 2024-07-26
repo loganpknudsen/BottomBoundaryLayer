@@ -65,18 +65,18 @@ const S∞ = (N²*θ^2)/(f^2) # sloep burger number
 const γ = (1+S∞)^(-1) # 0 PV parameter
 const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
 const fˢ=(f^2+θ^2*N²)^(0.5) # modified oscillation
-# const uₒ = 0 # Initial u shear perturbation
-# const vₒ = γ*(N²*θ)/(f)*0.5 # Initial v shear perturbation
-# const bₒ = vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
-# const a1 = (f*vₒ+bₒ*θ)/(fˢ) # a1-h1 are constants for the following oscillations, calculate here for efficiency
-# const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
-# const c1 = (f*uₒ)/(fˢ)
-# const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
-# const e1 = N²*θ*(f*vₒ+bₒ*θ)/(fˢ)^2
-# const h1 = (N²*θ*uₒ)/(fˢ)
+const uₒ = 0 # Initial u shear perturbation
+const vₒ = γ*(N²*θ)/(f)*0.5 # Initial v shear perturbation
+const bₒ = vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
+const a1 = (f*vₒ+bₒ*θ)/(fˢ) # a1-h1 are constants for the following oscillations, calculate here for efficiency
+const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
+const c1 = (f*uₒ)/(fˢ)
+const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
+const e1 = N²*θ*(f*vₒ+bₒ*θ)/(fˢ)^2
+const h1 = (N²*θ*uₒ)/(fˢ)
 
 # array of paramerers for background function
-# p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
+p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
 
 # background flow with geostrophic and ageostrophic shear 
 
