@@ -84,8 +84,8 @@ p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
 @inline heaviside(x) = 1 #ifelse(x < 0, zero(x), one(x))
 
 # oscillation functions for background
-@inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
-@inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
+@inline sn_fn(x,z,t,p) = sin!(p.fˢ*t)
+@inline cs_fn(x,z,t,p) = cos!(p.fˢ*t)
 
 u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p) # shear
 v_pert(x,z,t,p) = p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1
