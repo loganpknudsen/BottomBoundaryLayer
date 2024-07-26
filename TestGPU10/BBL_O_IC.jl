@@ -123,10 +123,10 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
 ns = 10^(-4) # standard deviation for noise
 
 # initial conditions to start instability
-u₀(x, z, p) = ns*Random.randn() + u_pert(x,z,0,p)*(p.hu-z)*heaviside(hu-z)
-v₀(x, z, p) = ns*Random.randn() + v_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
-w₀(x, z, p) = ns*Random.randn()
-b₀(x, z, p) = ns*Random.randn() + b_pert(x,z,0,p)*(p.hu-z)*heaviside(p.hu-z)
+u₀(x, z) = ns*Random.randn() + u_pert(x,z,0,p)*(hu-z)*heaviside(hu-z)
+v₀(x, z) = ns*Random.randn() + v_pert(x,z,0,p)*(hu-z)*heaviside(hu-z)
+w₀(x, z) = ns*Random.randn()
+b₀(x, z) = ns*Random.randn() + b_pert(x,z,0,p)*(hu-z)*heaviside(hu-z)
 
 # set simulation and decide run time
 set!(model, u=u₀, v=v₀, w=w₀, b=b₀)
