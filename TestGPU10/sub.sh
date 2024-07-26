@@ -26,4 +26,4 @@ module --ignore-cache load cuda
 module --ignore-cache load julia/1.10.2
 ### file to run
 
-julia --pkgimages=no --project=. BBL_with_oscillations_code_10_percent.jl
+julia --pkgimages=no --project=. BBL_O_IC.jl

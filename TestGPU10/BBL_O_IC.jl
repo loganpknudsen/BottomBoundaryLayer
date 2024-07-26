@@ -123,13 +123,13 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
 ns = 10^(-4) # standard deviation for noise
 
 # initial conditions to start instability
-u₀(x, z) = ns*Random.randn()
-v₀(x, z) = ns*Random.randn()
-w₀(x, z) = ns*Random.randn()
-# bₒ(x,y,z) = 0.005*Random.randn()
+u₀(x, z, p) = ns*Random.randn() + u_pert(x,z,0,p)*(p.hu-z)*heaviside(hu-z)
+v₀(x, z, p) = ns*Random.randn() + v_pert(x,z,t,p)*(p.hu-z)*heaviside(p.hu-z)
+w₀(x, z, p) = ns*Random.randn()
+b₀(x, z, p) = ns*Random.randn() + b_pert(x,z,0,p)*(p.hu-z)*heaviside(p.hu-z)
 
 # set simulation and decide run time
-set!(model, u=u₀, v=v₀, w=w₀)
+set!(model, u=u₀, v=v₀, w=w₀, b=b₀)
 
 simulation = Simulation(model, Δt = 1, stop_time = 0.1*(2*pi)/f)
 
@@ -205,9 +205,9 @@ AGSP = AGSPu + AGSPv + AGSPw
 # @inline builder(z,h) = permutedims(heaviside(h.*ones(100,)-z).*ones(100,1,500),(3,2,1))
 # const hv = builder(zC,hu)
 ### wave shear production calculation
-WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))#*umask # AGSP contribution 
-WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))#*vmask 
-WSP = WSPu + WSPv# + AGSPw
+# WSPu = (u*w)*(u_pert(0,0,simulation.model.clock.time,p))#*umask # AGSP contribution 
+# WSPv = (v*w)*(v_pert(0,0,simulation.model.clock.time,p))#*vmask 
+# WSP = WSPu + WSPv# + AGSPw
 
 GSP = -1*(v*w)*(γ*(θ * N²)/(f))#*vmask # geostrophic shear production
 BFLUX = (w+u*θ)*b # flux from buoyancy
@@ -224,7 +224,7 @@ BFLUX = (w+u*θ)*b # flux from buoyancy
 
 # output writers
 output = (; u, U, v, V, w, b, B, PV) # , dbdz, dBdz, ε , Ri, Ro
-output2 = (; E, AGSP, GSP, BFLUX, k, WSP) #
+output2 = (; E, AGSP, GSP, BFLUX, k) # WSP
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
