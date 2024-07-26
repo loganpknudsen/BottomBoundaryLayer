@@ -81,7 +81,7 @@ p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
 # background flow with geostrophic and ageostrophic shear 
 
 # heaviside function for boundary layer
-@inline heaviside(x) = ifelse(x < 0, zero(x), one(x))
+@inline heaviside(x) = 1 #ifelse(x < 0, zero(x), one(x))
 
 # oscillation functions for background
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)

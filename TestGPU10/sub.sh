@@ -1,6 +1,6 @@
 #!/bin/bash -l
 ### Job Name
-#PBS -N testcuda
+#PBS -N codeopt
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
