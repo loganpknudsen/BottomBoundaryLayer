@@ -131,7 +131,7 @@ w₀(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=u₀, v=v₀, w=w₀)
 
-simulation = Simulation(model, Δt = 1, stop_time = 10*(2*pi)/f)
+simulation = Simulation(model, Δt = 1, stop_time = 0.1*(2*pi)/f)
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.7, max_change=1.1, max_Δt=10.0, min_Δt=0.01) 
@@ -228,12 +228,12 @@ output2 = (; E, AGSP, GSP, BFLUX, k, WSP) #
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_diagnostics_flow_terms.nc",
+                                                          filename = path_name*"BBL_w_O_diagnostics_flow_terms2.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_diagnostics_TKE_terms.nc",
+                                                          filename = path_name*"BBL_w_O_diagnostics_TKE_terms2.nc",
                                                           overwrite_existing = true)
 
 
