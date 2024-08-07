@@ -1,8 +1,0 @@
-name = "TestGPU"
-uuid = "459df22e-d78a-4c11-a316-b1be059470b5"
-authors = ["wenegrat "]
-version = "0.1.0"
-
-[deps]
-CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
-Oceananigans = "9e8cae18-63c1-5223-a75c-80ca9d6e9a09"
