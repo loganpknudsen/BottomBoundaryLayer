@@ -151,7 +151,7 @@ progress_message(sim) =
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9),sim.model.clock.time*f/2π)
 
-simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(10) ) # TimeInterval(0.5*(2*pi)/f) 
+simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1000) ) # TimeInterval(0.5*(2*pi)/f) 
 
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
