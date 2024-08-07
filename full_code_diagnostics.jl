@@ -67,7 +67,7 @@ const γ = (1+S∞)^(-1) # 0 PV parameter
 const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
 const fˢ=(f^2+θ^2*N²)^(0.5) # modified oscillation
 const uₒ = 0 # Initial u shear perturbation
-const vₒ = γ*(N²*θ)/(f)*0.5 # Initial v shear perturbation
+const vₒ = γ*(N²*θ)/(f) #*0.5 # Initial v shear perturbation
 const bₒ = vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const a1 = (f*vₒ+bₒ*θ)/(fˢ) 
@@ -82,12 +82,6 @@ p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
 
 # heaviside function for boundary layer
 @inline heaviside(x,z) = ifelse(z < 0, zero(z), one(z))
-@inline heaviside2(x,z) = ifelse(hu - z < 0, zero(z), one(z))
-# @inline heavisideh(x,z) = ifelse(hu < z, zero(z), one(z))
-# @inline heavisideu(x,z,t,p) = ifelse(p.hu < z, zero(x), u_pert(x,z,t,p))
-# @inline heavisidev(x,z,t,p) = ifelse(p.hu < z, zero(x), v_pert(x,z,t,p))
-# @inline heavisideb(x,z,t,p) = ifelse(x < 0, zero(x), b_pert(x,z,t,p))
-
 
 # oscillation functions for background
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
@@ -163,14 +157,6 @@ u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
 v = Field(@at (Center, Center, Center) va - vm)
 w = Field(@at (Center, Center, Center) wa - wm)
 
-# Heaviside Functions and Flux Calculations for shear production terms 
-# uw = Field(@at (Center, Center, Center) u*w)
-# HeavisideUWFunction = Oceananigans.Fields.FunctionField(location(uw), heaviside2, grid)
-# vw = Field(@at (Center, Center, Center) v*w)
-# HeavisideVWFunction = Oceananigans.Fields.FunctionField(location(vw), heaviside2, grid)
-# ww = Field(@at (Center, Center, Center) w*w)
-# HeavisideWWFunction = Oceananigans.Fields.FunctionField(location(ww), heaviside2, grid)
-
 # background fields
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
@@ -186,26 +172,12 @@ B = model.tracers.b + B∞
 
 PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
 E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
-# E = Average(Eu, dims=(1,3))
-# k = Field(@at (Center, Center, Center) 0.5*(u^2 + v^2 + w^2)) # TKE calculation
-k = Oceanostics.TurbulentKineticEnergy(model,u,v,w)
-# k = Average(ku, dims=(1,3))
+k = Oceanostics.TurbulentKineticEnergy(model,u,v,w) # TKE calculation
 
 ### AGSP calculation
-# upx = Field(@at (Center, Center, Center) Average(u, dims=1))
-# vpx = Field(@at (Center, Center, Center) Average(v, dims=1))
-# wpx = Field(@at (Center, Center, Center) Average(w, dims=1))
-# dudz = Field(@at (Nothing, Center, Center) ∂z(um))
-# dvdz = Field(@at (Nothing, Center, Center) ∂z(vm))
-# dwdz = Field(@at (Nothing, Center, Center) ∂z(wm))
-# AGSPu = -uw*dudz # AGSP contribution 
-# AGSPv = -vw*dvdz
-# AGSPw = -ww*dwdz 
-# AGSPua = AGSPu+AGSPv+AGSPw
-# AGSP = Average(AGSPua,dims=(1,3))
 AGSP = Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
 
-# ### wave shear production calculation
+### wave shear production calculation
 upert(x,z,t,p) = (p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
 vpert(x,z,t,p) = (p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1)*(p.hu-z)*heaviside(x,p.hu-z)
 
@@ -213,34 +185,14 @@ UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, c
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
 
 WSP = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
-# WSP = Field(@at (Center, Center, Center) WSPua)
-# WSP = Average(WSPu, dims=(1,3))
-# tm = model.clock.time
+
+### geostrophic shear production calcualtion
 gshear(x,z,t,p) = p.V∞-((p.γ * p.θ * p.N²)/(p.f))*(p.hu-z)*heaviside(x,p.hu-z)
 GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid, clock= model.clock, parameters = p)
 GSP = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
 
-# GSPua = Field(@at (Center, Center, Center) GSPu) # geostrophic shear production
-# GSP = Average(GSPu, dims=(1,3))
-# wb = w*b
-# ubt = u*b*θ
-# BFLUX = Field(@at (Center, Center, Center) wb+ubt) # flux from buoyancy
+### Buoyancy Flux Calcuation
 BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=( u=u, v=v, w=w), tracers=(b=b,))
-# BFLUX = Average(BFLUXu, dims=(1,3))
-
-# dk2dz2 = Field(@at (Center, Center, Center) ∂z(∂z(k)))
-# KDISS = ν*dk2dz2
-
-# dkwdz = Field(@at (Center, Center, Center) ∂z(w*k))
-# KTRANS = -1*dkwdz
-
-# pr = model.pressures.pNHS
-# # pprt = pr - Field(@at (Center, Center, Center) Average(pr, dims=1))
-# # # wapr = wa*pr
-# # # wmpm = Field(@at (Center, Center, Face) Average(wapr, dims=1))
-# wp = w*pr
-# dpwdz = Field(@at (Center, Center, Face) ∂z(wp))
-# PWORK= -1*dpwdz # work due to pressure
 
 # output writers
 output = (; u, U, v, V, w, b, B, PV) # , PV , dbdz, dBdz, ε , Ri, Ro
@@ -257,11 +209,6 @@ simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
                                                           filename = path_name*"BBL_w_O_TKE.nc",
                                                           overwrite_existing = true)
-
-# simulation.output_writers[:means] = NetCDFOutputWriter(model, output3;
-#                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-#                                                           filename = path_name*"BBL_w_O_meanscGSP.nc",
-#                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
 # simulation.stop_time = 0.1*((2π)/f)seconds
