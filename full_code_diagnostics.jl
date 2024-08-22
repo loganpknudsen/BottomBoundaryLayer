@@ -41,8 +41,8 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 
 Lx = 2000meters
 Lz = 200meters
-Nx = 500
-Nz = 100 # Note to self, maintain 2 to 1 resolution ration
+Nx = 512
+Nz = 128 # Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -62,12 +62,12 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 const V∞ = 0.05 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 1e-5 # interior stratification
-const S∞ = (N²*θ^2)/(f^2) # sloep burger number
+const S∞ = (N²*θ^2)/(f^2) # slope burger number
 const γ = (1+S∞)^(-1) # 0 PV parameter
 const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
 const fˢ=(f^2+θ^2*N²)^(0.5) # modified oscillation
 const uₒ = 0 # Initial u shear perturbation
-const vₒ = γ*(N²*θ)/(f) #*0.5 # Initial v shear perturbation
+const vₒ = γ*(N²*θ)/(f)*0.5 # Initial v shear perturbation
 const bₒ = vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const a1 = (f*vₒ+bₒ*θ)/(fˢ) 
