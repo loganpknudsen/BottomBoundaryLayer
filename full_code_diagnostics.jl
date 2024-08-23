@@ -92,7 +92,7 @@ v_pert(x,z,t,p) = p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1
 b_pert(x,z,t,p) = p.e1*cs_fn(x,z,t,p) - p.h1*sn_fn(x,z,t,p)+p.bₒ-p.e1
 
 u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-v_adjustment(x, z, t, p) = p.V∞ -p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+v_adjustment(x, z, t, p) = p.V∞ - p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(p.hu-z)*heaviside(x,p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
@@ -102,8 +102,8 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # Boundary condition set up
 # Free Slip Boundary Conditions
 
-b_bc_top= GradientBoundaryCondition(N²)
-# b_bc_bottom= GradientBoundaryCondition(-1*N²)
+b_bc_top= GradientBoundaryCondition(0)
+b_bc_bottom= GradientBoundaryCondition(-1*N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
@@ -131,7 +131,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 15.01*((2*pi)/f)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 25.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -145,7 +145,7 @@ progress_message(sim) =
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9),sim.model.clock.time*f/2π)
 
-simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1000) ) # TimeInterval(0.5*(2*pi)/f) 
+simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1000)) # TimeInterval(0.5*(2*pi)/f) 
 
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
@@ -157,28 +157,20 @@ u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
 v = Field(@at (Center, Center, Center) va - vm)
 w = Field(@at (Center, Center, Center) wa - wm)
 
-# background fields
-ub = model.background_fields.velocities.u
-vb = model.background_fields.velocities.v
+# buoyancy pertubation calculation
 ba = model.tracers.b
 bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = Field(@at (Center, Center, Center) ba - bm)
-B∞ = model.background_fields.tracers.b
-
-U = u + ub
-V = v + vb
-B = model.tracers.b + B∞
-
 
 PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
 E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
-k = Oceanostics.TurbulentKineticEnergy(model,u,v,w) # TKE calculation
+k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
 
 ### AGSP calculation
 AGSP = Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
 
 ### wave shear production calculation
-upert(x,z,t,p) = (p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
+upert(x,z,t,p) = (p.uₒ*cs_fn(x,z,t,p) + p.a1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
 vpert(x,z,t,p) = (p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1)*(p.hu-z)*heaviside(x,p.hu-z)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
@@ -192,13 +184,11 @@ GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid,
 GSP = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
 
 ### Buoyancy Flux Calcuation
-BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=( u=u, v=v, w=w), tracers=(b=b,))
+BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
 
 # output writers
-output = (; u, U, v, V, w, b, B, PV) # , PV , dbdz, dBdz, ε , Ri, Ro
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # WSP, PWORK, GSP, AGSP,
-# output3 = (; um, vm, wm, dudz, dvdz, dwdz)
-
+output = (; u, v, w, b, PV) # pertubation fields and PV
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
@@ -211,6 +201,6 @@ simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
-simulation.stop_time = 15*((2π)/f)seconds
+# simulation.stop_time = 15*((2π)/f)seconds
 
-run!(simulation, pickup=true) # 
+run!(simulation) # , pickup=true
