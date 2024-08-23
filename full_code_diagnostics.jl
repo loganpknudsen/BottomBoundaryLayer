@@ -192,7 +192,7 @@ GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid,
 GSP = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
 
 ### Buoyancy Flux Calcuation
-BFLUX =  (u*θ+w)*b #Oceanostics.BuoyancyProductionTerm(model; velocities=( u=u, v=v, w=w), tracers=(b=b,))
+BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=( u=u, v=v, w=w), tracers=(b=b,))
 
 # output writers
 output = (; u, U, v, V, w, b, B, PV) # , PV , dbdz, dBdz, ε , Ri, Ro
