@@ -15,24 +15,24 @@ using CUDA
 using Oceanostics
 
 # Path file is saved under
-function parse_commandline()
-    s = ArgParseSettings()
-    @add_arg_table s begin
-        "path"
-        help = "pathname to save data under"
-        default = ""
-    end
-    return parse_args(s)
-end
+# function parse_commandline()
+#     s = ArgParseSettings()
+#     @add_arg_table s begin
+#         "path"
+#         help = "pathname to save data under"
+#         default = ""
+#     end
+#     return parse_args(s)
+# end
 
-args=parse_commandline()
+# args=parse_commandline()
 
-@info("command line args:")
-for (arg,val) in args
-  @info("   $arg => $val")
-end
+# @info("command line args:")
+# for (arg,val) in args
+#   @info("   $arg => $val")
+# end
 
-path_name = args["path"]
+path_name = "/glade/derecho/scratch/knudsenl/data" #args["path"]
 
 
 # grid specifications
@@ -131,7 +131,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 25.01*((2*pi)/f)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 50.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -156,6 +156,9 @@ wm = Field(@at (Center, Center, Face) Average(wa, dims=1))
 u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
 v = Field(@at (Center, Center, Center) va - vm)
 w = Field(@at (Center, Center, Center) wa - wm)
+ub = model.background_fields.velocities.u
+vb = model.background_fields.velocities.u
+B = model.background_fields.tracers.b
 
 # buoyancy pertubation calculation
 ba = model.tracers.b
@@ -187,17 +190,17 @@ GSP = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
 BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
 
 # output writers
-output = (; u, v, w, b, PV) # pertubation fields and PV
+output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_flow.nc",
+                                                          filename = path_name*"flow_fields_height_"*hu*"_theta_"*θ*"_stratification_"*N²*"_interior_velocity_"*V∞*".nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"BBL_w_O_TKE.nc",
+                                                          filename = path_name*"TKE_terms_height_"*hu*"_theta_"*θ*"_stratification_"*N²*"_interior_velocity_"*V∞*".nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
