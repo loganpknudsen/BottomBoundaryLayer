@@ -59,7 +59,7 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.07 # m s⁻¹ interior velocity
+const V∞ = 0.02 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 1e-5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
@@ -131,7 +131,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 30.01*((2*pi)/f)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 60.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
