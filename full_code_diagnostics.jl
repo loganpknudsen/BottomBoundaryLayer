@@ -69,7 +69,7 @@ const fˢ=(f^2+θ^2*N²)^(0.5) # modified oscillation
 const δ = 0.1
 const uₒ = 0 # Initial u shear perturbation
 const vₒ = γ*(N²*θ)/(f)*δ # Initial v shear perturbation
-const bₒ = -γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
+const bₒ = 0 #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const a1 = (f*vₒ+bₒ*θ)/(fˢ) 
 const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
@@ -201,7 +201,7 @@ simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_shear.nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
