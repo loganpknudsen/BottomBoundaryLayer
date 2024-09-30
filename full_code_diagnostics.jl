@@ -32,7 +32,7 @@ using Oceanostics
 #   @info("   $arg => $val")
 # end
 
-path_name = "/glade/derecho/scratch/knudsenl/data" #args["path"]
+path_name = "/glade/derecho/scratch/knudsenl/data/" #args["path"]
 
 
 # grid specifications
