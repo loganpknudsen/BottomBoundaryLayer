@@ -161,6 +161,9 @@ ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
 
+ut = Field(@at (Center, Center, Center) ub+ua)
+vt = Field(@at (Center, Center, Center) vb+va)
+
 # buoyancy pertubation calculation
 ba = model.tracers.b
 bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
