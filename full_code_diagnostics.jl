@@ -168,8 +168,9 @@ vt = Field(@at (Center, Center, Center) vb+va)
 ba = model.tracers.b
 bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = Field(@at (Center, Center, Center) ba - bm)
+bt = Field(@at (Center, Center, Center) B+ba)
 
-PV = ErtelPotentialVorticity(model, u = ua+ub, v=va+vb, w=wa, coriolis; location=(Center, Center, Center) ) # potential vorticity calculation
+PV = ErtelPotentialVorticity(model, ut, vt, wa, bt, coriolis; location=(Center, Center, Center) ) # potential vorticity calculation
 E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
 k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
 
