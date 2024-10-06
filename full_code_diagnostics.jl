@@ -132,7 +132,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 60.01*((2*pi)/f)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 5.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -158,7 +158,7 @@ u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
 v = Field(@at (Center, Center, Center) va - vm)
 w = Field(@at (Center, Center, Center) wa - wm)
 ub = model.background_fields.velocities.u
-vb = model.background_fields.velocities.u
+vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
 
 # buoyancy pertubation calculation
@@ -166,7 +166,7 @@ ba = model.tracers.b
 bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = Field(@at (Center, Center, Center) ba - bm)
 
-PV = ErtelPotentialVorticity(model, add_background=true) # potential vorticity calculation
+PV = ErtelPotentialVorticity(model, u = ua+ub, v=va+vb, w=wa, coriolis; location=(Center, Center, Center) ) # potential vorticity calculation
 E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
 k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
 
