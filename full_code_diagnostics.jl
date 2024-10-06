@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-θ = 5*10^(-3) # degrees 10^(-2) is previous value for 110 meter layer
+θ = 2.5*10^(-3) # degrees 10^(-2) is previous value for 110 meter layer
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
@@ -61,7 +61,7 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # parameters for simulation
 const V∞ = 0.05 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
-const N² = 1e-5 # interior stratification
+const N² = 2e-5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
 const γ = (1+S∞)^(-1) # 0 PV parameter
 const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
@@ -132,7 +132,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 5.01*((2*pi)/f)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 30.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
