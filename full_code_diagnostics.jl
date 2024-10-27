@@ -66,7 +66,7 @@ const S∞ = (N²*θ^2)/(f^2) # slope burger number
 const γ = (1+S∞)^(-1) # 0 PV parameter
 const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
 const fˢ=(f^2+θ^2*N²)^(0.5) # modified oscillation
-const δ = 0.5
+const δ = 0.1
 const uₒ = 0 # Initial u shear perturbation
 const vₒ = γ*(N²*θ)/(f)*δ # Initial v shear perturbation
 const bₒ = 0 #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
@@ -108,7 +108,7 @@ b_bc_bottom= GradientBoundaryCondition(-1*N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
-const ν = 1e-4
+const ν = 1e-5
 closure = ScalarDiffusivity(ν=ν, κ=1e-4)
 
 start_time = time_ns()
