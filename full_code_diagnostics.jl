@@ -108,7 +108,7 @@ b_bc_bottom= GradientBoundaryCondition(-1*N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
-const ν = 1e-5
+const ν = 1e-6
 closure = ScalarDiffusivity(ν=ν, κ=1e-4)
 
 start_time = time_ns()
