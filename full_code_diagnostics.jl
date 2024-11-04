@@ -41,8 +41,8 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 
 Lx = 2000meters
 Lz = 200meters
-Nx = 512
-Nz = 128 # Note to self, maintain 2 to 1 resolution ration
+Nx = 1024 # 512 originally
+Nz = 256 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -132,7 +132,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 60.01*((2*pi)/f)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 30.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -200,12 +200,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_long_run.nc",
+                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_high_res.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_long_run.nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_high_res.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
