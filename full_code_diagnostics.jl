@@ -103,9 +103,9 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # Boundary condition set up
 # Free Slip Boundary Conditions
 
-# b_bc_top= GradientBoundaryCondition(0)
+b_bc_top= GradientBoundaryCondition(N²*(1+θ))
 # b_bc_bottom= GradientBoundaryCondition(N²)
-# buoyancy_grad = FieldBoundaryConditions(top=b_bc_bottom) # ,bottom=b_bc_bottom
+buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
 const ν1 = 0
@@ -118,7 +118,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
                             advection = WENO(),
                             tracers = :b,
-                        #     boundary_conditions = (; b=buoyancy_grad),
+                            boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
 ns = 10^(-6) # standard deviation for noise
@@ -200,12 +200,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_boundary_fix2.nc",
+                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_boundary_fix3.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_boundary_fix2.nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_boundary_fix3.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
