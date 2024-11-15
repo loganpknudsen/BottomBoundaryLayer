@@ -1,1 +1,6 @@
- *(Gsheari*Hi/f)**(-1
+fig, ax = plt.subplots()
+# ax.set_xlabel("Wavenumber")
+# ax.set_ylabel("Growth Rate")
+# # ax.title("Growth Rate for delta = 0.5 S=0.158 and var. k")
+# ax.plot(k_list,evals[0,0,0,:]*(-1))
+# plt.show()

@@ -1,20 +1,17 @@
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import dedalus.public as d3
+import xarray as xr
 # import logging
 # logger = logging.getLogger(__name__)
 
 
 # Parameters
-N_list = [(1e-5)**(0.5)]#np.linspace((1e-7)**(0.5),(8e-4)**(0.5),21) #np.array([(1e-5)**(0.5)]) # stratification
-delta_list = [0] # np.linspace(0, 1, 11)
-theta = 0.4225*(1e-4)/((1e-5)**(0.5))
+N_list = np.linspace((1e-7)**(0.5),(8e-4)**(0.5),101) #np.array([(1e-5)**(0.5)]) # stratification
+delta_list = np.linspace(0, 1, 26)
+theta = 5e-3
 f = 10**(-4)
 
-phi = np.pi/2
-uz = np.sin(phi)
-vz = np.cos(phi)-1
-bz = np.cos(phi)-1
 
 # Basis
 coord = d3.Coordinate('z')
@@ -44,6 +41,9 @@ n = dist.Field()
 Ri = dist.Field()
 alpha = dist.Field()
 k = dist.Field()
+uz = dist.Field()
+vz = dist.Field()
+bz = dist.Field()
 one_z = dist.Field(bases=basis)
 one_z['g'] = 1-z
 lift_basis = basis.derivative_basis(1)
@@ -77,43 +77,63 @@ def gamma_lower_limit(N,delta):
 
 def gamma_upper_limit(N,delta):
     S2 = N**2*theta**2/f**2
-    return 1.00001#2*(1+S2)**(-1)
+    return (1+S2)**(-1)
 
 # Solver
 solver = problem.build_solver()
 evals = []
 gammas = []
-k_list = np.arange(1,100,1)
-for Ni in N_list:
-    gammas2 = []
-    N['g'] = Ni
-    eval2 = []
-    for deltai in delta_list:
-        delta['g'] = deltai
-        gamma_list = [gamma_upper_limit(Ni,deltai)]#np.linspace(gamma_lower_limit(Ni,deltai),gamma_upper_limit(Ni,deltai),5)
-        gammas2.append(gamma_list)
-        eval3 = []
-        for gammai in gamma_list:
-            eval4 = []
-            gamma['g'] = gammai
-            Gsheari = (theta*(Ni)**2*gammai)/f
-            Gshear['g'] = Gsheari
-            n['g'] = f/(Gsheari)
-            Ri['g'] = Ni**2*(1-gammai)/((Gsheari)**2)
-            alpha['g'] = (Ni**2*theta*(1-gammai))/(f*Gsheari)
-            Hi = 1 # (f*0.05)/(gammai*Ni**2*theta)
-            for ki in k_list:
-                k['g'] = ki*np.pi*(Gsheari*Hi)/f
-                solver.solve_dense(solver.subproblems[0], rebuild_matrices=True)
-                sorted_evals = np.sort(solver.eigenvalues.imag)
-                eval4.append(sorted_evals[:1])
-            eval3.append(eval4)
-        eval2.append(eval3)
-    evals.append(eval2)
-    gammas.append(gammas2)
+k_list = np.arange(0.1,40,0.1)
+time = np.arange(0,2*np.pi,0.01)
+for ti in time:
+    gammas5 = []
+    evals5 = []
+    uz["g"] = np.sin(ti)
+    vz["g"] = np.cos(ti)-1
+    bz["g"] = np.cos(ti)-1
+    for Ni in N_list:
+        gammas2 = []
+        N['g'] = Ni
+        eval2 = []
+        for deltai in delta_list:
+            delta['g'] = deltai
+            gamma_list = np.linspace(gamma_lower_limit(Ni,deltai),gamma_upper_limit(Ni,deltai),21)
+            eval3 = []
+            gammas3 = []
+            for gammai in gamma_list:
+                eval4 = []
+                gammas4 = []
+                gamma['g'] = gammai
+                Gsheari = (theta*(Ni)**2*gammai)/f
+                Gshear['g'] = Gsheari
+                n['g'] = f/(Gsheari)
+                Ri['g'] = Ni**2*(1-gammai)/((Gsheari)**2)
+                alpha['g'] = (Ni**2*theta*(1-gammai))/(f*Gsheari)
+                Hi = 1 # (f*0.05)/(gammai*Ni**2*theta)
+                for ki in k_list:
+                    k['g'] = ki*np.pi*(Gsheari*Hi)/f
+                    solver.solve_dense(solver.subproblems[0], rebuild_matrices=True)
+                    sorted_evals = np.sort(solver.eigenvalues.imag)
+                    eval4.append(sorted_evals[:1])
+                    gammas4.append([gammai])
+                eval3.append(eval4)
+                gammas3.append(gammas4)
+            eval2.append(eval3)
+            gammas2.append(gammas3)
+        evals5.append(eval2)
+        gammas5.append(gammas2)
+    evals.append(evals5)
+    gammas.append(gammas5)
+    
 evals = np.array(evals)
-
-import matplotlib.colors as colors
+gammas = np.array(gammas)
+print(np.shape(evals))
+print(np.shape(gammas))
+g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
+gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k_mode"],evals[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k_mode"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k_mode":k_list})
+gr_data.to_netcdf("test_run_on_derecho.nc")
+# gr_data = gr_data.assign(gm=gammas)
+# import matplotlib.colors as colors
 
 # fig, ax = plt.subplots()
 # cs = ax.contourf(delta_list,N_list*theta/f,np.log10(evals[:,:,0,0]*(-1)),levels=20,cmap="bwr")
@@ -123,9 +143,9 @@ import matplotlib.colors as colors
 # # ax.title(r"")
 # cbar.ax.set_ylabel("log of growth rate")
 # plt.show()
-fig, ax = plt.subplots()
-ax.set_xlabel("Wavenumber")
-ax.set_ylabel("Growth Rate")
-# ax.title("Growth Rate for delta = 0.5 S=0.158 and var. k")
-ax.plot(k_list,evals[0,0,0,:]*(-1))
-plt.show()
+# fig, ax = plt.subplots()
+# ax.set_xlabel("Wavenumber")
+# ax.set_ylabel("Growth Rate")
+# # ax.title("Growth Rate for delta = 0.5 S=0.158 and var. k")
+# ax.plot(k_list,evals[0,0,0,:]*(-1))
+# plt.show()
