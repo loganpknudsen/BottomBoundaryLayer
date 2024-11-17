@@ -7,7 +7,7 @@ import xarray as xr
 
 
 # Parameters
-N_list = np.linspace((1e-7)**(0.5),(8e-4)**(0.5),101) #np.array([(1e-5)**(0.5)]) # stratification
+N_list = np.linspace((1e-7)**(0.5),(8e-4)**(0.5),51) #np.array([(1e-5)**(0.5)]) # stratification
 delta_list = np.linspace(0, 1, 26)
 theta = 5e-3
 f = 10**(-4)
@@ -73,18 +73,18 @@ problem.add_equation("p(z=1)=0")
 
 def gamma_lower_limit(N,delta):
     S2 = N**2*theta**2/f**2
-    return (3-S2)/(3*(1+S2)-delta*S2)
+    return (3-S2)/(3*(1+S2)-4*delta*S2)
 
 def gamma_upper_limit(N,delta):
     S2 = N**2*theta**2/f**2
-    return (1+S2)**(-1)
+    return (1+S2-delta*S2)**(-1)
 
 # Solver
 solver = problem.build_solver()
 evals = []
 gammas = []
-k_list = np.arange(0.1,40,0.1)
-time = np.arange(0,2*np.pi,0.01)
+k_list = np.arange(0.5,40,0.5)
+time = np.arange(0,2*np.pi,0.1)
 for ti in time:
     gammas5 = []
     evals5 = []

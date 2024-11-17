@@ -6,7 +6,7 @@
 ### Resources
 #PBS -l select=1:ncpus=1:mem=80GB
 ### Run Time
-#PBS -l walltime=10:00:00
+#PBS -l walltime=18:00:00
 ### To the casper queue
 #PBS -q casper
 ### output
