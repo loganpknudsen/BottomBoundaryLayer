@@ -148,4 +148,4 @@ gr_data.to_netcdf("test_run_on_derecho.nc")
 # ax.set_ylabel("Growth Rate")
 # # ax.title("Growth Rate for delta = 0.5 S=0.158 and var. k")
 # ax.plot(k_list,evals[0,0,0,:]*(-1))
-# plt.show()
+# pl
