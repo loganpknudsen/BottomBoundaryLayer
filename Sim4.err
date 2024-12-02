@@ -1,0 +1,250 @@
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+[ Info: Initializing simulation...
+[ Info:     ... simulation initialization complete (1.379 minutes)
+[ Info: Executing initial time step...
+[ Info:     ... initial time step complete (5.107 seconds).
+[ Info: Simulation is stopping after running for 7.286 hours.
+[ Info: Simulation time 43.641 days equals or exceeds stop time 43.641 days.
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+[ Info: Initializing simulation...
+[ Info:     ... simulation initialization complete (1.334 minutes)
+[ Info: Executing initial time step...
+[ Info:     ... initial time step complete (4.847 seconds).
+[ Info: Simulation is stopping after running for 3.530 hours.
+[ Info: Simulation time 21.824 days equals or exceeds stop time 21.824 days.
+
+[19086] signal (15): Terminated
+in expression starting at /glade/u/home/knudsenl/BottomBoundaryLayer/full_code_diagnostics.jl:117
+_ZL28computeKnownBitsFromOperatorPKN4llvm8OperatorERKNS_5APIntERNS_9KnownBitsEjRKN12_GLOBAL__N_15QueryE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZL16computeKnownBitsPKN4llvm5ValueERKNS_5APIntERNS_9KnownBitsEjRKN12_GLOBAL__N_15QueryE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZL16computeKnownBitsPKN4llvm5ValueERNS_9KnownBitsEjRKN12_GLOBAL__N_15QueryE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZL28computeKnownBitsFromOperatorPKN4llvm8OperatorERKNS_5APIntERNS_9KnownBitsEjRKN12_GLOBAL__N_15QueryE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZL16computeKnownBitsPKN4llvm5ValueERKNS_5APIntERNS_9KnownBitsEjRKN12_GLOBAL__N_15QueryE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZL16computeKnownBitsPKN4llvm5ValueERNS_9KnownBitsEjRKN12_GLOBAL__N_15QueryE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZL16computeKnownBitsPKN4llvm5ValueEjRKN12_GLOBAL__N_15QueryE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm16computeKnownBitsEPKNS_5ValueERKNS_10DataLayoutEjPNS_15AssumptionCacheEPKNS_11InstructionEPKNS_13DominatorTreeEPNS_25OptimizationRemarkEmitterEb at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm26getOrEnforceKnownAlignmentEPNS_5ValueENS_10MaybeAlignERKNS_10DataLayoutEPKNS_11InstructionEPNS_15AssumptionCacheEPKNS_13DominatorTreeE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm16InstCombinerImpl13visitLoadInstERNS_8LoadInstE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm16InstCombinerImpl3runEv at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZL31combineInstructionsOverFunctionRN4llvm8FunctionERNS_19InstructionWorklistEPNS_9AAResultsERNS_15AssumptionCacheERNS_17TargetLibraryInfoERNS_19TargetTransformInfoERNS_13DominatorTreeERNS_25OptimizationRemarkEmitterEPNS_18BlockFrequencyInfoEPNS_18ProfileSummaryInfoEjPNS_8LoopInfoE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm15InstCombinePass3runERNS_8FunctionERNS_15AnalysisManagerIS1_JEEE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm6detail9PassModelINS_8FunctionENS_15InstCombinePassENS_17PreservedAnalysesENS_15AnalysisManagerIS2_JEEEJEE3runERS2_RS6_ at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm11PassManagerINS_8FunctionENS_15AnalysisManagerIS1_JEEEJEE3runERS1_RS3_ at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm6detail9PassModelINS_8FunctionENS_11PassManagerIS2_NS_15AnalysisManagerIS2_JEEEJEEENS_17PreservedAnalysesES5_JEE3runERS2_RS5_ at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm27ModuleToFunctionPassAdaptor3runERNS_6ModuleERNS_15AnalysisManagerIS1_JEEE at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+_ZN4llvm6detail9PassModelINS_6ModuleENS_27ModuleToFunctionPassAdaptorENS_17PreservedAnalysesENS_15AnalysisManagerIS2_JEEEJEE3runERS2_RS6_ at /glade/u/apps/casper/23.10/spack/opt/spack/llvm/15.0.7/gcc/7.5.0/crrb/lib/libLLVM-15jl.so (unknown line)
+run at /opt/x86_64-linux-gnu/x86_64-linux-gnu/sys-root/usr/local/include/llvm/IR/PassManager.h:522 [inlined]
+LLVMRunJuliaPasses at /workspace/srcdir/LLVM.jl/deps/LLVMExtra/lib/NewPM.cpp:180
+LLVMRunJuliaPasses at /glade/u/home/knudsenl/.julia/packages/LLVM/5DlHM/lib/15/libLLVM_extra.jl:409
+macro expansion at /glade/u/home/knudsenl/.julia/packages/LLVM/5DlHM/src/executionengine/utils.jl:29 [inlined]
+run! at /glade/u/home/knudsenl/.julia/packages/LLVM/5DlHM/src/newpm.jl:270
+macro expansion at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/ptx.jl:193 [inlined]
+macro expansion at /glade/u/home/knudsenl/.julia/packages/LLVM/5DlHM/src/base.jl:98 [inlined]
+optimize_module! at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/ptx.jl:158
+#optimize_newpm!#87 at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/optim.jl:34
+optimize_newpm! at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/optim.jl:15 [inlined]
+#optimize!#86 at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/optim.jl:5 [inlined]
+optimize! at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/optim.jl:3 [inlined]
+macro expansion at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/driver.jl:357 [inlined]
+macro expansion at /glade/u/home/knudsenl/.julia/packages/TimerOutputs/Lw5SP/src/TimerOutput.jl:253 [inlined]
+macro expansion at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/driver.jl:356 [inlined]
+macro expansion at /glade/u/home/knudsenl/.julia/packages/TimerOutputs/Lw5SP/src/TimerOutput.jl:253 [inlined]
+macro expansion at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/driver.jl:325 [inlined]
+#emit_llvm#158 at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/utils.jl:103
+unknown function (ip: 0x150fa7b2b996)
+unknown function (ip: 0x15105a415fa9)
+unknown function (ip: 0x15105a415f7f)
+emit_llvm at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/utils.jl:97 [inlined]
+#codegen#156 at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/driver.jl:136
+codegen at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/driver.jl:115 [inlined]
+#compile#155 at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/driver.jl:111
+compile at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/driver.jl:103 [inlined]
+#1145 at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/compiler/compilation.jl:254 [inlined]
+#JuliaContext#154 at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/driver.jl:52
+unknown function (ip: 0x15105a417006)
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+JuliaContext at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/driver.jl:42
+compile at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/compiler/compilation.jl:253
+actual_compilation at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/execution.jl:237
+unknown function (ip: 0x15105a413249)
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+cached_compilation at /glade/u/home/knudsenl/.julia/packages/GPUCompiler/Y4hSX/src/execution.jl:151
+macro expansion at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/compiler/execution.jl:369 [inlined]
+macro expansion at ./lock.jl:267 [inlined]
+#cufunction#1171 at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/compiler/execution.jl:364
+cufunction at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/compiler/execution.jl:361
+unknown function (ip: 0x150fa7bffcc6)
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+macro expansion at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/compiler/execution.jl:112 [inlined]
+#_#4 at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/CUDAKernels.jl:103
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+jl_apply at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/julia.h:1982 [inlined]
+do_apply at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/builtins.c:768
+Kernel at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/CUDAKernels.jl:89
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+#launch!#10 at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Utils/kernel_launching.jl:131
+launch! at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Utils/kernel_launching.jl:116 [inlined]
+#compute_interior_tendency_contributions!#17 at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Models/NonhydrostaticModels/compute_nonhydrostatic_tendencies.jl:101 [inlined]
+compute_interior_tendency_contributions! at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Models/NonhydrostaticModels/compute_nonhydrostatic_tendencies.jl:53 [inlined]
+compute_tendencies! at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Models/NonhydrostaticModels/compute_nonhydrostatic_tendencies.jl:31
+#apply_regionally!#56 at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Utils/multi_region_transformation.jl:121 [inlined]
+apply_regionally! at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Utils/multi_region_transformation.jl:118 [inlined]
+macro expansion at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Utils/multi_region_transformation.jl:206 [inlined]
+#update_state!#13 at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Models/NonhydrostaticModels/update_nonhydrostatic_model_state.jl:47
+update_state! at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Models/NonhydrostaticModels/update_nonhydrostatic_model_state.jl:19 [inlined]
+update_state! at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Models/NonhydrostaticModels/update_nonhydrostatic_model_state.jl:19
+unknown function (ip: 0x150fa7bade25)
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+#NonhydrostaticModel#1 at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Models/NonhydrostaticModels/nonhydrostatic_model.jl:211
+unknown function (ip: 0x150fa7b6f351)
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+NonhydrostaticModel at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Models/NonhydrostaticModels/nonhydrostatic_model.jl:113
+unknown function (ip: 0x15105a3f29c9)
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+jl_apply at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/julia.h:1982 [inlined]
+do_call at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/interpreter.c:126
+eval_value at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/interpreter.c:223
+eval_stmt_value at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/interpreter.c:174 [inlined]
+eval_body at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/interpreter.c:617
+jl_interpret_toplevel_thunk at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/interpreter.c:775
+jl_toplevel_eval_flex at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/toplevel.c:934
+jl_toplevel_eval_flex at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/toplevel.c:877
+ijl_toplevel_eval_in at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/toplevel.c:985
+eval at ./boot.jl:385 [inlined]
+include_string at ./loading.jl:2076
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+_include at ./loading.jl:2136
+include at ./Base.jl:495
+jfptr_include_46347 at /glade/u/apps/casper/23.10/spack/opt/spack/julia/1.10.2/gcc/7.5.0/apod/lib/julia/sys.so (unknown line)
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+exec_options at ./client.jl:318
+_start at ./client.jl:552
+jfptr__start_82656 at /glade/u/apps/casper/23.10/spack/opt/spack/julia/1.10.2/gcc/7.5.0/apod/lib/julia/sys.so (unknown line)
+_jl_invoke at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:2894 [inlined]
+ijl_apply_generic at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/gf.c:3076
+jl_apply at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/julia.h:1982 [inlined]
+true_main at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/jlapi.c:582
+jl_repl_entrypoint at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/jlapi.c:731
+main at julia (unknown line)
+__libc_start_main at /lib64/libc.so.6 (unknown line)
+_start at julia (unknown line)
+unknown function (ip: (nil))
+Allocations: 55143940 (Pool: 55092038; Big: 51902); GC: 66
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+[ Info: Initializing simulation...
+[ Info:     ... simulation initialization complete (1.451 minutes)
+[ Info: Executing initial time step...
+[ Info:     ... initial time step complete (5.289 seconds).
+[ Info: Simulation is stopping after running for 3.546 hours.
+[ Info: Simulation time 21.824 days equals or exceeds stop time 21.824 days.

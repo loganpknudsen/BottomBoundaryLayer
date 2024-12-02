@@ -1,0 +1,211 @@
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+[ Info: Initializing simulation...
+[ Info:     ... simulation initialization complete (2.151 minutes)
+[ Info: Executing initial time step...
+[ Info:     ... initial time step complete (5.133 seconds).
+[ Info: Simulation is stopping after running for 41.579 minutes.
+[ Info: Simulation time 3.643 days equals or exceeds stop time 3.643 days.
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+[ Info: Initializing simulation...
+[ Info:     ... simulation initialization complete (1.640 minutes)
+[ Info: Executing initial time step...
+[ Info:     ... initial time step complete (7.059 seconds).
+[ Info: Simulation is stopping after running for 40.367 minutes.
+[ Info: Simulation time 3.643 days equals or exceeds stop time 3.643 days.
+=>> PBS: job killed: walltime 36011 exceeded limit 36000
+
+[23373] signal (15): Terminated
+in expression starting at /glade/u/home/knudsenl/BottomBoundaryLayer/full_code_diagnostics.jl:214
+pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
+uv_cond_wait at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-libuv-julia-1.44.3-ru2mrexwxpzi6lwrpoceowcptfr6x2js/spack-src/src/unix/thread.c:883
+ijl_task_get_next at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/partr.c:509
+poptask at ./task.jl:985
+wait at ./task.jl:994
+#wait#645 at ./condition.jl:130
+wait at ./condition.jl:125 [inlined]
+take! at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:53
+synchronization_worker at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:121
+unknown function (ip: 0x14fa1e5e571d)
+start_thread at /lib64/libpthread.so.0 (unknown line)
+unknown function (ip: 0x14f88946807f)
+unknown function (ip: (nil))
+pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
+uv_cond_wait at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-libuv-julia-1.44.3-ru2mrexwxpzi6lwrpoceowcptfr6x2js/spack-src/src/unix/thread.c:883
+ijl_task_get_next at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/partr.c:509
+poptask at ./task.jl:985
+wait at ./task.jl:994
+#wait#645 at ./condition.jl:130
+wait at ./condition.jl:125 [inlined]
+take! at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:53
+synchronization_worker at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:121
+unknown function (ip: 0x14fa1e5e571d)
+start_thread at /lib64/libpthread.so.0 (unknown line)
+unknown function (ip: 0x14f88928c07f)
+unknown function (ip: (nil))
+unknown function (ip: 0x14fa0d3a5901)
+unknown function (ip: 0x14fa0d1534a2)
+unknown function (ip: 0x14fa0d4b530e)
+unknown function (ip: 0x14fa0d4b56a4)
+unknown function (ip: 0x14fa0d16868b)
+unknown function (ip: 0x14fa0d22b999)
+unknown function (ip: 0x14fa0d485028)
+unknown function (ip: 0x14fa0d2d289c)
+macro expansion at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/utils/call.jl:218 [inlined]
+unchecked_cuStreamSynchronize at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/libcuda.jl:4265 [inlined]
+#996 at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:127
+take! at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:56
+synchronization_worker at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:121
+unknown function (ip: 0x14fa1e5e571d)
+start_thread at /lib64/libpthread.so.0 (unknown line)
+unknown function (ip: (nil))
+unknown function (ip: (nil))
+pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
+uv_cond_wait at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-libuv-julia-1.44.3-ru2mrexwxpzi6lwrpoceowcptfr6x2js/spack-src/src/unix/thread.c:883
+ijl_task_get_next at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/partr.c:509
+poptask at ./task.jl:985
+wait at ./task.jl:994
+#wait#645 at ./condition.jl:130
+wait at ./condition.jl:125 [inlined]
+take! at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:53
+synchronization_worker at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:121
+unknown function (ip: 0x14fa1e5e571d)
+start_thread at /lib64/libpthread.so.0 (unknown line)
+unknown function (ip: 0x14f88837407f)
+unknown function (ip: (nil))
+pthread_cond_wait at /lib64/libpthread.so.0 (unknown line)
+uv_cond_wait at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-libuv-julia-1.44.3-ru2mrexwxpzi6lwrpoceowcptfr6x2js/spack-src/src/unix/thread.c:883
+ijl_task_get_next at /glade/derecho/scratch/csgteam/temp/spack/casper/23.10/builds/spack-stage-julia-1.10.2-apod2ebbzv2cxtnlmfltk45mbfdgyeq3/spack-src/src/partr.c:509
+poptask at ./task.jl:985
+wait at ./task.jl:994
+#wait#645 at ./condition.jl:130
+wait at ./condition.jl:125 [inlined]
+put! at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:40
+nonblocking_synchronize at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:170
+#synchronize#1000 at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:202
+synchronize at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:196 [inlined]
+synchronize at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/synchronization.jl:196 [inlined]
+#1125 at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/array.jl:535
+#context!#990 at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/state.jl:168 [inlined]
+context! at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/lib/cudadrv/state.jl:163 [inlined]
+unsafe_copyto! at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/array.jl:531
+copyto! at /glade/u/home/knudsenl/.julia/packages/CUDA/Tl08O/src/array.jl:489 [inlined]
+setindex! at /glade/u/home/knudsenl/.julia/packages/GPUArrays/bbZD0/src/host/indexing.jl:60 [inlined]
+scalar_setindex! at /glade/u/home/knudsenl/.julia/packages/GPUArrays/bbZD0/src/host/indexing.jl:42 [inlined]
+_setindex! at /glade/u/home/knudsenl/.julia/packages/GPUArrays/bbZD0/src/host/indexing.jl:26 [inlined]
+setindex! at /glade/u/home/knudsenl/.julia/packages/GPUArrays/bbZD0/src/host/indexing.jl:24 [inlined]
+macro expansion at /glade/u/home/knudsenl/.julia/packages/GPUArraysCore/GMsgk/src/GPUArraysCore.jl:210 [inlined]
+solve! at /glade/u/home/knudsenl/.julia/packages/Oceananigans/thcPW/src/Solvers/fft_based_poisson_solver.jl:111
+unknown function (ip: (nil))
+Allocations: 3642653856 (Pool: 3588663845; Big: 53990011); GC: 9727
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+[ Info: Initializing simulation...
+[ Info:     ... simulation initialization complete (1.443 minutes)
+[ Info: Executing initial time step...
+[ Info:     ... initial time step complete (5.310 seconds).
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+[ Info: Initializing simulation...
+[ Info:     ... simulation initialization complete (1.366 minutes)
+[ Info: Executing initial time step...
+[ Info:     ... initial time step complete (4.967 seconds).
+[ Info: Simulation is stopping after running for 4.371 hours.
+[ Info: Simulation time 3.643 days equals or exceeds stop time 3.643 days.

@@ -1,0 +1,4 @@
+=>> PBS: job killed: walltime 36056 exceeded limit 36000
+/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/dedalus/core/operators.py:384: RuntimeWarning: invalid value encountered in power
+  np.power(arg0.data, arg1, out.data)
+=>> PBS: job killed: walltime 64907 exceeded limit 64800
