@@ -37,6 +37,7 @@ N = dist.Field()
 # S = dist.Field()
 gamma = dist.Field()
 Gshear = dist.Field()
+S2 = dist.Field()
 n = dist.Field()
 Ri = dist.Field()
 alpha = dist.Field()
@@ -55,11 +56,11 @@ pz = dz(p)+lift(tau_3)+lift(tau_4)
 # Problem
 problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4], eigenvalue=omega, namespace=locals())
 
-problem.add_equation("-1j*omega*u-gamma**(0.5)*delta*uz*w+1j*k*gamma**(0.5)*delta*uz*one_z*u+1j*k*Ri*p-alpha*b= 0")
-problem.add_equation("-1j*omega*v-(1+delta+delta*gamma*vz)*w+1j*k*gamma**(0.5)*delta*uz*one_z*v+u-n*theta*w= 0")
-problem.add_equation("-1j*omega*n**2*w+1j*k*gamma**(0.5)*delta*n*uz*one_z*w+n*theta*v+Ri*pz-Ri*b= 0")
+problem.add_equation("-1j*omega*u-gamma**(0.5)*delta*uz*w+1j*k*gamma*(1+S2)**(-0.5)*delta*uz*one_z*u-v+1j*k*Ri*p-alpha*b= 0")
+problem.add_equation("-1j*omega*v-(1-delta-delta*gamma*vz)*w+1j*k*(1+S2)**(-0.5)*gamma*delta*uz*one_z*v+u-n*theta*w= 0")
+problem.add_equation("-1j*omega*n**2*w+1j*k*(1+S2)**(-0.5)*gamma*delta*n*uz*one_z*w+n*theta*v+Ri*pz-Ri*b= 0")
 problem.add_equation("1j*k*u+wz=0")
-problem.add_equation("-1j*omega*b + u*theta/(n*(1-gamma)) + (1-gamma)**(-1)*(1-gamma-gamma*delta*bz*theta)*w + 1j*k*gamma**(0.5)*delta*uz*one_z*b = 0")
+problem.add_equation("-1j*omega*b + u*theta/(n*(1-gamma)) + (1-gamma)**(-1)*(1-gamma-gamma*delta*bz*theta)*w + 1j*k*(1+S2)**(-0.5)*gamma*delta*uz*one_z*b = 0")
 
 # problem.add_equation("-1j*omega*u-gamma**(0.5)*delta*uz*w+1j*k*gamma**(0.5)*delta*uz*one_z*u+1j*k*Ri*p-alpha*b = 0")
 # problem.add_equation("-1j*omega*v-(1+delta+delta*gamma*vz)*w+1j*k*gamma**(0.5)*delta*uz*one_z*v+u-n*theta*w= 0")
@@ -105,6 +106,7 @@ for ti in time:
                 eval4 = []
                 gammas4 = []
                 gamma['g'] = gammai
+                S2['g'] = Ni**2*theta**2/f**2
                 Gsheari = (theta*(Ni)**2*gammai)/f
                 Gshear['g'] = Gsheari
                 n['g'] = f/(Gsheari)
