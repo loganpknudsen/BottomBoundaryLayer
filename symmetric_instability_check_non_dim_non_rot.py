@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 N_list = [(1e-5)**(0.5)] #np.linspace((1e-7)**(0.5),(8e-4)**(0.5),51) #np.array([(1e-5)**(0.5)]) # stratification
 delta_list = [0] #np.linspace(0, 1, 26)
 f = 10**(-4) #*(1+N_list[0]**2*theta**2/10**(-8))**(0.5)
-gm = 0.9
+gm = 0.8
 S2 = 0.4225
 theta = np.arctan((S2)**(0.5)*10**(-4)/(N_list[0]))
 H = 1
@@ -59,7 +59,7 @@ problem.add_equation("dt(u)-v+Ri*dx(p)= 0")
 problem.add_equation("dt(v)+w+(1-n**(-1)*np.tan(theta))*u= 0") 
 problem.add_equation("pz-b= 0") # -1j*omega*n**2*w+n*theta*v+Ri*pz-Ri*b= 0
 problem.add_equation("dx(u)+wz=0")
-problem.add_equation("dt(b) -np.tan(theta)*n**(-1)*u+w= 0") 
+problem.add_equation("dt(b) + Ri**(-1)*u+w= 0") 
 problem.add_equation("w(z=0)=0")
 problem.add_equation("w(z="+str(H)+")=0")
 problem.add_equation("p(z=0)=0")
@@ -91,7 +91,7 @@ for ti in time:
                 eval4 = []
                 gammas4 = []
                 gamma['g'] = gammai
-                Gsheari = -1*(theta*(Ni)**2*(gammai))/(f)
+                Gsheari = 1*(np.sin(theta)*(Ni)**2*(gammai))/(f)
                 Rii = Ni**2*(1-gammai)/(Gsheari**2)
                 Ri['g'] = Rii
                 ni = f/Gsheari

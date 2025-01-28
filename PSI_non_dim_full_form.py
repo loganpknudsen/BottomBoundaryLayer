@@ -1,13 +1,11 @@
 import numpy as np
-# import matplotlib.pyplot as plt
 import dedalus.public as d3
 import xarray as xr
-# import logging
-# logger = logging.getLogger(__name__)
+
 
 
 # Parameters
-N_list = [(9.9*10**(-6))**(0.5)] #np.linspace((1e-7)**(0.5),(8e-4)**(0.5),51) #np.array([(1e-5)**(0.5)]) # stratification
+N_list = [(1*10**(-5))**(0.5)] #np.linspace((1e-7)**(0.5),(8e-4)**(0.5),51) #np.array([(1e-5)**(0.5)]) # stratification
 theta = 5*10**(-3)
 delta_list = [0.5] #np.linspace(0, 1, 26)
 f = 10**(-4)
@@ -20,7 +18,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 512, bounds=(0, H))
+basis = d3.Chebyshev(coord, 256, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -79,7 +77,7 @@ problem.add_equation("p(z="+str(H)+")=0")
 solver = problem.build_solver()
 evals = []
 gammas = []
-k_list = np.arange(0,101,1)
+k_list = np.arange(0,41,1)
 phase = np.pi/2
 time = [phase/((1+N_list[0]**2*theta**2*f**(-2))**(0.5))] #np.arange(0,2*np.pi/(1+N_list[0]**2*theta**2*f**(-2))**(0.5)+1,(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 vs = []
@@ -144,7 +142,7 @@ vs = np.array(vs)
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
 gr_data = gr_data.mean(["t"])
-gr_data.to_netcdf("PSI_non_dim_full_form_high_r3s.nc")
+gr_data.to_netcdf("PSI_non_dim_full_form_high_res.nc") # high_r3s
 grid_normal = basis.global_grid(dist,scale=1).ravel()
 field_data = xr.Dataset({"v_structure":(["t","k","z"],vs)},coords={"t":time,"k":k_list,"z":grid_normal})
 field_data = field_data.mean(["t"])
