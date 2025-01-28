@@ -58,10 +58,10 @@ wz = dz(w) + lift(tau_1) + lift(tau_2)
 pz = dz(p) + lift(tau_3) + lift(tau_4)
 
 # Problem
-problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4], eigenvalue=omega, namespace=locals()) #,tau_2
+problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4], eigenvalue=omega, namespace=locals()) 
 problem.add_equation("dt(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)= 0")
 problem.add_equation("dt(v)+w+u*np.cos(theta)-np.sin(theta)*n*w= 0") 
-problem.add_equation("pz-b*np.cos(theta)= 0") # n**2*dt(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)
+problem.add_equation("pz-b*np.cos(theta)= 0") 
 problem.add_equation("dx(u)+wz =0")
 problem.add_equation("dt(b)+ Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)= 0") 
 problem.add_equation("w(z='left')=0")
