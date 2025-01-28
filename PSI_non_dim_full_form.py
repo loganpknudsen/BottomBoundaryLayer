@@ -79,7 +79,7 @@ problem.add_equation("p(z="+str(H)+")=0")
 solver = problem.build_solver()
 evals = []
 gammas = []
-k_list = np.arange(0,41,1)
+k_list = np.arange(0,101,1)
 phase = np.pi/2
 time = [phase/((1+N_list[0]**2*theta**2*f**(-2))**(0.5))] #np.arange(0,2*np.pi/(1+N_list[0]**2*theta**2*f**(-2))**(0.5)+1,(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 vs = []
