@@ -77,9 +77,9 @@ problem.add_equation("p(z="+str(H)+")=0")
 solver = problem.build_solver()
 evals = []
 gammas = []
-k_list = np.arange(0,41,1)
-phase = np.pi/2
-time = [phase/((1+N_list[0]**2*theta**2*f**(-2))**(0.5))] #np.arange(0,2*np.pi/(1+N_list[0]**2*theta**2*f**(-2))**(0.5)+1,(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
+k_list = np.arange(0,101,1)
+# phase = np.pi/2
+time = np.arange(0,2*np.pi/(1+N_list[0]**2*theta**2*f**(-2))**(0.5)+1,(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 vs = []
 for ti in time:
     gammas5 = []
@@ -141,11 +141,11 @@ gammas = np.array(gammas)
 vs = np.array(vs)
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
-gr_data = gr_data.mean(["t"])
+# gr_data = gr_data.mean(["t"])
 gr_data.to_netcdf("PSI_non_dim_full_form_high_res.nc") # high_r3s
 grid_normal = basis.global_grid(dist,scale=1).ravel()
 field_data = xr.Dataset({"v_structure":(["t","k","z"],vs)},coords={"t":time,"k":k_list,"z":grid_normal})
-field_data = field_data.mean(["t"])
+# field_data = field_data.mean(["t"])
 field_data.to_netcdf("PSI_non_dim_field_high_res.nc")
 
 
