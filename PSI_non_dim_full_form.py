@@ -20,7 +20,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 512, bounds=(0, H))
+basis = d3.Chebyshev(coord, 64, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -140,9 +140,6 @@ for ti in time:
 evals = np.array(evals)
 gammas = np.array(gammas)
 vs = np.array(vs)
-print(np.shape(evals))
-print(np.shape(gammas))
-print(np.shape(vs))
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
 gr_data = gr_data.mean(["t"])
