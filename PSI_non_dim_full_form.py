@@ -80,7 +80,7 @@ evals_i =[]
 gammas = []
 k_list = np.arange(0,31,1)
 # phase = np.pi/2
-time = np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),0.1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
+time = np.arange(0,(2*np.pi+0.1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),0.1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
 vs = []
 ws = []
@@ -137,13 +137,13 @@ for ti in time:
                     solver.set_state(idx[-1],solver.subsystems[0])
 
                     # print(np.shape(solver.state))
-                    ui = (u['g']/u['g'][1]).real
+                    ui = (u['g']).real
                     ut.append(np.array(ui))
-                    vi = (v['g']/v['g'][1]).real
+                    vi = (v['g']).real
                     vt.append(np.array(vi))
-                    wi = (w['g']/w['g'][1]).real
+                    wi = (w['g']).real
                     wt.append(np.array(wi))
-                    bi = (b['g']/b['g'][1]).real
+                    bi = (b['g']).real
                     bt.append(np.array(bi))
                     eval4.append([sorted_evals])
                     eval_i4.append([sorted_evals_i])
