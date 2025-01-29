@@ -5,7 +5,7 @@ import xarray as xr
 
 
 # Parameters
-N_list = [(1*10**(-5))**(0.5)] #np.linspace((1e-7)**(0.5),(8e-4)**(0.5),51) #np.array([(1e-5)**(0.5)]) # stratification
+N_list = [(1*10**(-5))**(0.5)]  # np.linspace((1e-7)**(0.5),(8e-4)**(0.5),51) #np.array([(1e-5)**(0.5)]) # stratification
 theta = 5*10**(-3)
 delta_list = [0.5] #np.linspace(0, 1, 26)
 f = 10**(-4)
