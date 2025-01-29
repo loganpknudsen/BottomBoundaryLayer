@@ -18,7 +18,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 128, bounds=(0, H))
+basis = d3.Chebyshev(coord, 64, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -75,7 +75,8 @@ problem.add_equation("p(z="+str(H)+")=0")
 
 # Solver
 solver = problem.build_solver()
-evals = []
+evals_r = []
+evals_i =[]
 gammas = []
 k_list = np.arange(0,31,1)
 # phase = np.pi/2
@@ -87,6 +88,7 @@ bs = []
 for ti in time:
     gammas5 = []
     evals5 = []
+    evals_i1 = []
     ut = []
     vt = []
     wt = []
@@ -96,13 +98,16 @@ for ti in time:
         gammas2 = []
         N['g'] = Ni
         eval2 = []
+        eval_i2 = []
         for deltai in delta_list:
             delta['g'] = deltai
             gamma_list = [gm]#np.linspace(gamma_lower_limit(Ni,deltai),gamma_upper_limit(Ni,deltai),21)
             eval3 = []
+            eval_i3 = []
             gammas3 = []
             for gammai in gamma_list:
                 eval4 = []
+                eval_i4 = []
                 gammas4 = []
                 gamma['g'] = gammai
                 Gsheari = (theta*(Ni)**2*(gammai))/(f)
@@ -128,6 +133,7 @@ for ti in time:
                     # omg[omg>0] = 0 #  TO AVOID SPURIOUS VALUES....
                     idx = np.argsort(omg.imag)
                     sorted_evals = solver.eigenvalues[idx[-1]].imag
+                    sorted_evals_i = solver.eigenvalues[idx[-1]].real
                     solver.set_state(idx[-1],solver.subsystems[0])
 
                     # print(np.shape(solver.state))
@@ -140,31 +146,37 @@ for ti in time:
                     bi = (b['g']/b['g'][1]).real
                     bt.append(np.array(bi))
                     eval4.append([sorted_evals])
+                    eval_i4.append([sorted_evals_i])
                     gammas4.append([gammai])
                 eval3.append(eval4)
+                eval_i3.append(eval_i4)
                 gammas3.append(gammas4)
             eval2.append(eval3)
+            eval_i2.append(eval_i3)
             gammas2.append(gammas3)
         evals5.append(eval2)
+        evals_i1.append(eval_i2)
         gammas5.append(gammas2)
     us.append(ut)
     vs.append(vt)
     ws.append(wt)
     bs.append(bt)
-    evals.append(evals5)
+    evals_r.append(evals5)
+    evals_i.append(evals_i1)
     gammas.append(gammas5)
     
-evals = np.array(evals)
+evals_r = np.array(evals_r)
+evals_i = np.array(evals_i)
 gammas = np.array(gammas)
 us = np.array(us)
 vs = np.array(vs)
 ws = np.array(ws)
 bs = np.array(bs)
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
-gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
-gr_data.to_netcdf("PSI_non_dim_full_form_mid_res.nc") 
+gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals_r[:,:,:,:,:,0]),"oscillation":(["t","N","delta","gamma_index","k"],evals_i[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
+gr_data.to_netcdf("PSI_non_dim_full_form_low_res.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
 field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs)},coords={"t":time,"k":k_list,"z":grid_normal})
-field_data.to_netcdf("PSI_non_dim_field_mid_res.nc")
+field_data.to_netcdf("PSI_non_dim_field_low_res.nc")
 
 
