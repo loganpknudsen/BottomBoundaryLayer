@@ -18,7 +18,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 64, bounds=(0, H))
+basis = d3.Chebyshev(coord, 128, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -77,14 +77,20 @@ problem.add_equation("p(z="+str(H)+")=0")
 solver = problem.build_solver()
 evals = []
 gammas = []
-k_list = np.arange(0,101,1)
+k_list = np.arange(0,31,1)
 # phase = np.pi/2
-time = np.arange(0,2*np.pi/(1+N_list[0]**2*theta**2*f**(-2))**(0.5)+1,0.1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
+time = np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),0.1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
+us = []
 vs = []
+ws = []
+bs = []
 for ti in time:
     gammas5 = []
     evals5 = []
+    ut = []
     vt = []
+    wt = []
+    bt = []
     t["g"]= ti
     for Ni in N_list:
         gammas2 = []
@@ -110,7 +116,10 @@ for ti in time:
                 Gshear['g'] = Gsheari
                 beta['g'] = (1+Ni**2*theta**2/f**2)**(0.5)
                 for ki in k_list:
+                    ui = []
                     vi = []
+                    wi = []
+                    bi = []
                     k['g'] = ki
                     solver.solve_dense(solver.subproblems[0], rebuild_matrices=True)
                     omg = solver.eigenvalues
@@ -122,8 +131,14 @@ for ti in time:
                     solver.set_state(idx[-1],solver.subsystems[0])
 
                     # print(np.shape(solver.state))
-                    vi = v['g'].real
+                    ui = (u['g']/u['g'][1]).real
+                    ut.append(np.array(ui))
+                    vi = (v['g']/v['g'][1]).real
                     vt.append(np.array(vi))
+                    wi = (w['g']/w['g'][1]).real
+                    wt.append(np.array(wi))
+                    bi = (b['g']/b['g'][1]).real
+                    bt.append(np.array(bi))
                     eval4.append([sorted_evals])
                     gammas4.append([gammai])
                 eval3.append(eval4)
@@ -132,20 +147,24 @@ for ti in time:
             gammas2.append(gammas3)
         evals5.append(eval2)
         gammas5.append(gammas2)
+    us.append(ut)
     vs.append(vt)
+    ws.append(wt)
+    bs.append(bt)
     evals.append(evals5)
     gammas.append(gammas5)
     
 evals = np.array(evals)
 gammas = np.array(gammas)
+us = np.array(us)
 vs = np.array(vs)
+ws = np.array(ws)
+bs = np.array(bs)
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
-# gr_data = gr_data.mean(["t"])
-gr_data.to_netcdf("PSI_non_dim_full_form_low_res.nc") # high_r3s
+gr_data.to_netcdf("PSI_non_dim_full_form_mid_res.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
-field_data = xr.Dataset({"v_structure":(["t","k","z"],vs)},coords={"t":time,"k":k_list,"z":grid_normal})
-# field_data = field_data.mean(["t"])
-field_data.to_netcdf("PSI_non_dim_field_low_res.nc")
+field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs)},coords={"t":time,"k":k_list,"z":grid_normal})
+field_data.to_netcdf("PSI_non_dim_field_mid_res.nc")
 
 
