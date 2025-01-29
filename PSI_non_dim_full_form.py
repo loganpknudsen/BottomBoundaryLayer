@@ -10,7 +10,7 @@ theta = 5*10**(-3)
 delta_list = [0.5] #np.linspace(0, 1, 26)
 f = 10**(-4)
 S2 = N_list[0]**2*theta**2/f**2
-gm = 0.985  # (1+0.5*S2)**(-1)
+gm = (1+S2)**(-1)
 H = 1 
 H_1 = f*0.05/(gm*N_list[0]**2*theta)
 lmbd = N_list[0]**2*theta*(1-gm)/f
@@ -46,7 +46,7 @@ S = dist.Field()
 n = dist.Field()
 t =dist.Field()
 u_sz = beta**(-1)*np.sin(beta*t)
-v_sz = 1+ beta**(-2)*(np.cos(beta*t)-1)
+v_sz = 1 + beta**(-2)*(np.cos(beta*t)-1)
 b_sz = beta**(-2)*(np.cos(beta*t)-1)
 alpha = dist.Field()
 k = dist.Field()
@@ -64,7 +64,7 @@ problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4], eigenvalue=omega, namespac
 
 problem.add_equation("dt(u)-delta*u_sz*w+delta*u_sz*one_z*dx(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)= 0")
 problem.add_equation("dt(v)+(1-delta*v_sz)*w+delta*u_sz*one_z*dx(v)+u*np.cos(theta)-n*np.sin(theta)*w=0")
-problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)=0") # n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)=0
+problem.add_equation("pz-b*np.cos(theta)=0") # n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)=0
 problem.add_equation("dx(u)+wz=0")
 problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-delta*Ri**(-1)*gm**(-1)*b_sz-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)+delta*u_sz*one_z*dx(b)=0") # *gamma**(-1)
 problem.add_equation("w(z=0)=0")
