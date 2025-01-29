@@ -18,7 +18,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 128, bounds=(0, H))
+basis = d3.Chebyshev(coord, 64, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -64,7 +64,7 @@ problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4], eigenvalue=omega, namespac
 
 problem.add_equation("dt(u)-delta*u_sz*w+delta*u_sz*one_z*dx(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)= 0")
 problem.add_equation("dt(v)+(1-delta*v_sz)*w+delta*u_sz*one_z*dx(v)+u*np.cos(theta)-n*np.sin(theta)*w=0")
-problem.add_equation("pz-b*np.cos(theta)=0") # n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)=0
+problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)=0") 
 problem.add_equation("dx(u)+wz=0")
 problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-delta*Ri**(-1)*gm**(-1)*b_sz-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)+delta*u_sz*one_z*dx(b)=0") # *gamma**(-1)
 problem.add_equation("w(z=0)=0")
@@ -78,7 +78,7 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(31)
+k_list = np.arange(501)
 # phase = np.pi/2
 time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),6) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
@@ -174,9 +174,9 @@ ws = np.array(ws)
 bs = np.array(bs)
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals_r[:,:,:,:,:,0]),"oscillation":(["t","N","delta","gamma_index","k"],evals_i[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
-gr_data.to_netcdf("PSI_non_dim_full_form_mid_res.nc") 
+gr_data.to_netcdf("PSI_non_dim_full_form_low_res.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
 field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs)},coords={"t":time,"k":k_list,"z":grid_normal})
-field_data.to_netcdf("PSI_non_dim_field_mid_res.nc")
+field_data.to_netcdf("PSI_non_dim_field_low_res.nc")
 
 
