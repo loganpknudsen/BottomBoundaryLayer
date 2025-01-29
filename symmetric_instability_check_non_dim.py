@@ -206,6 +206,4 @@ field_data.to_netcdf("SI_non_dim_field.nc")
 # ax.plot( us[-1,:]/np.max(us[-1,:]),grid_normal,c="k",label="k=40")
 # ax.legend()
 # ax.set_title("Vertical Structure of Fastest Growing Mode")
-# ax.set_ylabel("z")
-# ax.set_xlabel("v-velocity normalized by maximum velocity of final mode")
-# plt.show()
+# ax.set_ylabel(
