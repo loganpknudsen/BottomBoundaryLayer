@@ -143,7 +143,7 @@ for ti in time:
                     idx = np.argsort(omg.imag)
                     sorted_evals = solver.eigenvalues[idx[-1]].imag
                     eval4.append([sorted_evals])
-                    solver.set_state(idx[-1],solver.subsystems[0])
+                    solver.set_state(idx[-1])
 
                     # print(np.shape(solver.state))
                     ui = v['g'].real
@@ -194,9 +194,9 @@ print(np.shape(gammas))
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k","gr_i"],evals[:,:,:,:,:,:]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_l,"gr_i":np.linspace(0,1,np.shape(evals)[-1])})
 gr_data.to_netcdf("SI_non_dim.nc")
-print(us)
-# field_data = xr.Dataset(us)
-# field_data.to_netcdf("SI_non_dim_field.nc")
+grid_normal = basis.global_grid(dist,scale=1).ravel()
+field_data = xr.Dataset(data_vars={"v_structure":(["k","z"], us)}, coords={"k":k_l,"z":grid_normal})
+field_data.to_netcdf("SI_non_dim_field.nc")
 # grid_normal = basis.global_grid(dist,scale=1).ravel()
 # fig, ax = plt.subplots()
 # ax.plot( us[0,:]/np.max(us[-1,:]),grid_normal,c="c",linestyle="dashed",label="k=0")
