@@ -18,7 +18,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 256, bounds=(0, H))
+basis = d3.Chebyshev(coord, 128, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -66,7 +66,7 @@ problem.add_equation("dt(u)-delta*u_sz*w+delta*u_sz*one_z*dx(u)-v*np.cos(theta)+
 problem.add_equation("dt(v)+(1-delta*v_sz)*w+delta*u_sz*one_z*dx(v)+u*np.cos(theta)-n*np.sin(theta)*w=0")
 problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)=0") 
 problem.add_equation("dx(u)+wz=0")
-problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-delta*Ri**(-1)*gm**(-1)*b_sz-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)+delta*u_sz*one_z*dx(b)=0") # *gamma**(-1)
+problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-delta*Ri**(-1)*b_sz-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)+delta*u_sz*one_z*dx(b)=0") # *gamma**(-1)
 problem.add_equation("w(z=0)=0")
 problem.add_equation("w(z="+str(H)+")=0")
 problem.add_equation("p(z=0)=0")
@@ -78,7 +78,7 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(0,501,2)
+k_list = np.arange(0,101,2)
 # phase = np.pi/2
 time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),6) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
