@@ -6,7 +6,7 @@ import xarray as xr
 
 # Parameters
 N_list = [(1*10**(-5))**(0.5)]  # np.linspace((1e-7)**(0.5),(8e-4)**(0.5),51) #np.array([(1e-5)**(0.5)]) # stratification
-theta = np.arctan(1*10**(-4)/N_list[0])
+theta =  5*10**(-3) #np.arctan(1*10**(-4)/N_list[0])
 delta_list = [0.5] #np.linspace(0, 1, 26)
 f = 10**(-4)
 S2 = N_list[0]**2*theta**2/f**2
@@ -35,7 +35,7 @@ omega = dist.Field(name="omega")
 # Substitutions
 z = dist.local_grid(basis)
 one_z = dist.Field(bases=basis)
-one_z['g'] = 1-z
+one_z['g'][:] = 1-z
 beta = dist.Field()
 delta = dist.Field()
 N = dist.Field()
@@ -78,7 +78,7 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(0,101,2)
+k_list = np.arange(0,61,2)
 # phase = np.pi/2
 time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),6) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []

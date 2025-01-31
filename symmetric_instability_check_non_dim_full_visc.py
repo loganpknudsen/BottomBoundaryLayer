@@ -15,7 +15,7 @@ visc= 10**(-4) # viscosity/diffusitivity for this problem
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 128, bounds=(0, H),dealias=3/2)
+basis = d3.ChebyshevT(coord, 128, bounds=(0, H),dealias=3/2)
 
 # Fields
 u = dist.Field(name="u",bases=basis) # u-velocity
@@ -35,6 +35,7 @@ tau_7 = dist.Field(name="tau_7")
 tau_8 = dist.Field(name="tau_8")
 tau_p = dist.Field(name="tau_p") # pressure gauge
 
+
 # Eigenvalues for problem
 omega = dist.Field(name="omega") # Frequency/Growth Rate, what we are solving for
 k = dist.Field(name="k") # horizontal wavenumber, which is set in loop
@@ -49,14 +50,14 @@ alpha = dist.Field(name="alpha") # slope parameter
 lift_basis = basis.derivative_basis(1)
 lift = lambda A: d3.Lift(A,lift_basis,-1)
 dz = lambda A: d3.Differentiate(A, coord)
-uz = dz(u)-lift(tau_1)
+uz = dz(u)+lift(tau_1)
 uzz = dz(uz)
-vz = dz(v)-lift(tau_3) 
+vz = dz(v)+lift(tau_3) 
 vzz = dz(vz)
-wz = dz(w)-lift(tau_5)
+wz = dz(w)+lift(tau_5)
 wzz = dz(wz)
 pz = dz(p)
-bz = dz(b)-lift(tau_7)
+bz = dz(b)+lift(tau_7)
 bzz = dz(bz)
 
 # Substituion for Frequency and Wavenumber (for x-derivative only, constant in y-direction assumed)
@@ -70,7 +71,6 @@ problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4,tau_5,tau_6,tau_7,tau_8,tau_
 problem.add_equation("dt(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)-Ek*uzz+lift(tau_2)= 0")
 problem.add_equation("dt(v)+w+u*np.cos(theta)-np.sin(theta)*n*w-Ek*vzz+lift(tau_4)= 0")
 problem.add_equation("n**2*dt(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)-n**(2)*Ek*wzz+lift(tau_6)= 0")
-# 
 problem.add_equation("dx(u)+wz+lift(tau_p)=0")
 problem.add_equation("dt(b)+ Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)-Ek*bzz+lift(tau_8)= 0") 
 
