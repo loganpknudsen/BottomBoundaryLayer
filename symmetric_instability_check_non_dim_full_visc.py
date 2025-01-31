@@ -105,24 +105,4 @@ evals = [] # list to save output
 k_list = np.arange(0,21,5) # horizontal wavenumber values solver is run for
 Ni = N_list[0] # short cut so stratification frequency does not need to be indexed everytime
 Gsheari = (np.sin(theta)*(Ni)**2*(gm))/(f) # Geostrophic Shear
-Ri['g'] = Ni**2*(1-gm)/(Gsheari**2) # Richardson number calculation
-Ek['g'] = visc/(f*H_1**2) # Ekman number calculation
-n['g'] = f/Gsheari # non-hydrostatic parameter calculation
-alpha['g'] = (Ni**2*(1-gm)*np.tan(theta))/(f*Gsheari) # slope parameter calculation
-for ki in k_list:
-    k['g'] = ki # add current wavenumber to problem
-    solver.solve_dense(solver.subproblems[0], rebuild_matrices=True) # run solver
-    # access and store maximum growth rate
-    omg = solver.eigenvalues
-    omg[np.isnan(omg)] = 0.
-    omg[np.isinf(omg)] = 0.
-    idx = np.sort(omg.imag)
-    sorted_evals = idx[-1:]
-    evals.append(sorted_evals)
-
-# Saving the data to an external .nc file
-evals = np.array(evals)
-gr_data = xr.Dataset(data_vars={"growth_rate":(["k"],evals[:,0])},coords={"k":k_list})
-
-gr_data.to_netcdf("SI_non_dim_visc.nc")
-
+Ri['g'] = Ni*
