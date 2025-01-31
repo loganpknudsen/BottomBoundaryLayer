@@ -35,7 +35,7 @@ omega = dist.Field(name="omega")
 # Substitutions
 z = dist.local_grid(basis)
 one_z = dist.Field(bases=basis)
-one_z['g'][:] = 1-z
+one_z['g'][0] = 1-z
 beta = dist.Field()
 delta = dist.Field()
 N = dist.Field()
