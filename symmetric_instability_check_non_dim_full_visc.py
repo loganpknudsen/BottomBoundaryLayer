@@ -15,7 +15,7 @@ visc= 10**(-4) # viscosity/diffusitivity for this problem
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.ChebyshevT(coord, 128, bounds=(0, H),dealias=3/2)
+basis = d3.ChebyshevT(coord, 64, bounds=(0, H),dealias=3/2)
 
 # Fields
 u = dist.Field(name="u",bases=basis) # u-velocity
@@ -77,8 +77,8 @@ problem = d3.EVP([u,uz,uzz,v,vz,vzz,w,wz,wzz,b,bz,bzz,p,tau_1,tau_2,tau_3,tau_4,
 # Add Equations to Eigenvalue Problem
 problem.add_equation("dt(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)-Ek*uzz+lift(tau_2)= 0")
 problem.add_equation("dt(v)+w+u*np.cos(theta)-np.sin(theta)*n*w-Ek*vzz+lift(tau_4)= 0")
-problem.add_equation("n**2*dt(w)+n*np.sin(theta)*v+Ri*dz(p)-Ri*b*np.cos(theta)-n**(2)*Ek*wzz+lift(tau_6)= 0")
-problem.add_equation("dx(u)+wz+lift(tau_p)=0")
+problem.add_equation("n**2*dt(w)+n*np.sin(theta)*v+Ri*dz(p)+lift(tau_p)-Ri*b*np.cos(theta)-n**(2)*Ek*wzz+lift(tau_6)= 0")
+problem.add_equation("dx(u)+wz=0")
 problem.add_equation("dt(b)+ Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)-Ek*bzz+lift(tau_8)= 0") 
 problem.add_equation("uz- dz(u)-lift(tau_1)=0")
 problem.add_equation("uzz- dz(uz)=0")
@@ -102,7 +102,7 @@ problem.add_equation("b(z="+str(H)+")=0")
 # Solver
 solver = problem.build_solver()
 evals = [] # list to save output
-k_list = np.arange(0,21,5) # horizontal wavenumber values solver is run for
+k_list = np.arange(0.1,22,1) # horizontal wavenumber values solver is run for
 Ni = N_list[0] # short cut so stratification frequency does not need to be indexed everytime
 Gsheari = (np.sin(theta)*(Ni)**2*(gm))/(f) # Geostrophic Shear
 Ri['g'] = Ni**2*(1-gm)/(Gsheari**2) # Richardson number calculation
