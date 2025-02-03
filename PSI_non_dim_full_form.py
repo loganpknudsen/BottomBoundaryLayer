@@ -18,7 +18,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 128, bounds=(0, H))
+basis = d3.Chebyshev(coord, 64, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -204,9 +204,9 @@ wsc = np.array(wsc)
 bsc = np.array(bsc)
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals_r[:,:,:,:,:,0]),"oscillation":(["t","N","delta","gamma_index","k"],evals_i[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
-gr_data.to_netcdf("PSI_non_dim_full_form_mid_res.nc") 
+gr_data.to_netcdf("PSI_non_dim_full_form_low_res.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
 field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs),"u_structure_complex":(["t","k","z"],usc),"v_structure_complex":(["t","k","z"],vsc),"w_structure_complex":(["t","k","z"],wsc),"b_structure_complex":(["t","k","z"],bsc)},coords={"t":time,"k":k_list,"z":grid_normal})
-field_data.to_netcdf("PSI_non_dim_field_mid_res.nc")
+field_data.to_netcdf("PSI_non_dim_field_low_res.nc")
 
 
