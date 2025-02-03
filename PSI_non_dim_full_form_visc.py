@@ -208,9 +208,9 @@ ws = np.array(ws)
 bs = np.array(bs)
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals_r[:,:,:,:,:,0]),"oscillation":(["t","N","delta","gamma_index","k"],evals_i[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
-gr_data.to_netcdf("PSI_non_dim_full_form_visc_fast.nc") 
+gr_data.to_netcdf("PSI_non_dim_full_form_visc_high_res.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
 field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs)},coords={"t":time,"k":k_list,"z":grid_normal})
-field_data.to_netcdf("PSI_non_dim_field_visc_fast.nc")
+field_data.to_netcdf("PSI_non_dim_field_visc_high_res.nc")
 
 
