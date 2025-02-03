@@ -102,7 +102,8 @@ problem.add_equation("b(z="+str(H)+")=0")
 # Solver
 solver = problem.build_solver()
 evals = [] # list to save output
-k_list = np.arange(0.1,22,1) # horizontal wavenumber values solver is run for
+us = []
+k_list = np.arange(0.1,31.1,1) # horizontal wavenumber values solver is run for
 Ni = N_list[0] # short cut so stratification frequency does not need to be indexed everytime
 Gsheari = (np.sin(theta)*(Ni)**2*(gm))/(f) # Geostrophic Shear
 Ri['g'] = Ni**2*(1-gm)/(Gsheari**2) # Richardson number calculation
@@ -116,13 +117,24 @@ for ki in k_list:
     omg = solver.eigenvalues
     omg[np.isnan(omg)] = 0.
     omg[np.isinf(omg)] = 0.
-    idx = np.sort(omg.imag)
-    sorted_evals = idx[-1:]
+    idx = np.argsort(omg.imag)
+    sorted_evals =  solver.eigenvalues[idx[-1]].imag
     evals.append(sorted_evals)
+    solver.set_state(idx[-1])
+
+    # print(np.shape(solver.state))
+    ui = v['g'].real
+    # print(solver.eigenvectors)
+    us.append(np.array(ui))
 
 # Saving the data to an external .nc file
 evals = np.array(evals)
-gr_data = xr.Dataset(data_vars={"growth_rate":(["k"],evals[:,0])},coords={"k":k_list})
+us = np.array(us)    
 
+gr_data = xr.Dataset(data_vars={"growth_rate":(["k"],evals[:])},coords={"k":k_list})
 gr_data.to_netcdf("SI_non_dim_visc.nc")
+
+grid_normal = basis.global_grid(dist,scale=1).ravel()
+field_data = xr.Dataset(data_vars={"v_structure":(["k","z"], us)}, coords={"k":k_list,"z":grid_normal})
+field_data.to_netcdf("SI_non_dim_field_visc.nc")
 
