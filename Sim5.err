@@ -1,4 +1,6 @@
-=>> PBS: job killed: walltime 36056 exceeded limit 36000
-/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/dedalus/core/operators.py:384: RuntimeWarning: invalid value encountered in power
-  np.power(arg0.data, arg1, out.data)
-=>> PBS: job killed: walltime 64907 exceeded limit 64800
+
+Traceback (most recent call last):
+  File "/glade/u/home/knudsenl/BottomBoundaryLayer/PSI_non_dim_full_form.py", line 38, in <module>
+    one_z['g'][0] = 1-z
+    ~~~~~~~~~~^^^
+TypeError: only length-1 arrays can be converted to Python scalars
