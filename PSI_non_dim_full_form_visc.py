@@ -114,7 +114,7 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(30.1,60.2,2)
+k_list = np.arange(0.1,30.2,2)
 # phase = np.pi/2
 time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),6) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
@@ -242,6 +242,6 @@ gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k
 gr_data.to_netcdf("PSI_non_dim_full_form_visc_low_res_exprmnt.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
 field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs),"u_structure_complex":(["t","k","z"],usc),"v_structure_complex":(["t","k","z"],vsc),"w_structure_complex":(["t","k","z"],wsc),"b_structure_complex":(["t","k","z"],bsc)},coords={"t":time,"k":k_list,"z":grid_normal})
-field_data.to_netcdf("PSI_non_dim_field_low_res_low_exprmnt.nc")
+field_data.to_netcdf("PSI_non_dim_field_low_res_exprmnt.nc")
 
 
