@@ -115,9 +115,13 @@ k_list = np.arange(0.1,100.2,1)
 # phase = np.pi/2
 time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),24) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
+usc = []
 vs = []
+vsc = []
 ws = []
+wsc = []
 bs = []
+bsc = []
 for ti in time:
     gammas5 = []
     evals5 = []
@@ -126,6 +130,10 @@ for ti in time:
     vt = []
     wt = []
     bt = []
+    utc = []
+    vtc = []
+    wtc = []
+    btc = []
     t["g"]= ti
     for Ni in N_list:
         gammas2 = []
@@ -159,6 +167,10 @@ for ti in time:
                     vi = []
                     wi = []
                     bi = []
+                    uic = []
+                    vic = []
+                    wic = []
+                    bic = []
                     k['g'] = ki
                     solver.solve_dense(solver.subproblems[0], rebuild_matrices=True)
                     omg = solver.eigenvalues
@@ -179,6 +191,14 @@ for ti in time:
                     wt.append(np.array(wi))
                     bi = (b['g']).real
                     bt.append(np.array(bi))
+                    uic = (u['g']).imag
+                    utc.append(np.array(uic))
+                    vic = (v['g']).imag
+                    vtc.append(np.array(vic))
+                    wic = (w['g']).imag
+                    wtc.append(np.array(wic))
+                    bic = (b['g']).imag
+                    btc.append(np.array(bic))
                     eval4.append([sorted_evals])
                     eval_i4.append([sorted_evals_i])
                     gammas4.append([gammai])
@@ -195,6 +215,10 @@ for ti in time:
     vs.append(vt)
     ws.append(wt)
     bs.append(bt)
+    usc.append(utc)
+    vsc.append(vtc)
+    wsc.append(wtc)
+    bsc.append(btc)
     evals_r.append(evals5)
     evals_i.append(evals_i1)
     gammas.append(gammas5)
@@ -206,11 +230,15 @@ us = np.array(us)
 vs = np.array(vs)
 ws = np.array(ws)
 bs = np.array(bs)
+usc = np.array(usc)
+vsc = np.array(vsc)
+wsc = np.array(wsc)
+bsc = np.array(bsc)
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals_r[:,:,:,:,:,0]),"oscillation":(["t","N","delta","gamma_index","k"],evals_i[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
 gr_data.to_netcdf("PSI_non_dim_full_form_visc_low_res.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
-field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs)},coords={"t":time,"k":k_list,"z":grid_normal})
-field_data.to_netcdf("PSI_non_dim_field_visc_low_res.nc")
+field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs),"u_structure_complex":(["t","k","z"],usc),"v_structure_complex":(["t","k","z"],vsc),"w_structure_complex":(["t","k","z"],wsc),"b_structure_complex":(["t","k","z"],bsc)},coords={"t":time,"k":k_list,"z":grid_normal})
+field_data.to_netcdf("PSI_non_dim_field_low_res.nc")
 
 
