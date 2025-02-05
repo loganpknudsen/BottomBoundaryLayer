@@ -18,7 +18,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 64, bounds=(0, H))
+basis = d3.Chebyshev(coord, 128, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -58,21 +58,22 @@ lift_basis = basis.derivative_basis(1)
 lift = lambda A: d3.Lift(A,lift_basis,-1)
 dz = lambda A: d3.Differentiate(A, coord)
 wz = dz(w)+lift(tau_1)+lift(tau_2)
-pz = dz(p)+lift(tau_3)+lift(tau_4)
+pz = dz(p) #+lift(tau_4)
 
 
 # Problem
-problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4], eigenvalue=omega, namespace=locals()) # 
+problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3], eigenvalue=omega, namespace=locals()) # 
 
 problem.add_equation("dt(u)-delta*u_sz*w+delta*u_sz*one_z*dx(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)= 0")
 problem.add_equation("dt(v)+(1-delta*v_sz)*w+delta*u_sz*one_z*dx(v)+u*np.cos(theta)-n*np.sin(theta)*w=0")
-problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)=0") 
+problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*p+lift(tau_3)z-Ri*b*np.cos(theta)=0") 
 problem.add_equation("dx(u)+wz=0")
 problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-delta*Ri**(-1)*gamma**(-1)*b_sz-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)+delta*u_sz*one_z*dx(b)=0") # *gamma**(-1)
 problem.add_equation("w(z=0)=0")
 problem.add_equation("w(z="+str(H)+")=0")
-problem.add_equation("p(z=0)=0")
-problem.add_equation("p(z="+str(H)+")=0")
+problem.add_equation("integ(p)=0")
+# problem.add_equation("p(z=0)=0")
+# problem.add_equation("p(z="+str(H)+")=0")
 
 
 # Solver
@@ -80,9 +81,9 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(0,30.1,0.1)
+k_list = np.arange(0,30.1,1)
 # phase = np.pi/2
-time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),24) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
+time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),48) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
 usc = []
 vs = []

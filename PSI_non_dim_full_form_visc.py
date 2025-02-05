@@ -74,9 +74,6 @@ dt = lambda A: -1j*omega*A
 lift_basis = basis.derivative_basis(1)
 lift = lambda A: d3.Lift(A,lift_basis,-1)
 dz = lambda A: d3.Differentiate(A, coord)
-# wz = dz(w)+lift(tau_1)+lift(tau_2)
-# pz = dz(p)+lift(tau_3)+lift(tau_4)
-
 
 # Problem
 problem = d3.EVP([u,uz,uzz,v,vz,vzz,w,wz,wzz,b,bz,bzz,p,tau_1,tau_2,tau_3,tau_4,tau_5,tau_6,tau_7,tau_8,tau_p], eigenvalue=omega, namespace=locals()) # ,tau_p
