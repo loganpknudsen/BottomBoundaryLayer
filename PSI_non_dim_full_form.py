@@ -18,7 +18,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 128, bounds=(0, H))
+basis = d3.Chebyshev(coord, 64, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -48,7 +48,7 @@ S = dist.Field()
 n = dist.Field()
 t =dist.Field()
 u_sz = beta**(-1)*np.sin(beta*t)
-v_sz = 0 #1 + beta**(-2)*(np.cos(beta*t)-1)
+v_sz = 1 + beta**(-2)*(np.cos(beta*t)-1)
 b_sz = beta**(-2)*(np.cos(beta*t)-1)
 alpha = dist.Field()
 k = dist.Field()
