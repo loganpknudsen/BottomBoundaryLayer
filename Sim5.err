@@ -1,6 +1,0 @@
-
-Traceback (most recent call last):
-  File "/glade/u/home/knudsenl/BottomBoundaryLayer/PSI_non_dim_full_form.py", line 38, in <module>
-    one_z['g'][0] = 1-z
-    ~~~~~~~~~~^^^
-TypeError: only length-1 arrays can be converted to Python scalars
