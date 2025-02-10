@@ -18,7 +18,7 @@ lmbd = N_list[0]**2*theta*(1-gm)/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 256, bounds=(0, H))
+basis = d3.Chebyshev(coord, 128, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -34,8 +34,6 @@ omega = dist.Field(name="omega")
 
 # Substitutions
 z = dist.local_grid(basis)
-# onez = dist.Field(bases=basis)
-# onez['g'] = z
 one_z = dist.Field(name="one_z",bases=basis)
 one_z['g'] = 1-z
 beta = dist.Field()
@@ -58,22 +56,21 @@ lift_basis = basis.derivative_basis(1)
 lift = lambda A: d3.Lift(A,lift_basis,-1)
 dz = lambda A: d3.Differentiate(A, coord)
 wz = dz(w)+lift(tau_1)+lift(tau_2)
-pz = dz(p) #+lift(tau_4)
+pz = dz(p) +lift(tau_3)+lift(tau_4)
 
 
 # Problem
-problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3], eigenvalue=omega, namespace=locals()) # 
+problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4], eigenvalue=omega, namespace=locals()) # 
 
 problem.add_equation("dt(u)-delta*u_sz*w+delta*u_sz*one_z*dx(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)= 0")
 problem.add_equation("dt(v)+(1-delta*v_sz)*w+delta*u_sz*one_z*dx(v)+u*np.cos(theta)-n*np.sin(theta)*w=0")
-problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*pz+lift(tau_3)-Ri*b*np.cos(theta)=0") 
+problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*pz-Ri*b*np.cos(theta)=0") 
 problem.add_equation("dx(u)+wz=0")
 problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-delta*Ri**(-1)*gamma**(-1)*b_sz-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)+delta*u_sz*one_z*dx(b)=0") # *gamma**(-1)
 problem.add_equation("w(z=0)=0")
 problem.add_equation("w(z="+str(H)+")=0")
-problem.add_equation("integ(p)=0")
-# problem.add_equation("p(z=0)=0")
-# problem.add_equation("p(z="+str(H)+")=0")
+problem.add_equation("p(z=0)=0")
+problem.add_equation("p(z="+str(H)+")=0")
 
 
 # Solver
@@ -81,8 +78,8 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(0,30.1,0.25)
-time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),24) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
+k_list = np.arange(0,30.1,0.5)
+time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),12) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
 usc = []
 vs = []
@@ -151,22 +148,14 @@ for ti in time:
                     solver.set_state(idx[-1])
 
                     # print(np.shape(solver.state))
-                    ui = (u['g']).real
+                    ui = u['g']
                     ut.append(np.array(ui))
-                    vi = (v['g']).real
+                    vi = v['g']
                     vt.append(np.array(vi))
-                    wi = (w['g']).real
+                    wi = w['g']
                     wt.append(np.array(wi))
-                    bi = (b['g']).real
+                    bi = b['g']
                     bt.append(np.array(bi))
-                    uic = (u['g']).imag
-                    utc.append(np.array(uic))
-                    vic = (v['g']).imag
-                    vtc.append(np.array(vic))
-                    wic = (w['g']).imag
-                    wtc.append(np.array(wic))
-                    bic = (b['g']).imag
-                    btc.append(np.array(bic))
                     eval4.append([sorted_evals])
                     eval_i4.append([sorted_evals_i])
                     gammas4.append([gammai])
@@ -183,10 +172,6 @@ for ti in time:
     vs.append(vt)
     ws.append(wt)
     bs.append(bt)
-    usc.append(utc)
-    vsc.append(vtc)
-    wsc.append(wtc)
-    bsc.append(btc)
     evals_r.append(evals5)
     evals_i.append(evals_i1)
     gammas.append(gammas5)
@@ -198,15 +183,11 @@ us = np.array(us)
 vs = np.array(vs)
 ws = np.array(ws)
 bs = np.array(bs)
-usc = np.array(usc)
-vsc = np.array(vsc)
-wsc = np.array(wsc)
-bsc = np.array(bsc)
 g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals_r[:,:,:,:,:,0]),"oscillation":(["t","N","delta","gamma_index","k"],evals_i[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
-gr_data.to_netcdf("PSI_non_dim_full_form_high_res.nc") 
+gr_data.to_netcdf("PSI_non_dim_full_form_mid_res.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
-field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs),"u_structure_complex":(["t","k","z"],usc),"v_structure_complex":(["t","k","z"],vsc),"w_structure_complex":(["t","k","z"],wsc),"b_structure_complex":(["t","k","z"],bsc)},coords={"t":time,"k":k_list,"z":grid_normal})
-field_data.to_netcdf("PSI_non_dim_field_high_res.nc")
+field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs)},coords={"t":time,"k":k_list,"z":grid_normal})
+field_data.to_netcdf("PSI_non_dim_field_mid_res.nc")
 
 

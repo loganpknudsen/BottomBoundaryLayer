@@ -47,23 +47,24 @@ lift_basis = basis.derivative_basis(1)
 lift = lambda A: d3.Lift(A,lift_basis,-1)
 dz = lambda A: d3.Differentiate(A, coord)
 wz = dz(w) + lift(tau_1) + lift(tau_2)
-pz = dz(p) + lift(tau_3) + lift(tau_4)
+pz = dz(p) + lift(tau_3) #+ lift(tau_4)
 dx = lambda A: 1j*k*A
 dt = lambda A: -1j*omega*A
 
 
 # Problem
-problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4], eigenvalue=omega, namespace=locals()) # 
+problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3], eigenvalue=omega, namespace=locals()) # 
 
 problem.add_equation("dt(u)-v+Ri*dx(p)= 0")
 problem.add_equation("dt(v)+w+(1-n**(-1)*np.tan(theta))*u= 0") 
-problem.add_equation("pz-b= 0") # -1j*omega*n**2*w+n*theta*v+Ri*pz-Ri*b= 0
+problem.add_equation("n**2*dt(w)+Ri*pz-Ri*b= 0") # -1j*omega*n**2*w+n*theta*v+Ri*pz-Ri*b= 0
 problem.add_equation("dx(u)+wz=0")
 problem.add_equation("dt(b) + Ri**(-1)*u+w= 0") 
 problem.add_equation("w(z=0)=0")
 problem.add_equation("w(z="+str(H)+")=0")
-problem.add_equation("p(z=0)=0")
-problem.add_equation("p(z="+str(H)+")=0")
+problem.add_equation("integ(p)=0")
+# problem.add_equation("p(z=0)=0")  
+# problem.add_equation("p(z="+str(H)+")=0")
 
 
 # # Solver
@@ -91,7 +92,7 @@ for ti in time:
                 eval4 = []
                 gammas4 = []
                 gamma['g'] = gammai
-                Gsheari = 1*(np.sin(theta)*(Ni)**2*(gammai))/(f)
+                Gsheari = (np.sin(theta)*(Ni)**2*(gammai))/(f)
                 Rii = Ni**2*(1-gammai)/(Gsheari**2)
                 Ri['g'] = Rii
                 ni = f/Gsheari

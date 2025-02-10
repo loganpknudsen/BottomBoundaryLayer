@@ -11,7 +11,7 @@ N_list = [(1e-5)**(0.5)] #np.linspace((1e-7)**(0.5),(8e-4)**(0.5),51) #np.array(
 delta_list = [0] #np.linspace(0, 1, 26)
 f = 10**(-4) #*(1+N_list[0]**2*theta**2/10**(-8))**(0.5)
 gm = 0.81
-S2 = 0.25
+S2 = 2
 theta = np.arctan((S2)**(0.5)*10**(-4)/(N_list[0]))
 H = 1
 H_1 = f*0.05/(gm*N_list[0]**2*np.sin(theta))
@@ -20,7 +20,7 @@ lmbd = N_list[0]**2*np.sin(theta)*gm/f
 # Basis
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 64, bounds=(0, H))
+basis = d3.Chebyshev(coord, 128, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis)
@@ -61,7 +61,7 @@ pz = dz(p) + lift(tau_3) + lift(tau_4)
 problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_3,tau_4], eigenvalue=omega, namespace=locals()) 
 problem.add_equation("dt(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)= 0")
 problem.add_equation("dt(v)+w+u*np.cos(theta)-np.sin(theta)*n*w= 0") 
-problem.add_equation("pz-b*np.cos(theta)= 0") 
+problem.add_equation("n**2*dt(w)+Ri*pz-Ri*b*np.cos(theta)= 0") 
 problem.add_equation("dx(u)+wz =0")
 problem.add_equation("dt(b)+ Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)= 0") 
 problem.add_equation("w(z='left')=0")
@@ -185,7 +185,7 @@ for ti in time:
 us = np.array(us)    
 vs = np.array(vs) 
 ws = np.array(ws) 
-bs = np.array(us) 
+bs = np.array(bs) 
 print(np.shape(us))
 evals = np.array(evals)
 gammas = np.array(gammas)
