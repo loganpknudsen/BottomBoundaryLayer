@@ -1,8 +1,8 @@
 import numpy as np
 import dedalus.public as d3
 import xarray as xr
-from mpi4py import MPI
-CW = MPI.COMM_WORLD
+# from mpi4py import MPI
+# CW = MPI.COMM_WORLD
 
 
 # Parameters
@@ -20,7 +20,7 @@ visc  = 10**(-4)
 # Basis
 nz = 128
 coord = d3.Coordinate('z')
-dist = d3.Distributor(coord, dtype=np.complex128, comm=MPI.COMM_SELF)
+dist = d3.Distributor(coord, dtype=np.complex128) # 3793147
 basis = d3.Chebyshev(coord, nz, bounds=(0, H))
 
 # Fields
@@ -53,8 +53,6 @@ Ek = dist.Field(name="Ek") # Ekman Number
 
 # Substitutions
 z = dist.local_grid(basis)
-# onez = dist.Field(bases=basis)
-# onez['g'] = z
 one_z = dist.Field(name="one_z",bases=basis)
 Hv = dist.Field(name="one_z",bases=basis)
 Hv['g'] = 0.5*(1+np.tanh((1-z)*10**(3)))
