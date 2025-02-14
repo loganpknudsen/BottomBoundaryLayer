@@ -12,13 +12,13 @@ delta_list = [0.5] #np.linspace(0, 1, 26)
 f = 10**(-4)
 S2 = N_list[0]**2*theta**2/f**2
 gm = (1+S2)**(-1)
-H = 3
+H = 2
 H_1 = f*0.05/(gm*N_list[0]**2*np.tan(theta))
 lmbd = N_list[0]**2*np.tan(theta)*(gm)/f
 visc  = 10**(-4)
 
 # Basis
-nz = 128
+nz = 64
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128) # 3793147
 basis = d3.Chebyshev(coord, nz, bounds=(0, H))
@@ -110,9 +110,9 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(0.1,30.2,3)
+k_list = np.arange(0.1,30.2,0.1)
 # phase = np.pi/2
-time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),12) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
+time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),48) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
 usc = []
 vs = []
