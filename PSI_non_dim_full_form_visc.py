@@ -1,7 +1,8 @@
 import numpy as np
 import dedalus.public as d3
 import xarray as xr
-
+from mpi4py import MPI
+CW = MPI.COMM_WORLD
 
 
 # Parameters
@@ -11,15 +12,16 @@ delta_list = [0.5] #np.linspace(0, 1, 26)
 f = 10**(-4)
 S2 = N_list[0]**2*theta**2/f**2
 gm = (1+S2)**(-1)
-H = 1 
-H_1 = f*0.05/(gm*N_list[0]**2*theta)
-lmbd = N_list[0]**2*theta*(1-gm)/f
+H = 3
+H_1 = f*0.05/(gm*N_list[0]**2*np.tan(theta))
+lmbd = N_list[0]**2*np.tan(theta)*(gm)/f
 visc  = 10**(-4)
 
 # Basis
+nz = 256
 coord = d3.Coordinate('z')
-dist = d3.Distributor(coord, dtype=np.complex128)
-basis = d3.Chebyshev(coord, 64, bounds=(0, H))
+dist = d3.Distributor(coord, dtype=np.complex128, comm=MPI.COMM_SELF)
+basis = d3.Chebyshev(coord, nz, bounds=(0, H))
 
 # Fields
 u = dist.Field(name="u",bases=basis) # u-velocity
@@ -54,6 +56,8 @@ z = dist.local_grid(basis)
 # onez = dist.Field(bases=basis)
 # onez['g'] = z
 one_z = dist.Field(name="one_z",bases=basis)
+Hv = dist.Field(name="one_z",bases=basis)
+Hv['g'] = 0.5*(1+np.tanh((1-z)*10**(3)))
 one_z['g'] = 1-z
 beta = dist.Field()
 delta = dist.Field()
@@ -76,31 +80,31 @@ lift = lambda A: d3.Lift(A,lift_basis,-1)
 dz = lambda A: d3.Differentiate(A, coord)
 
 # Problem
-problem = d3.EVP([u,uz,uzz,v,vz,vzz,w,wz,wzz,b,bz,bzz,p,tau_1,tau_2,tau_3,tau_4,tau_5,tau_6,tau_7,tau_8,tau_p], eigenvalue=omega, namespace=locals()) # ,tau_p
+problem = d3.EVP([u,uz,uzz,v,vz,vzz,w,wz,wzz,b,bz,bzz,p,tau_1,tau_2,tau_3,tau_4,tau_5,tau_6,tau_7,tau_8,tau_p], eigenvalue=omega, namespace=locals()) # ,tau_5,tau_6
 
-problem.add_equation("dt(u)-delta*u_sz*w+delta*u_sz*one_z*dx(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)-Ek*uzz+lift(tau_2)= 0") # 
-problem.add_equation("dt(v)+(1-delta*v_sz)*w+delta*u_sz*one_z*dx(v)+u*np.cos(theta)-n*np.sin(theta)*w-Ek*vzz+lift(tau_4)=0") # 
-problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*dz(p)+lift(tau_p)-Ri*b*np.cos(theta)-n**(2)*Ek*wzz+lift(tau_6)=0") #+lift(tau_p)
+problem.add_equation("dt(u)-delta*u_sz*Hv*w-delta*u_sz*one_z*Hv*dx(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)-Ek*uzz+lift(tau_2)= 0") # 
+problem.add_equation("dt(v)+(Hv-delta*v_sz*Hv)*w-delta*u_sz*Hv*one_z*dx(v)+u*np.cos(theta)-n*np.sin(theta)*w-Ek*vzz+lift(tau_4)=0") # 
+problem.add_equation("n**2*dt(w)-n**2*delta*u_sz*one_z*Hv*dx(w)+n*np.sin(theta)*v+Ri*dz(p)+lift(tau_p)-Ri*b*np.cos(theta)-n**(2)*Ek*wzz+lift(tau_6)=0") # 
 problem.add_equation("dx(u)+wz=0")
-problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*u*np.cos(theta)+(1-delta*Ri**(-1)*gamma**(-1)*b_sz-Ri**(-1)*n*np.tan(theta))*w*np.cos(theta)+delta*u_sz*one_z*dx(b)-Ek*bzz+lift(tau_8)=0") # 
+problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*u*np.cos(theta)*Hv+(1-delta*Ri**(-1)*gamma**(-1)*b_sz*Hv-Ri**(-1)*n*np.tan(theta)*Hv)*w*np.cos(theta)-delta*u_sz*Hv*one_z*dx(b)-Ek*bzz+lift(tau_8)=0") # 
 problem.add_equation("uz- dz(u)-lift(tau_1)=0") # 
 problem.add_equation("uzz- dz(uz)=0")
 problem.add_equation("vz- dz(v)-lift(tau_3)=0") # 
 problem.add_equation("vzz- dz(vz)=0")
-problem.add_equation("wz- dz(w)-lift(tau_5)=0")
+problem.add_equation("wz- dz(w)-lift(tau_5)=0") # -lift(tau_5)
 problem.add_equation("wzz- dz(wz)=0")
-problem.add_equation("bz- dz(b)-lift(tau_7)=0") # 
+problem.add_equation("bz- dz(b)-lift(tau_7)=0") # -lift(tau_7)
 problem.add_equation("bzz- dz(bz)=0")
 # Setting Boundary Values
-problem.add_equation("u(z=0)=0")
-problem.add_equation("u(z="+str(H)+")=0")
-problem.add_equation("v(z=0)=0")
-problem.add_equation("v(z="+str(H)+")=0")
-problem.add_equation("w(z=0)=0")
-problem.add_equation("w(z="+str(H)+")=0")
+problem.add_equation("dz(u)(z=0)=0")
+problem.add_equation("dz(u)(z="+str(H)+")=0")
+problem.add_equation("dz(v)(z=0)=0")
+problem.add_equation("dz(v)(z="+str(H)+")=0")
+problem.add_equation("w(z=0)+np.tan(theta)*u(z=0)=0")
+problem.add_equation("w(z="+str(H)+")+np.tan(theta)*u(z="+str(H)+") =0")
 problem.add_equation("integ(p)=0")
-problem.add_equation("b(z=0)=0")
-problem.add_equation("b(z="+str(H)+")=0")
+problem.add_equation("dz(b)(z=0)=0")
+problem.add_equation("dz(b)(z="+str(H)+")=0")
 
 
 # Solver
@@ -108,9 +112,9 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(0.1,60.2,4)
+k_list = np.arange(0.1,30.2,3)
 # phase = np.pi/2
-time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),6) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
+time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),12) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
 usc = []
 vs = []
@@ -119,6 +123,7 @@ ws = []
 wsc = []
 bs = []
 bsc = []
+xs = []
 for ti in time:
     gammas5 = []
     evals5 = []
@@ -127,6 +132,7 @@ for ti in time:
     vt = []
     wt = []
     bt = []
+    xt = []
     utc = []
     vtc = []
     wtc = []
@@ -168,6 +174,8 @@ for ti in time:
                     vic = []
                     wic = []
                     bic = []
+                    x_domain = np.linspace(0,2*np.pi/ki,nz)
+                    xt.append(x_domain)
                     k['g'] = ki
                     solver.solve_dense(solver.subproblems[0], rebuild_matrices=True)
                     omg = solver.eigenvalues
@@ -180,22 +188,20 @@ for ti in time:
                     solver.set_state(idx[-1])
 
                     # print(np.shape(solver.state))
-                    ui = (u['g']).real
-                    ut.append(np.array(ui))
-                    vi = (v['g']).real
-                    vt.append(np.array(vi))
-                    wi = (w['g']).real
-                    wt.append(np.array(wi))
-                    bi = (b['g']).real
-                    bt.append(np.array(bi))
-                    uic = (u['g']).imag
-                    utc.append(np.array(uic))
-                    vic = (v['g']).imag
-                    vtc.append(np.array(vic))
-                    wic = (w['g']).imag
-                    wtc.append(np.array(wic))
-                    bic = (b['g']).imag
-                    btc.append(np.array(bic))
+                    ui = np.real(u['g'].reshape(nz,1)@np.exp(1j*ki*x_domain.reshape(1,nz)))
+                    u_max = np.max(ui)
+                    ui = ui/u_max
+                    ut.append(ui)
+                    vi = np.real(v['g'].reshape(nz,1)@np.exp(1j*ki*x_domain.reshape(1,nz)))
+                    vi = vi/u_max
+                    vt.append(vi)
+                    wi = np.real(w['g'].reshape(nz,1)@np.exp(1j*ki*x_domain.reshape(1,nz)))
+                    wi = wi/u_max
+                    wt.append(wi)
+                    bi = np.real(b['g'].reshape(nz,1)@np.exp(1j*ki*x_domain.reshape(1,nz)))
+                    b_max = np.max(bi)
+                    bi = bi/b_max
+                    bt.append(bi)
                     eval4.append([sorted_evals])
                     eval_i4.append([sorted_evals_i])
                     gammas4.append([gammai])
@@ -212,6 +218,7 @@ for ti in time:
     vs.append(vt)
     ws.append(wt)
     bs.append(bt)
+    xs.append(xt)
     usc.append(utc)
     vsc.append(vtc)
     wsc.append(wtc)
@@ -235,7 +242,7 @@ g_index= np.linspace(0,len(gamma_list)+1,len(gamma_list))
 gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k"],evals_r[:,:,:,:,:,0]),"oscillation":(["t","N","delta","gamma_index","k"],evals_i[:,:,:,:,:,0]),"gamma":(["t","N","delta","gamma_index","k"],gammas[:,:,:,:,:,0])},coords={"t":time,"N":N_list,"delta":delta_list,"gamma_index":g_index,"k":k_list})
 gr_data.to_netcdf("PSI_non_dim_full_form_visc_low_res.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
-field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs),"u_structure_complex":(["t","k","z"],usc),"v_structure_complex":(["t","k","z"],vsc),"w_structure_complex":(["t","k","z"],wsc),"b_structure_complex":(["t","k","z"],bsc)},coords={"t":time,"k":k_list,"z":grid_normal})
+field_data = xr.Dataset({"u_structure":(["t","k","z","x"],us[:,:,:,:]),"v_structure":(["t","k","z","x"],vs[:,:,:,:]),"w_structure":(["t","k","z","x"],ws[:,:,:,:]),"b_structure":(["t","k","z","x"],bs[:,:,:,:]),"x_domain":(["t","k","z"],xs)},coords={"t":time,"k":k_list,"z":grid_normal,"x":np.linspace(0,1,nz)})
 field_data.to_netcdf("PSI_non_dim_field_low_res.nc")
 
 

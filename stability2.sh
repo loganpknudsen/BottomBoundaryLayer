@@ -4,7 +4,7 @@
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
-#PBS -l select=1:ncpus=1:mem=80GB
+#PBS -l select=1:ncpus=2:mem=80GB
 ### Run Time
 #PBS -l walltime=24:00:00
 ### To the casper queue
@@ -24,4 +24,4 @@ module --ignore-cache load conda
 conda activate dedalus3
 ### file to run
 
-python3 -u PSI_non_dim_full_form.py
+python3 -u PSI_non_dim_full_form_visc.py
