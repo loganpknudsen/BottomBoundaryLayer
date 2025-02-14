@@ -20,7 +20,7 @@ visc  = 10**(-4)
 # Basis
 nz = 64
 coord = d3.Coordinate('z')
-dist = d3.Distributor(coord, dtype=np.complex128,comm= MPI.COMM_SELF, mesh=(4)) # 3793147
+dist = d3.Distributor(coord, dtype=np.complex128,comm= MPI.COMM_SELF, mesh=(2))
 basis = d3.Chebyshev(coord, nz, bounds=(0, H))
 
 # Fields
