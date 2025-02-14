@@ -18,7 +18,7 @@ lmbd = N_list[0]**2*np.tan(theta)*(gm)/f
 visc  = 10**(-4)
 
 # Basis
-nz = 256
+nz = 128
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128, comm=MPI.COMM_SELF)
 basis = d3.Chebyshev(coord, nz, bounds=(0, H))
