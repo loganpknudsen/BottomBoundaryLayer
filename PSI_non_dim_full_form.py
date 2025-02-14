@@ -204,6 +204,4 @@ gr_data = xr.Dataset(data_vars={"growth_rate":(["t","N","delta","gamma_index","k
 gr_data.to_netcdf("PSI_non_dim_full_form_mid_res.nc") 
 grid_normal = basis.global_grid(dist,scale=1).ravel()
 field_data = xr.Dataset({"u_structure":(["t","k","z"],us),"v_structure":(["t","k","z"],vs),"w_structure":(["t","k","z"],ws),"b_structure":(["t","k","z"],bs),"u_structure_complex":(["t","k","z"],usc),"v_structure_complex":(["t","k","z"],vsc),"w_structure_complex":(["t","k","z"],wsc),"b_structure_complex":(["t","k","z"],bsc)},coords={"t":time,"k":k_list,"z":grid_normal})
-field_data.to_netcdf("PSI_non_dim_field_mid_res.nc")
-
-
+field_data.to_netcdf("PSI_non_dim_field

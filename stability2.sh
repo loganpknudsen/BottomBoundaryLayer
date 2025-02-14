@@ -24,4 +24,4 @@ module --ignore-cache load conda
 conda activate dedalus3
 ### file to run
 
-python3 -u PSI_non_dim_full_form_vis
+python3 -u PSI_non_dim_full_form_visc.py
