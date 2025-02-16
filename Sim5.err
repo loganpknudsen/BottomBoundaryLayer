@@ -1,1 +1,41 @@
 =>> PBS: job killed: walltime 64866 exceeded limit 64800
+Traceback (most recent call last):
+  File "/glade/u/home/knudsenl/BottomBoundaryLayer/PSI_non_dim_full_form.py", line 191, in <module>
+    field_data.to_netcdf("PSI_non_dim_field_mid_res.nc")
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/core/dataset.py", line 2346, in to_netcdf
+    return to_netcdf(  # type: ignore[return-value]  # mypy cannot resolve the overloads:(
+        self,
+    ...<10 lines>...
+        auto_complex=auto_complex,
+    )
+  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/api.py", line 1872, in to_netcdf
+    dump_to_store(
+    ~~~~~~~~~~~~~^
+        dataset, store, writer, encoding=encoding, unlimited_dims=unlimited_dims
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/api.py", line 1919, in dump_to_store
+    store.store(variables, attrs, check_encoding, writer, unlimited_dims=unlimited_dims)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/common.py", line 377, in store
+    self.set_variables(
+    ~~~~~~~~~~~~~~~~~~^
+        variables, check_encoding_set, writer, unlimited_dims=unlimited_dims
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/common.py", line 415, in set_variables
+    target, source = self.prepare_variable(
+                     ~~~~~~~~~~~~~~~~~~~~~^
+        name, v, check, unlimited_dims=unlimited_dims
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/scipy_.py", line 252, in prepare_variable
+    self.ds.createVariable(name, data.dtype, variable.dims)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/scipy/io/_netcdf.py", line 388, in createVariable
+    raise ValueError("NetCDF 3 does not support type %s" % type)
+ValueError: NetCDF 3 does not support type complex128
