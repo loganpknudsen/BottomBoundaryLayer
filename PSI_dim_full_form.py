@@ -13,7 +13,7 @@ f = 10**(-4)
 S2 = N_list[0]**2*theta**2/f**2
 fstar = f*(1+S2)**(0.5)
 gm = (1+S2)**(-1)
-H = 150
+H = 200
 H_1 = f*0.05/(gm*N_list[0]**2*np.tan(theta))
 lmbd = N_list[0]**2*np.tan(theta)*(gm)/f
 
@@ -54,7 +54,7 @@ gamma = dist.Field()
 Gshear = dist.Field()
 t =dist.Field()
 u_sz = beta**(-1)*np.sin(fstar*t)
-v_sz = (1 + beta**(-2)*(np.cos(fstar*t)-1))
+v_sz = 1 + beta**(-2)*(np.cos(fstar*t)-1)
 b_sz = beta**(-2)*(np.cos(fstar*t)-1)
 k = dist.Field()
 dx = lambda A: 1j*k*A
@@ -64,18 +64,18 @@ lift = lambda A: d3.Lift(A,lift_basis,-1)
 dz = lambda A: d3.Differentiate(A, coord)
 
 # Problem
-problem = d3.EVP([u,v,w,b,p,tau_1,tau_2],eigenvalue=omega, namespace=locals()) # ,,tau_p,tau_p2
+problem = d3.EVP([u,v,w,b,p,tau_1,tau_2,tau_p],eigenvalue=omega, namespace=locals()) # ,,tau_p,tau_p2
 
 problem.add_equation("dt(u)-delta*Gshear*u_sz*Hv*w+delta*Gshear*u_sz*one_z*Hv*dx(u)-f*v*np.cos(theta)+dx(p)-np.sin(theta)*b= 0") # 
 problem.add_equation("dt(v)+(Gshear-delta*Gshear*v_sz)*w*Hv+delta*Gshear*u_sz*Hv*one_z*dx(v)+f*u*np.cos(theta)-f*np.sin(theta)*w=0") # 
-problem.add_equation("dt(w)+delta*Gshear*u_sz*one_z*Hv*dx(w)+f*np.sin(theta)*v+dz(p)-b*np.cos(theta)=0") # +lift(tau_p)
+problem.add_equation("dt(w)+delta*Gshear*u_sz*one_z*Hv*dx(w)+f*np.sin(theta)*v+dz(p)+lift(tau_p)-b*np.cos(theta)=0") # +lift(tau_p)
 problem.add_equation("dx(u)+dz(w)+lift(tau_1)+lift(tau_2)=0")
 problem.add_equation("dt(b)+(N**2*gamma*theta+N**2*(1-gamma)*theta)*Hv*u+(N**2*(1-gamma)-delta*Gshear**2*gamma**(-1)*b_sz-N**2*theta**2*gamma)*w*Hv+N**2*w*Hv2+delta*Gshear*u_sz*Hv*one_z*dx(b)=0") # 
 # Setting Boundary Values
-problem.add_equation("dz(w)(z=0)=0")
-problem.add_equation("dz(w)(z="+str(H)+")=0")
-# # problem.add_equation("p(z=0)=0")
-# problem.add_equation("p(z=200)=0")
+problem.add_equation("w(z=0)=0")
+problem.add_equation("w(z="+str(H)+")=0")
+# problem.add_equation("p(z=0)=0")
+problem.add_equation("p(z="+str(H)+")=0")
 # problem.add_equation("integ(p)=0")
 
 
@@ -84,7 +84,7 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(0,30,1)
+k_list = np.arange(0,30,2)
 # phase = np.pi/2
 time = np.linspace(0,(2*np.pi)/fstar,6) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
@@ -170,7 +170,8 @@ for ti in time:
                     bt.append(bi)
                     xb = x_domain.reshape(1,nz)
                     zb = zs['g'].reshape(nz,1)
-                    bbi = np.array(np.real(N['g']**2*theta*x_domain.reshape(1,nz))*np.ones((nz,nz))+np.real(N['g']**2*(zs['g'])+N['g']**2*gamma['g']*one_z['g']*Hv['g']+delta['g']*Gshear['g']**2*gamma['g']**(-1)*b_sz['g']*Hv['g']*one_z['g'])*np.ones((nz,nz))) # delta['g']*Ri['g']**(-1)*gamma['g']**(-1)*b_sz['g']*one_z["g"]*Hv['g'])
+                    print(np.real(N['g']**2*theta*x_domain.reshape(1,nz))*np.ones((nz,nz))+np.real(N['g']**2*zs['g']+N['g']**2*gamma['g']*one_z['g']*Hv['g']+delta['g']*Gshear['g']**2*gamma['g']**(-1)*b_sz['g']*Hv['g']*one_z['g']).reshape(nz,1)*np.ones((nz,nz)))
+                    bbi = np.array(np.real(N['g']**2*theta*x_domain.reshape(1,nz))*np.ones((nz,nz))+np.real(N['g']**2*zs['g']+N['g']**2*gamma['g']*one_z['g']*Hv['g']+delta['g']*Gshear['g']**2*gamma['g']**(-1)*b_sz['g']*Hv['g']*one_z['g']).reshape(nz,1)*np.ones((nz,nz))) # delta['g']*Ri['g']**(-1)*gamma['g']**(-1)*b_sz['g']*one_z["g"]*Hv['g'])
                     bbt.append(bbi)
                     eval4.append([sorted_evals])
                     eval_i4.append([sorted_evals_i])
