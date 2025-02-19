@@ -18,7 +18,7 @@ H_1 = f*0.05/(gm*N_list[0]**2*np.tan(theta))
 lmbd = N_list[0]**2*np.tan(theta)*(gm)/f
 
 # Basis
-nz = 64
+nz = 128
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
 basis = d3.Chebyshev(coord, nz, bounds=(0, H))
@@ -40,8 +40,10 @@ omega = dist.Field(name="omega")
 z = dist.local_grid(basis)
 one_z = dist.Field(name="one_z",bases=basis)
 zs = dist.Field(name="zs",bases=basis)
-Hv = dist.Field(name="one_z",bases=basis)
-Hv['g'] = np.heaviside(1-z,1)#0.5*(1+np.tanh((1-z)*5*10**(1)))
+Hv = dist.Field(name="Hv",bases=basis)
+Hv['g'] = np.heaviside(1-z,1)
+Hv2 = dist.Field(name="Hv2",bases=basis)
+Hv2['g'] = np.heaviside(z-1,0)
 one_z['g'] = 1-z
 zs['g'] = z
 beta = dist.Field()
@@ -69,13 +71,12 @@ problem = d3.EVP([u,v,w,b,p,tau_1,tau_p], eigenvalue=omega, namespace=locals()) 
 
 problem.add_equation("dt(u)+delta*u_sz*Hv*w+delta*u_sz*one_z*Hv*dx(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)= 0") # 
 problem.add_equation("dt(v)+(Hv-delta*v_sz*Hv)*w+delta*u_sz*Hv*one_z*dx(v)+u*np.cos(theta)-n*np.sin(theta)*w=0") # 
-problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*Hv*dx(w)+n*np.sin(theta)*v+Ri*dz(p)+lift(tau_p)-Ri*b*np.cos(theta)=0") # +lift(tau_p)
+problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*dz(p)+lift(tau_p)-Ri*b*np.cos(theta)=0") # +lift(tau_p)
 problem.add_equation("dx(u)+dz(w)+lift(tau_1)=0")
-# problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*u*np.cos(theta)*Hv+(1-delta*Ri**(-1)*gamma**(-1)*b_sz*Hv-Ri**(-1)*n*np.tan(theta)*Hv)*w*np.cos(theta)+delta*u_sz*Hv*one_z*dx(b)=0") # 
-problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*Hv*u*np.cos(theta)+(1-delta*Ri**(-1)*gamma**(-1)*b_sz*Hv)*w*np.cos(theta)+delta*u_sz*Hv*one_z*dx(b)=0") # 
+problem.add_equation("dt(b)+Ri**(-1)*(1+alpha)*Hv*u*np.cos(theta)+(1-delta*Ri**(-1)*Hv*gamma**(-1)*b_sz-theta*Hv*n*Ri**(-1))*w*np.cos(theta)+delta*u_sz*Hv*one_z*dx(b)=0") # 
 # Setting Boundary Values
 problem.add_equation("w(z=0)=0")
-# problem.add_equation("w(z=2)=0")
+# problem.add_equation("w(z=1)=0")
 # problem.add_equation("p(z=0)=0")
 problem.add_equation("p(z=2)=0")
 # problem.add_equation("integ(p)=0")
@@ -86,7 +87,7 @@ solver = problem.build_solver()
 evals_r = []
 evals_i =[]
 gammas = []
-k_list = np.arange(0.1,30.2,10)
+k_list = np.arange(0.1,30.2,1)
 # phase = np.pi/2
 time = np.linspace(0,(2*np.pi)*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5),6) #np.arange(0,(2*np.pi+1)/(1+N_list[0]**2*theta**2*f**(-2))**(0.5),1*(1+N_list[0]**2*theta**2*f**(-2))**(-0.5)) # np.arange(0,2*np.pi,0.1)
 us = []
@@ -132,7 +133,7 @@ for ti in time:
                 S['g'] = (Ni*np.tan(theta))/f
                 ni = f/Gsheari
                 n['g'] = ni
-                alphai = (Ni**2*(1-gammai)*np.tan(theta))/(f*Gsheari)
+                alphai = (Ni**2*np.tan(theta)*(1-gammai))/(f*Gsheari)
                 alpha['g'] = alphai
                 Gshear['g'] = Gsheari
                 beta['g'] = (1+Ni**2*np.tan(theta)**2/f**2)**(0.5)
@@ -144,7 +145,7 @@ for ti in time:
                     wi = []
                     bi = []
                     bbi = []
-                    x_domain = np.linspace(0,2000,nz)
+                    x_domain = np.linspace(0,2*np.pi/ki,nz)
                     xt.append(x_domain)
                     k['g'] = ki
                     solver.solve_dense(solver.subproblems[0], rebuild_matrices=True)
@@ -168,7 +169,7 @@ for ti in time:
                     vi = np.real(v['g'].reshape(nz,1)@np.exp(1j*ki*x_domain.reshape(1,nz)))
                     vi = vi/u_max
                     vt.append(vi)
-                    vbi = np.array(np.real(1-Hv['g']*one_z['g']+delta['g']*v_sz['g']*one_z["g"]*Hv['g'])*np.ones((nz,nz)))
+                    vbi = np.array(np.real(1-one_z['g']*Hv['g']+delta['g']*v_sz['g']*Hv['g']*one_z['g'])*np.ones((nz,nz)))
                     vbt.append(vbi)
                     wi = np.real(w['g'].reshape(nz,1)@np.exp(1j*ki*x_domain.reshape(1,nz)))
                     wi = wi/u_max
@@ -181,7 +182,8 @@ for ti in time:
                     coeff2 = delta['g']*Gshear['g']*theta/f
                     xb = x_domain.reshape(1,nz)
                     zb = zs['g'].reshape(nz,1)
-                    bbi = np.array(np.real(delta['g']*Ri['g']**(-1)*gamma['g']**(-1)*b_sz['g']*Hv['g']).reshape(nz,1)@np.ones((1,nz))) # delta['g']*Ri['g']**(-1)*gamma['g']**(-1)*b_sz['g']*one_z["g"]*Hv['g'])
+                    bbi = np.array(np.real(gamma['g']**(-1)*Ri['g']**(-1)*x_domain).reshape(1,nz)*np.ones((nz,nz))*np.real(Hv['g'].reshape(nz,1))+np.real(Hv['g']*zs['g']/(1-gamma['g'])+gamma['g']/(1-gamma['g'])*one_z['g']*Hv['g']+delta['g']*Ri['g']**(-1)*gamma['g']**(-1)*b_sz['g']*Hv['g']*one_z['g']).reshape(nz,1)*np.ones((nz,nz))) # delta['g']*Ri['g']**(-1)*gamma['g']**(-1)*b_sz['g']*one_z["g"]*Hv['g'])
+                    bbi = bbi + np.array(np.real(gamma['g']**(-1)*Ri['g']**(-1)*x_domain).reshape(1,nz)*np.ones((nz,nz))*np.real(Hv2['g'].reshape(nz,1))+np.real(zs['g']/(1-gamma['g'])*Hv2['g']).reshape(nz,1)*np.ones((nz,nz))) 
                     bbt.append(bbi)
                     eval4.append([sorted_evals])
                     eval_i4.append([sorted_evals_i])
