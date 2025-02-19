@@ -18,7 +18,7 @@ H_1 = f*0.05/(gm*N_list[0]**2*np.tan(theta))
 lmbd = N_list[0]**2*np.tan(theta)*(gm)/f
 
 # Basis
-nz = 256
+nz = 128
 coord = d3.Coordinate('z')
 dist = d3.Distributor(coord, dtype=np.complex128)
 basis = d3.Chebyshev(coord, nz, bounds=(0, H))
