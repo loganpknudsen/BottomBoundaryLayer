@@ -170,9 +170,9 @@ in the estimated growth rate ``σ`` falls below `convergence_criterion`.
 Returns ``σ``.
 """
 function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
-    σ = CuArray([])
-    power_method_data = CuArray([])
-    push!(power_method_data, CuArray((σ=deepcopy(σ))))
+    σ = Vector()
+    power_method_data = Vector()
+    push!(power_method_data, Vector((σ=deepcopy(σ))))
 
     while convergence(σ) > convergence_criterion
         compute!(energy)
@@ -208,7 +208,6 @@ ns = 10^(-6) # standard deviation for noise
 ui(x, z) = ns*Random.randn()
 vi(x, z) = ns*Random.randn()
 wi(x, z) = ns*Random.randn()
-# bp(x,z) = ns*Random.randn()
 
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
