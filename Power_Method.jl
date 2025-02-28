@@ -176,13 +176,14 @@ function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
 
     while convergence(σ) > convergence_criterion
         compute!(energy)
-
-        @info @printf("About to start power method iteration %d; kinetic energy:", length(σ)+1) # , energy
+        
+        es =  CUDA.@allowscalar energy[1,1,1]
+        @info @printf("About to start power method iteration %d; kinetic energy: %.2e\n", length(σ)+1,es) # , energy
         push!(σ, grow_instability!(simulation, energy))
         compute!(energy)
-
-        @info @printf("Power method iteration %d, kinetic energy: %.2e, σⁿ: %.2e, relative Δσ: %.2e",
-                       length(σ), energy, σ[end], convergence(σ))
+        es =  CUDA.@allowscalar energy[1,1,1]
+        @info @printf("Power method iteration %d, kinetic energy: %.2e, σⁿ: %.2e, relative Δσ: %.2e\n",
+                       length(σ), es, σ[end], convergence(σ))
 
         compute!(ω)
         rescale!(simulation.model, energy)
