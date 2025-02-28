@@ -1,7 +1,6 @@
 ### Load in Packages
 using Pkg
 Pkg.activate(".")
-# Pkg.add("Adapt")
 Pkg.instantiate()
 using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
@@ -14,7 +13,6 @@ using Random
 using Printf
 using ArgParse
 using CUDA 
-using Adapt
 using Oceanostics
 
 # Path file is saved under
@@ -127,14 +125,14 @@ function grow_instability!(simulation, energy)
     simulation.model.clock.iteration = 0
     t₀ = simulation.model.clock.time = 0
     compute!(energy)
-    energy₀ = adapt(Float64, energy.data)
+    energy₀ = CUDA.@allowscalar energy[1,1,1]
 
     # Grow
     run!(simulation)
 
     # Analyze
     compute!(energy)
-    energy₁ =  adapt(Float64, energy.data)
+    energy₁ =  CUDA.@allowscalar energy[1,1,1]
     Δτ = simulation.model.clock.time - t₀
 
     # ½(u² + v²) ~ exp(2 σ Δτ)
