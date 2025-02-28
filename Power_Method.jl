@@ -169,7 +169,7 @@ in the estimated growth rate ``σ`` falls below `convergence_criterion`.
 
 Returns ``σ``.
 """
-function estimate_growth_rate(simulation, energy, convergence_criterion=1e-6)
+function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
     σ = Vector()
     power_method_data = Vector()
     push!(power_method_data, (deepcopy(σ)))
