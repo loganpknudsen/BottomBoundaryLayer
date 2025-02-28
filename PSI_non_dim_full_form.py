@@ -69,7 +69,7 @@ dz = lambda A: d3.Differentiate(A, coord)
 # Problem
 problem = d3.EVP([u,v,w,b,p,tau_1,tau_p], eigenvalue=omega, namespace=locals()) # ,tau_p
 
-problem.add_equation("dt(u)+delta*u_sz*Hv*w+delta*u_sz*one_z*Hv*dx(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)= 0") # 
+problem.add_equation("dt(u)-delta*u_sz*Hv*w+delta*u_sz*one_z*Hv*dx(u)-v*np.cos(theta)+Ri*dx(p)-alpha*b*np.cos(theta)= 0") # 
 problem.add_equation("dt(v)+(Hv-delta*v_sz*Hv)*w+delta*u_sz*Hv*one_z*dx(v)+u*np.cos(theta)-n*np.sin(theta)*w=0") # 
 problem.add_equation("n**2*dt(w)+n**2*delta*u_sz*one_z*dx(w)+n*np.sin(theta)*v+Ri*dz(p)+lift(tau_p)-Ri*b*np.cos(theta)=0") # +lift(tau_p)
 problem.add_equation("dx(u)+dz(w)+lift(tau_1)=0")
