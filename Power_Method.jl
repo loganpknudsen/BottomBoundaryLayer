@@ -169,7 +169,7 @@ in the estimated growth rate ``σ`` falls below `convergence_criterion`.
 
 Returns ``σ``.
 """
-function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
+function estimate_growth_rate(simulation, energy, convergence_criterion=1e-6)
     σ = Vector()
     power_method_data = Vector()
     push!(power_method_data, (deepcopy(σ)))
@@ -185,9 +185,8 @@ function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
         @info @printf("Power method iteration %d, kinetic energy: %.2e, σⁿ: %.2e, relative Δσ: %.2e\n",
                        length(σ), es, σ[end], convergence(σ))
 
-        compute!(ω)
         rescale!(simulation.model, energy)
-        push!(power_method_data, (σ=deepcopy(σ)))
+        push!(power_method_data, (deepcopy(σ)))
     end
 
     return σ, power_method_data
@@ -216,27 +215,3 @@ set!(model, u=ui, v=vi, w=wi)
 rescale!(simulation.model, mean_perturbation_kinetic_energy, target_kinetic_energy=1e-6)
 growth_rates, power_method_data = estimate_growth_rate(simulation, mean_perturbation_kinetic_energy)
 @info "Power iterations converged! Estimated growth rate: $(growth_rates[end])"
-
-n = Observable(1)
-
-fig = Figure(size=(800, 600))
-
-σₙ = @lift [(i-1, i==1 ? NaN : growth_rates[i-1]) for i in 1:$n]
-
-eigentitle(σ, t) = length(σ) > 0 ? @sprintf("Iteration #%i; growth rate %.2e", length(σ), σ[end]) : @sprintf("Initial perturbation fields")
-σ_title = @lift eigentitle(power_method_data[$n].σ, nothing)
-
-ax_σ = Axis(fig[1, :];
-            xlabel = "Power iteration",
-            ylabel = "Growth rate",
-            title = σ_title,
-            xticks = 1:length(power_method_data)-1,
-            limits = ((0.5, length(power_method_data)-0.5), (-0.25, 0.25)))
-
-scatter!(ax_σ, σₙ; color = :blue)
-
-frames = 1:length(power_method_data)
-
-record(fig, "powermethod.mp4", frames, framerate=1) do i
-       n[] = i
-end
