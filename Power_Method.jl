@@ -118,21 +118,21 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-simulation = Simulation(model, Δt = 10seconds, stop_time = 1.01*((2*pi)/f)seconds, verbose=false)
+simulation = Simulation(model, Δt = 10seconds, stop_time = 0.1*((2*pi)/f)seconds, verbose=false)
 
 function grow_instability!(simulation, energy)
     # Initialize
     simulation.model.clock.iteration = 0
     t₀ = simulation.model.clock.time = 0
     compute!(energy)
-    energy₀ = energy
+    energy₀ = adapt(Array, energy.data)
 
     # Grow
     run!(simulation)
 
     # Analyze
     compute!(energy)
-    energy₁ = energy
+    energy₁ =  adapt(Array, energy.data)
     Δτ = simulation.model.clock.time - t₀
 
     # ½(u² + v²) ~ exp(2 σ Δτ)
