@@ -125,14 +125,14 @@ function grow_instability!(simulation, energy)
     simulation.model.clock.iteration = 0
     t₀ = simulation.model.clock.time = 0
     compute!(energy)
-    energy₀ = energy[1, 1, 1]
+    energy₀ = energy
 
     # Grow
     run!(simulation)
 
     # Analyze
     compute!(energy)
-    energy₁ = energy[1, 1, 1]
+    energy₁ = energy
     Δτ = simulation.model.clock.time - t₀
 
     # ½(u² + v²) ~ exp(2 σ Δτ)
