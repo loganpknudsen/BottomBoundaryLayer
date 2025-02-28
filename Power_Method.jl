@@ -6,7 +6,7 @@ using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 using Oceananigans.AbstractOperations: @at, Average
 using Oceananigans.Grids: Center, Face
-using Oceananigans.Fields: FunctionField
+using Oceananigans.Fields: FunctionField, interior
 using Oceananigans.Units
 using Oceananigans.OutputWriters: Checkpointer
 using Random
