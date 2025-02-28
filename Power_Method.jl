@@ -177,7 +177,7 @@ function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
     while convergence(σ) > convergence_criterion
         compute!(energy)
 
-        @info @printf("About to start power method iteration %d; kinetic energy: %.2e", length(σ)+1) # , energy
+        @info @printf("About to start power method iteration %d; kinetic energy:", length(σ)+1) # , energy
         push!(σ, grow_instability!(simulation, energy))
         compute!(energy)
 
