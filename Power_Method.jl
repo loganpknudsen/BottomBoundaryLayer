@@ -105,7 +105,7 @@ b_bc_top= FluxBoundaryCondition(-1*N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-4
+const ν1 = 1e-6
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -202,7 +202,7 @@ w = Field(@at (Center, Center, Center) wa - wm)
 
 mean_perturbation_kinetic_energy = Field(Average(Oceanostics.TurbulentKineticEnergy(model, u, v, w))) # TKE calculation
 
-ns = 10^(-6) # standard deviation for noise
+ns = 10^(-4) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
