@@ -6,7 +6,7 @@ using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 using Oceananigans.AbstractOperations: @at, Average
 using Oceananigans.Grids: Center, Face
-using Oceananigans.Fields: FunctionField, interior
+using Oceananigans.Fields: FunctionField
 using Oceananigans.Units
 using Oceananigans.OutputWriters: Checkpointer
 using Random
@@ -169,11 +169,10 @@ in the estimated growth rate ``σ`` falls below `convergence_criterion`.
 
 Returns ``σ``.
 """
-function estimate_growth_rate(simulation, energy, ω, b; convergence_criterion=1e-3)
+function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
     σ = []
     power_method_data = []
-    compute!(ω)
-    push!(power_method_data, (ω=collect(interior(ω, :, 1, :)), b=collect(interior(b, :, 1, :)), σ=deepcopy(σ)))
+    push!(power_method_data, (σ=deepcopy(σ)))
 
     while convergence(σ) > convergence_criterion
         compute!(energy)
@@ -187,7 +186,7 @@ function estimate_growth_rate(simulation, energy, ω, b; convergence_criterion=1
 
         compute!(ω)
         rescale!(simulation.model, energy)
-        push!(power_method_data, (ω=collect(interior(ω, :, 1, :)), b=collect(interior(b, :, 1, :)), σ=deepcopy(σ)))
+        push!(power_method_data, (σ=deepcopy(σ)))
     end
 
     return σ, power_method_data
@@ -201,18 +200,7 @@ u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
 v = Field(@at (Center, Center, Center) va - vm)
 w = Field(@at (Center, Center, Center) wa - wm)
 
-# buoyancy pertubation calculation
-ba = model.tracers.b
-bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
-b = Field(@at (Center, Center, Center) ba - bm)
-
-
 mean_perturbation_kinetic_energy = Field(Average(Oceanostics.TurbulentKineticEnergy(model, u, v, w))) # TKE calculation
-
-perturbation_vorticity = ErtelPotentialVorticity(model, u, v, w, b, coriolis) # potential vorticity calculation
-
-xω, yω, zω = nodes(perturbation_vorticity)
-xb, yb, zb = nodes(b)
 
 ns = 10^(-6) # standard deviation for noise
 
@@ -226,35 +214,14 @@ wi(x, z) = ns*Random.randn()
 set!(model, u=ui, v=vi, w=wi)
 
 rescale!(simulation.model, mean_perturbation_kinetic_energy, target_kinetic_energy=1e-6)
-growth_rates, power_method_data = estimate_growth_rate(simulation, mean_perturbation_kinetic_energy, perturbation_vorticity, b)
+growth_rates, power_method_data = estimate_growth_rate(simulation, mean_perturbation_kinetic_energy)
 @info "Power iterations converged! Estimated growth rate: $(growth_rates[end])"
 
 n = Observable(1)
 
 fig = Figure(size=(800, 600))
 
-kwargs = (xlabel="x", ylabel="z", limits = ((xω[1], xω[end]), (zω[1], zω[end])), aspect=1,)
-
-ω_title(t) = t === nothing ? @sprintf("vorticity") : @sprintf("vorticity at t = %.2f", t)
-b_title(t) = t === nothing ? @sprintf("buoyancy")  : @sprintf("buoyancy at t = %.2f", t)
-
-ax_ω = Axis(fig[2, 1]; title = ω_title(nothing), kwargs...)
-
-ax_b = Axis(fig[2, 3]; title = b_title(nothing), kwargs...)
-
-ωₙ = @lift power_method_data[$n].ω
-bₙ = @lift power_method_data[$n].b
-
 σₙ = @lift [(i-1, i==1 ? NaN : growth_rates[i-1]) for i in 1:$n]
-
-ω_lims = @lift (-maximum(abs, power_method_data[$n].ω) - 1e-16, maximum(abs, power_method_data[$n].ω) + 1e-16)
-b_lims = @lift (-maximum(abs, power_method_data[$n].b) - 1e-16, maximum(abs, power_method_data[$n].b) + 1e-16)
-
-hm_ω = heatmap!(ax_ω, xω, zω, ωₙ; colorrange = ω_lims, colormap = :balance)
-Colorbar(fig[2, 2], hm_ω)
-
-hm_b = heatmap!(ax_b, xb, zb, bₙ; colorrange = b_lims, colormap = :balance)
-Colorbar(fig[2, 4], hm_b)
 
 eigentitle(σ, t) = length(σ) > 0 ? @sprintf("Iteration #%i; growth rate %.2e", length(σ), σ[end]) : @sprintf("Initial perturbation fields")
 σ_title = @lift eigentitle(power_method_data[$n].σ, nothing)
