@@ -118,7 +118,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-simulation = Simulation(model, Δt = 10seconds, stop_time = 0.1*((2*pi)/f)seconds, verbose=false)
+simulation = Simulation(model, Δt = 10seconds, stop_time = 1.0*((2*pi)/f)seconds, verbose=false)
 
 function grow_instability!(simulation, energy)
     # Initialize
