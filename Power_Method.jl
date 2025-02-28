@@ -170,9 +170,9 @@ in the estimated growth rate ``σ`` falls below `convergence_criterion`.
 Returns ``σ``.
 """
 function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
-    σ = []
-    power_method_data = []
-    push!(power_method_data, (σ=deepcopy(σ)))
+    σ = CuArray([])
+    power_method_data = CuArray([])
+    push!(power_method_data, CuArray((σ=deepcopy(σ))))
 
     while convergence(σ) > convergence_criterion
         compute!(energy)
