@@ -170,15 +170,15 @@ in the estimated growth rate ``σ`` falls below `convergence_criterion`.
 Returns ``σ``.
 """
 function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
-    σ = []
-    power_method_data = []
-    append!(power_method_data, (σ=deepcopy(σ)))
+    σ = CuArray([])
+    power_method_data = CuArray([])
+    hcat!(power_method_data, (σ=deepcopy(σ)))
 
     while convergence(σ) > convergence_criterion
         compute!(energy)
 
         @info @sprintf("About to start power method iteration %d; kinetic energy: %.2e", length(σ)+1, energy)
-        append!(σ, grow_instability!(simulation, energy))
+        hcat!(σ, grow_instability!(simulation, energy))
         compute!(energy)
 
         @info @sprintf("Power method iteration %d, kinetic energy: %.2e, σⁿ: %.2e, relative Δσ: %.2e",
@@ -186,7 +186,7 @@ function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
 
         compute!(ω)
         rescale!(simulation.model, energy)
-        append!(power_method_data, (σ=deepcopy(σ)))
+        hcat!(power_method_data, (σ=deepcopy(σ)))
     end
 
     return σ, power_method_data
