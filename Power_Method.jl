@@ -172,7 +172,7 @@ Returns ``σ``.
 function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
     σ = Vector()
     power_method_data = Vector()
-    push!(power_method_data, (σ=deepcopy(σ)))
+    push!(power_method_data, (deepcopy(σ)))
 
     while convergence(σ) > convergence_criterion
         compute!(energy)
