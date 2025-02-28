@@ -1,7 +1,7 @@
 ### Load in Packages
 using Pkg
 Pkg.activate(".")
-Pkg.add("Adapt")
+# Pkg.add("Adapt")
 Pkg.instantiate()
 using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
@@ -14,7 +14,7 @@ using Random
 using Printf
 using ArgParse
 using CUDA 
-using Adapt @at adapt
+using Adapt @at, adapt
 using Oceanostics
 
 # Path file is saved under
