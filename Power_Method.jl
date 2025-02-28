@@ -159,7 +159,7 @@ end
 
 using Printf
 
-@allowscalar convergence(σ) = length(σ) > 1 ? abs((σ[end] - σ[end-1]) / σ[end]) : 9.1e18 # pretty big (not Inf tho)
+@inline convergence(σ) = length(σ) > 1 ? abs((σ[end] - σ[end-1]) / σ[end]) : 9.1e18 # pretty big (not Inf tho)
 
 """
     estimate_growth_rate(simulation, energy, ω; convergence_criterion=1e-3)
