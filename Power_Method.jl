@@ -2,6 +2,7 @@
 using Pkg
 Pkg.activate(".")
 Pkg.instantiate()
+Pkg.add("Adapt")
 using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 using Oceananigans.AbstractOperations: @at, Average
@@ -13,7 +14,7 @@ using Random
 using Printf
 using ArgParse
 using CUDA 
-using Adapt
+using Adapt @at adapt
 using Oceanostics
 
 # Path file is saved under
