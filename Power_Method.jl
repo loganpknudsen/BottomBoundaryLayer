@@ -1,8 +1,8 @@
 ### Load in Packages
 using Pkg
 Pkg.activate(".")
-Pkg.instantiate()
 Pkg.add("Adapt")
+Pkg.instantiate()
 using Oceananigans
 using Oceananigans.AbstractOperations: @at, ∂x, ∂y, ∂z
 using Oceananigans.AbstractOperations: @at, Average
