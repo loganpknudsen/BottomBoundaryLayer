@@ -148,7 +148,7 @@ Rescales all model fields so that `energy = target_kinetic_energy`.
 """
 function rescale!(model, energy; target_kinetic_energy = 1e-6)
     compute!(energy)
-    rescale_factor = √(target_kinetic_energy / energy[1, 1, 1])
+    rescale_factor = √(target_kinetic_energy / energy)
 
     for f in merge(model.velocities, model.tracers)
         f .*= rescale_factor
@@ -178,12 +178,12 @@ function estimate_growth_rate(simulation, energy, ω, b; convergence_criterion=1
     while convergence(σ) > convergence_criterion
         compute!(energy)
 
-        @info @sprintf("About to start power method iteration %d; kinetic energy: %.2e", length(σ)+1, energy[1, 1, 1])
+        @info @sprintf("About to start power method iteration %d; kinetic energy: %.2e", length(σ)+1, energy)
         push!(σ, grow_instability!(simulation, energy))
         compute!(energy)
 
         @info @sprintf("Power method iteration %d, kinetic energy: %.2e, σⁿ: %.2e, relative Δσ: %.2e",
-                       length(σ), energy[1, 1, 1], σ[end], convergence(σ))
+                       length(σ), energy, σ[end], convergence(σ))
 
         compute!(ω)
         rescale!(simulation.model, energy)
