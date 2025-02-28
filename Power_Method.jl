@@ -14,7 +14,7 @@ using Random
 using Printf
 using ArgParse
 using CUDA 
-using Adapt: @at, adapt
+using Adapt
 using Oceanostics
 
 # Path file is saved under
