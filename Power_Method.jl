@@ -116,4 +116,102 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             advection = WENO(),
                             tracers = :b,
                             boundary_conditions = (; b=buoyancy_grad),
-                            background_fields = (; u=U_field, v=V_field, b=B
+                            background_fields = (; u=U_field, v=V_field, b=B_field))
+
+simulation = Simulation(model, Δt = 100seconds, stop_time = 1.0*((2*pi)/f)seconds, verbose=false)
+
+function grow_instability!(simulation, energy)
+    # Initialize
+    simulation.model.clock.iteration = 0
+    t₀ = simulation.model.clock.time = 0
+    compute!(energy)
+    energy₀ = CUDA.@allowscalar energy[1,1,1]
+
+    # Grow
+    run!(simulation)
+
+    # Analyze
+    compute!(energy)
+    energy₁ =  CUDA.@allowscalar energy[1,1,1]
+    Δτ = simulation.model.clock.time - t₀
+
+    # ½(u² + v²) ~ exp(2 σ Δτ)
+    σ = growth_rate = log(energy₁ / energy₀) / 2Δτ
+
+    return growth_rate
+end
+
+"""
+    rescale!(model, energy; target_kinetic_energy = 1e-3)
+
+Rescales all model fields so that `energy = target_kinetic_energy`.
+"""
+function rescale!(model, energy; target_kinetic_energy = 1e-6)
+    compute!(energy)
+    rescale_factor = √(target_kinetic_energy / energy)
+
+    for f in merge(model.velocities, model.tracers)
+        f .*= rescale_factor
+    end
+
+    return nothing
+end
+
+using Printf
+
+@inline convergence(σ) = length(σ) > 1 ? abs((σ[end] - σ[end-1]) / σ[end]) : 9.1e18 # pretty big (not Inf tho)
+
+"""
+    estimate_growth_rate(simulation, energy, ω; convergence_criterion=1e-3)
+
+Estimates the growth rate iteratively until the relative change
+in the estimated growth rate ``σ`` falls below `convergence_criterion`.
+
+Returns ``σ``.
+"""
+function estimate_growth_rate(simulation, energy, convergence_criterion=1e-3)
+    σ = Vector()
+    power_method_data = Vector()
+    push!(power_method_data, (deepcopy(σ)))
+
+    while convergence(σ) > convergence_criterion
+        compute!(energy)
+        
+        es =  CUDA.@allowscalar energy[1,1,1]
+        @info @printf("About to start power method iteration %d; kinetic energy: %.2e\n", length(σ)+1,es) # , energy
+        push!(σ, grow_instability!(simulation, energy))
+        compute!(energy)
+        es =  CUDA.@allowscalar energy[1,1,1]
+        @info @printf("Power method iteration %d, kinetic energy: %.2e, σⁿ: %.2e, relative Δσ: %.2e\n",
+                       length(σ), es, σ[end], convergence(σ))
+
+        rescale!(simulation.model, energy)
+        push!(power_method_data, (deepcopy(σ)))
+    end
+
+    return σ, power_method_data
+end
+
+ua, va, wa = model.velocities # change back to ua, va, wa
+um = Field(@at (Face, Center, Center) Average(ua, dims=1)) #averaging
+vm = Field(@at (Center, Face, Center) Average(va, dims=1))
+wm = Field(@at (Center, Center, Face) Average(wa, dims=1))
+u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
+v = Field(@at (Center, Center, Center) va - vm)
+w = Field(@at (Center, Center, Center) wa - wm)
+
+mean_perturbation_kinetic_energy = Field(Average(Oceanostics.TurbulentKineticEnergy(model, u, v, w))) # TKE calculation
+
+ns = 10^(-4) # standard deviation for noise
+
+# initial conditions to start instability
+ui(x, z) = ns*Random.randn()
+vi(x, z) = ns*Random.randn()
+wi(x, z) = ns*Random.randn()
+
+# set simulation and decide run time
+set!(model, u=ui, v=vi, w=wi)
+
+rescale!(simulation.model, mean_perturbation_kinetic_energy, target_kinetic_energy=1e-6)
+growth_rates, power_method_data = estimate_growth_rate(simulation, mean_perturbation_kinetic_energy)
+@info "Power iterations converged! Estimated growth rate: $(growth_rates[end])"
