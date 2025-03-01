@@ -118,7 +118,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 1.0*((2*pi)/f)seconds, verbose=false)
+simulation = Simulation(model, Δt = 1seconds, stop_time = 2.0*((2*pi)/f)seconds, verbose=false)
 
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(10)) 
