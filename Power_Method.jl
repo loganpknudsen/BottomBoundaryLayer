@@ -202,7 +202,7 @@ w = Field(@at (Center, Center, Center) wa - wm)
 
 mean_perturbation_kinetic_energy = Field(Average(Oceanostics.TurbulentKineticEnergy(model, u, v, w))) # TKE calculation
 
-ns = 10^(-3) # standard deviation for noise
+ns = 10^(-6) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
