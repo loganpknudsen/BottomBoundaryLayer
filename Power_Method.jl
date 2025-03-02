@@ -126,7 +126,7 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(10))
 
 function grow_instability!(simulation, energy)
     # Initialize
-    simulation.model.clock.iteration = original_stop_time
+    simulation.model.start_time = original_stop_time
     simulation.model.stop_time = original_stop_time + 2.0*((2*pi)/f)seconds
     t₀ = simulation.model.clock.time = 0
     compute!(energy)
