@@ -118,7 +118,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-const original_stop_time = 8.0*((2*pi)/f)seconds
+const original_stop_time = 5.0*((2*pi)/fˢ)seconds
 simulation = Simulation(model, Δt = 1seconds, stop_time = original_stop_time, verbose=false)
 
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -127,7 +127,7 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(10))
 function grow_instability!(simulation, energy)
     # Initialize
     simulation.model.start_time = original_stop_time
-    simulation.model.stop_time = original_stop_time + 2.0*((2*pi)/f)seconds
+    simulation.model.stop_time = original_stop_time + 2.0*((2*pi)/fˢ)seconds
     t₀ = simulation.model.clock.time = 0
     compute!(energy)
     energy₀ = CUDA.@allowscalar energy[1,1,1]
