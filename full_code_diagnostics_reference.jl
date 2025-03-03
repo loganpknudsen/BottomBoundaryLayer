@@ -135,7 +135,7 @@ set!(model, u=ui, v=vi, w=wi)
 simulation = Simulation(model, Δt = 1seconds, stop_time = 30.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
-wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
+wizard = TimeStepWizard(cfl=0.5, max_change=1.1seconds, max_Δt=10.0seconds, min_Δt=0.01seconds) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 # simulation.output_writers[:checkpointer] = Checkpointer(model; schedule=TimeInterval((5*(2*pi)/f)seconds), prefix="model_checkpoint")

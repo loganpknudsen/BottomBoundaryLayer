@@ -47,7 +47,7 @@ Nz = 128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
                        x = (0, Lx),
-                       z = (0,Lz))
+                       z = (0, Lz))
 
 
 # tilted domain parameters
@@ -216,4 +216,4 @@ simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
 # With initial conditions set and an output writer at the ready, we run the simulation
 # simulation.stop_time = 15*((2π)/f)seconds
 
-run!(simulation) # , pickup=true
+run!(simulation) # ,
