@@ -228,4 +228,8 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-run!(
+run!(simulation)
+
+rescale!(simulation.model, mean_perturbation_kinetic_energy, target_kinetic_energy=1e-6)
+growth_rates, power_method_data = estimate_growth_rate(simulation, mean_perturbation_kinetic_energy)
+@info "Power iterations converged! Estimated growth rate: $(growth_rates[end])"
