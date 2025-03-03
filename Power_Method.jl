@@ -119,7 +119,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
 const original_stop_time = 2.0*((2*pi)/fˢ)seconds
-simulation = Simulation(model, Δt = 1seconds, stop_iteration = 100000, verbose=false)
+simulation = Simulation(model, Δt = 2seconds, stop_iteration = 5000, verbose=false)
 
 # wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
 # simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(10)) 
