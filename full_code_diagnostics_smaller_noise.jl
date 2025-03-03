@@ -59,12 +59,12 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.05 # m s⁻¹ interior velocity
+const V∞ = 0.01 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 1e-5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
 const γ = (1+S∞)^(-1) # 0 PV parameter
-const hu = 103.125 #ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
+const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
 const fˢ=(f^2+θ^2*N²)^(0.5) # modified oscillation
 const δ = 0.1
 const uₒ = 0 # Initial u shear perturbation
@@ -108,7 +108,7 @@ b_bc_top= FluxBoundaryCondition(-1*N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
-const ν1 = 0
+const ν1 = 1e-4
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -130,9 +130,9 @@ wi(x, z) = ns*Random.randn()
 # bp(x,z) = ns*Random.randn()
 
 # set simulation and decide run time
-set!(model, u=ui, v=vi, w=wi)
+set!(model, u=ui, v=vi,w = wi) #
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 5.01*((2*pi)/f)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 30.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -198,14 +198,19 @@ BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), t
 output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
+Flow_Fields_file_name = "flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_no_w.nc"
+
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_boundary_fix11.nc",
+                                                          filename = path_name*Flow_Fields_file_name,
                                                           overwrite_existing = true)
+
+
+TKE_file_name = "TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_no_w.nc"
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_boundary_fix11.nc",
+                                                          filename = path_name*TKE_file_name,
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation

@@ -105,6 +105,8 @@ b_bc_top= FluxBoundaryCondition(-1*N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
+# Turn off viscosity 
+# Set noise on b
 const ν1 = 1e-4
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
@@ -123,6 +125,9 @@ simulation = Simulation(model, Δt = 2seconds, stop_iteration = 5000, verbose=fa
 
 # wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
 # simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(10)) 
+# try lower interior
+# try fixing time step using hadnd CFL
+# try changing CFL code 
 
 function grow_instability!(simulation, energy)
     # Initialize
@@ -211,6 +216,11 @@ mean_perturbation_kinetic_energy = Field(Average(Oceanostics.TurbulentKineticEne
 ns = 10^(-4) # standard deviation for noise
 
 # initial conditions to start instability
+# Try no noise perturbation in w
+# Make plots for next week
+# Run full simulation with no w (try tapering)
+# Try lowering initial noise 
+# Try inviscid set up
 ui(x, z) = ns*Random.randn()
 vi(x, z) = ns*Random.randn()
 wi(x, z) = ns*Random.randn()
