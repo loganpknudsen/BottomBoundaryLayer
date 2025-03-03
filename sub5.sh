@@ -10,9 +10,9 @@
 ### To the casper queue
 #PBS -q casper
 ### output
-#PBS -o Sim2.out
+#PBS -o Sim5.out
 ### error
-#PBS -e Sim2.err
+#PBS -e Sim5.err
 ### type of GPU
 #PBS -l gpu_type=v100
 ### email 
@@ -26,4 +26,4 @@ module --ignore-cache load cuda
 module --ignore-cache load julia/1.10.2
 ### file to run
 
-julia --pkgimages=no --project=. full_code_diagno
+julia --pkgimages=no --project=. full_code_diagnostics_reference_large_time_step.jl
