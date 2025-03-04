@@ -61,7 +61,7 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # parameters for simulation
 const V∞ = 0.01 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
-const N² = 1e-5 # interior stratification
+const N² = 1e-5/5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
 const γ = (1+S∞)^(-1) # 0 PV parameter
 const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
@@ -103,7 +103,7 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # Boundary condition set up
 # Free Slip Boundary Conditions
 
-b_bc_top= FluxBoundaryCondition(-1*N²)
+b_bc_top= FluxBoundaryCondition(N²)
 # b_bc_bottom= GradientBoundaryCondition(N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
