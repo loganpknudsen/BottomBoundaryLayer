@@ -61,7 +61,7 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 # parameters for simulation
 const V∞ = 0.01 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
-const N² = 1e-5 # interior stratification
+const N² = 1e-5/5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
 const γ = (1+S∞)^(-1) # 0 PV parameter
 const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
@@ -135,8 +135,8 @@ set!(model, u=ui, v=vi,w = wi) #
 simulation = Simulation(model, Δt = 1seconds, stop_time = 30.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
-wizard = TimeStepWizard(cfl=0.5, max_change=1.1seconds, max_Δt=10.0seconds, min_Δt=0.01seconds) 
-simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
+wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=20.0seconds, min_Δt=0.001seconds) 
+simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(10)) 
 
 # simulation.output_writers[:checkpointer] = Checkpointer(model; schedule=TimeInterval((5*(2*pi)/f)seconds), prefix="model_checkpoint")
 
