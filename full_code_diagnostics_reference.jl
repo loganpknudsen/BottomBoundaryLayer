@@ -82,8 +82,8 @@ const e1 = N²*θ*(f*vₒ)/(fˢ)^2
 p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, e1) # c1, d1, h1
 
 # heaviside function for boundary layer
-@inline htan(x,z) = tanh(z)
-heaviside(x,z) = 0.5*(1+htan(x,1000*z)) #ifelse(z < 0, zero(z), one(z))
+# @inline tnh_fn(x,z) = 
+heaviside(x,z) = 0.5*(1+tanh(1000*z))  ##ifelse(z < 0, zero(z), one(z))
 
 # oscillation functions for background
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
@@ -179,8 +179,8 @@ k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
 AGSP = Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
 
 ### wave shear production calculation
-upert(x,z,t,p) = (p.uₒ*cs_fn(x,z,t,p) + p.a1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
-vpert(x,z,t,p) = (p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1)*(p.hu-z)*heaviside(x,p.hu-z)
+upert(x,z,t,p) = (p.a1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
+vpert(x,z,t,p) = (p.vₒ+p.b1*(cs_fn(x,z,t,p)-1))*(p.hu-z)*heaviside(x,p.hu-z)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
