@@ -127,11 +127,11 @@ ns = 10^(-4) # standard deviation for noise
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
 vi(x, z) = ns*Random.randn()
-# wi(x, z) = ns*Random.randn()
-# bp(x,z) = ns*Random.randn()
+wi(x, z) = ns*Random.randn()
+bi(x,z) = 10^(-1)*ns*Random.randn()
 
 # set simulation and decide run time
-set!(model, u=ui, v=vi) #,w = wi
+set!(model, u=ui, v=vi, w=wi, b=bi) #,w = wi
 
 simulation = Simulation(model, Δt = 1seconds, stop_time = 30.01*((2*pi)/f)seconds) # stop_iteration=10
 
@@ -199,7 +199,7 @@ BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), t
 output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
-Flow_Fields_file_name = "flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_no_w.nc"
+Flow_Fields_file_name = "flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_w_w_b.nc"
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
@@ -207,7 +207,7 @@ simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           overwrite_existing = true)
 
 
-TKE_file_name = "TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_no_w.nc"
+TKE_file_name = "TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_w_w_b.nc"
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
