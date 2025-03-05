@@ -83,7 +83,7 @@ p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, e1) # c1, d1, h1
 
 # heaviside function for boundary layer
 # @inline tnh_fn(x,z) = 
-heaviside(x,z) = 0.5*(1+tanh(1000*z))  ##ifelse(z < 0, zero(z), one(z))
+heaviside(x,z) = 0.5*(1+tanh(10000*z))  ##ifelse(z < 0, zero(z), one(z))
 
 # oscillation functions for background
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
