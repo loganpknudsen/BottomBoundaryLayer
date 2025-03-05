@@ -71,26 +71,26 @@ const uₒ = 0 # Initial u shear perturbation
 const vₒ = γ*(N²*θ)/(f)*δ # Initial v shear perturbation
 const bₒ = 0 #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
-const a1 = (f*vₒ+bₒ*θ)/(fˢ) 
-const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
-const c1 = (f*uₒ)/(fˢ)
-const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
-const e1 = N²*θ*(f*vₒ+bₒ*θ)/(fˢ)^2
-const h1 = (N²*θ*uₒ)/(fˢ)
+const a1 = (f*vₒ)/(fˢ) 
+const b1 = (f^2*vₒ)/(fˢ)^2
+# const c1 = (f*uₒ)/(fˢ)
+# const d1 = ((fˢ^2-f^2)*vₒ)/(fˢ)^2
+const e1 = N²*θ*(f*vₒ)/(fˢ)^2
+# const h1 = (N²*θ*uₒ)/(fˢ)
 
 # array of paramerers for background function
-p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
+p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, e1) # c1, d1, h1
 
 # heaviside function for boundary layer
-@inline heaviside(x,z) = ifelse(z < 0, zero(z), one(z))
+@inline heaviside(x,z) = 0.5*(1+tanh(1000*z)) #ifelse(z < 0, zero(z), one(z))
 
 # oscillation functions for background
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p) # shear
-v_pert(x,z,t,p) = p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1
-b_pert(x,z,t,p) = p.e1*cs_fn(x,z,t,p) - p.h1*sn_fn(x,z,t,p)+p.bₒ-p.e1
+u_pert(x,z,t,p) = p.a1*sn_fn(x,z,t,p) # shear
+v_pert(x,z,t,p) = p.vₒ+p.b1*(cs_fn(x,z,t,p)-1)
+b_pert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)
 
 u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 v_adjustment(x, z, t, p) = p.V∞ - p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
@@ -198,7 +198,7 @@ BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), t
 output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
-Flow_Fields_file_name = "flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_reference.nc"
+Flow_Fields_file_name = "flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_reference_faster_run.nc"
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
@@ -206,7 +206,7 @@ simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           overwrite_existing = true)
 
 
-TKE_file_name = "TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_reference.nc"
+TKE_file_name = "TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_reference_faster_run.nc"
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/f),
