@@ -65,7 +65,7 @@ const N² = 1e-5/5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
 const δ = 0.1
 const γ = (1+(1-δ)*S∞)^(-1) # 0 PV parameter
-const hu = ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
+const hu = (f*V∞)/(γ*N²*θ) # Height of Boundary Layer
 const fˢ=(f^2+θ^2*N²)^(0.5) # modified oscillation
 const uₒ = 0 # Initial u shear perturbation
 const vₒ = γ*(N²*θ)/(f)*δ # Initial v shear perturbation
@@ -122,7 +122,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-ns = 10^(-5) # standard deviation for noise
+ns = 5*10^(-5) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
