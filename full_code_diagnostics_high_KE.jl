@@ -103,9 +103,9 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # Boundary condition set up
 # Free Slip Boundary Conditions
 
-b_bc_top= FluxBoundaryCondition(-1*N²)
+# b_bc_top= FluxBoundaryCondition(-1*N²)
 # b_bc_bottom= GradientBoundaryCondition(N²)
-buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
+# buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
 const ν1 = 1e-6
@@ -118,7 +118,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
                             advection = WENO(),
                             tracers = :b,
-                            boundary_conditions = (; b=buoyancy_grad),
+                        #     boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
 ns = 5*10^(-5) # standard deviation for noise
