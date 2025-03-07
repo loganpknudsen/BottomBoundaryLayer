@@ -108,7 +108,7 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-6
+const ν1 = 1e-4
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
