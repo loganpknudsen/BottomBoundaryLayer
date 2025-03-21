@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-θ = 5*10^(-3) # degrees 10^(-2) is previous value for 110 meter layer
+θ = 0.03 # degrees 10^(-2) is previous value for 110 meter layer
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
@@ -59,38 +59,38 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.05 # m s⁻¹ interior velocity
+const V∞ = 0.2 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 1e-5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
 const γ = (1+S∞)^(-1) # 0 PV parameter
-const hu = 103.125 #ceil((f*V∞)/(γ*N²*θ)) # Height of Boundary Layer
+const hu = (f*V∞)/(γ*N²*θ) # Height of Boundary Layer
 const fˢ=(f^2+θ^2*N²)^(0.5) # modified oscillation
 const δ = 0.1
 const uₒ = 0 # Initial u shear perturbation
 const vₒ = γ*(N²*θ)/(f)*δ # Initial v shear perturbation
 const bₒ = 0 #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
-const a1 = (f*vₒ+bₒ*θ)/(fˢ) 
-const b1 = (f^2*vₒ+f*bₒ*θ)/(fˢ)^2
-const c1 = (f*uₒ)/(fˢ)
-const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
-const e1 = N²*θ*(f*vₒ+bₒ*θ)/(fˢ)^2
-const h1 = (N²*θ*uₒ)/(fˢ)
+const a1 = (f*vₒ)/(fˢ) 
+const b1 = (f^2*vₒ)/(fˢ)^2
+# const c1 = (f*uₒ)/(fˢ)
+# const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
+const e1 = N²*θ*f*vₒ/(fˢ)^2
+# const h1 = (N²*θ*uₒ)/(fˢ)
 
 # array of paramerers for background function
-p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
+p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, e1)
 
 # heaviside function for boundary layer
-@inline heaviside(x,z) = ifelse(z < 0, zero(z), one(z))
+@inline heaviside(x,z) = 0.5*(1+tanh(10000*z))
 
 # oscillation functions for background
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p) # shear
-v_pert(x,z,t,p) = p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1
-b_pert(x,z,t,p) = p.e1*cs_fn(x,z,t,p) - p.h1*sn_fn(x,z,t,p)+p.bₒ-p.e1
+u_pert(x,z,t,p) = p.a1*sn_fn(x,z,t,p) # shear
+v_pert(x,z,t,p) = p.vₒ+p.b1*(cs_fn(x,z,t,p)-1)
+b_pert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)
 
 u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 v_adjustment(x, z, t, p) = p.V∞ - p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
@@ -99,6 +99,21 @@ constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(p.hu-
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
 B_field = BackgroundField(constant_stratification, parameters=p)
+# oscillation functions for background
+# @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
+# @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
+
+# u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p) # shear
+# v_pert(x,z,t,p) = p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1
+# b_pert(x,z,t,p) = p.e1*cs_fn(x,z,t,p) - p.h1*sn_fn(x,z,t,p)+p.bₒ-p.e1
+
+# u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+# v_adjustment(x, z, t, p) = p.V∞ - p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+# constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(p.hu-z)*heaviside(x,p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+
+# U_field = BackgroundField(u_adjustment, parameters=p)
+# V_field = BackgroundField(v_adjustment, parameters=p)
+# B_field = BackgroundField(constant_stratification, parameters=p)
 
 # Boundary condition set up
 # Free Slip Boundary Conditions
@@ -108,7 +123,7 @@ b_bc_top= FluxBoundaryCondition(-1*N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
-const ν1 = 0
+const ν1 = 1e-5
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -121,7 +136,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-ns = 10^(-6) # standard deviation for noise
+ns = 10^(-4) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
@@ -132,7 +147,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 5.01*((2*pi)/f)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 60.01*((2*pi)/f)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 

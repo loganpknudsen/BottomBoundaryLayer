@@ -73,10 +73,10 @@ const bₒ = 0 #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial strati
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const a1 = (f*vₒ)/(fˢ) 
 const b1 = (f^2*vₒ)/(fˢ)^2
-const c1 = (f*uₒ)/(fˢ)
-const d1 = ((fˢ^2-f^2)*vₒ)/(fˢ)^2
+# const c1 = (f*uₒ)/(fˢ)
+# const d1 = ((fˢ^2-f^2)*vₒ)/(fˢ)^2
 const e1 = N²*θ*(f*vₒ)/(fˢ)^2
-const h1 = (N²*θ*uₒ)/(fˢ)
+# const h1 = (N²*θ*uₒ)/(fˢ)
 
 # array of paramerers for background function
 p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, d1, e1, h1)
