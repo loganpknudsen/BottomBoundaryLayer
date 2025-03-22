@@ -193,8 +193,12 @@ k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
 AGSP = Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
 
 ### wave shear production calculation
-upert(x,z,t,p) = (p.uₒ*cs_fn(x,z,t,p) + p.a1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
-vpert(x,z,t,p) = (p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1)*(p.hu-z)*heaviside(x,p.hu-z)
+@inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
+@inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
+
+u_pert(x,z,t,p) = p.a1*sn_fn(x,z,t,p) # shear
+v_pert(x,z,t,p) = p.vₒ+p.b1*(cs_fn(x,z,t,p)-1)
+b_pert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
