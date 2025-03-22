@@ -82,7 +82,7 @@ const e1 = N²*θ*f*vₒ/(fˢ)^2
 p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, e1)
 
 # heaviside function for boundary layer
-@inline heaviside(x,z) = 0.5*(1+tanh(10000*z))
+heaviside(x,z) = 0.5*(1+tanh(10000*z))
 
 # oscillation functions for background
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
