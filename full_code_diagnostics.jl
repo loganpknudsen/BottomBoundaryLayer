@@ -120,7 +120,7 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 
 b_bc_top= FluxBoundaryCondition(N²)
 # b_bc_bottom= GradientBoundaryCondition(N²)
-# buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
+buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
 # diffusitivity and viscosity values for closure
 const ν1 = 1e-5
