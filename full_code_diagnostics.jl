@@ -118,7 +118,7 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 # Boundary condition set up
 # Free Slip Boundary Conditions
 
-# b_bc_top= FluxBoundaryCondition(-1*N²)
+b_bc_top= FluxBoundaryCondition(N²)
 # b_bc_bottom= GradientBoundaryCondition(N²)
 # buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
 
@@ -133,7 +133,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
                             advection = WENO(),
                             tracers = :b,
-                        #     boundary_conditions = (; b=buoyancy_grad),
+                            boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
 ns = 10^(-4) # standard deviation for noise
@@ -147,7 +147,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 60.01*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 1.01*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
