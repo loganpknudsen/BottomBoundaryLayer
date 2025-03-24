@@ -1,41 +1,32 @@
-=>> PBS: job killed: walltime 64866 exceeded limit 64800
-Traceback (most recent call last):
-  File "/glade/u/home/knudsenl/BottomBoundaryLayer/PSI_non_dim_full_form.py", line 191, in <module>
-    field_data.to_netcdf("PSI_non_dim_field_mid_res.nc")
-    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/core/dataset.py", line 2346, in to_netcdf
-    return to_netcdf(  # type: ignore[return-value]  # mypy cannot resolve the overloads:(
-        self,
-    ...<10 lines>...
-        auto_complex=auto_complex,
-    )
-  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/api.py", line 1872, in to_netcdf
-    dump_to_store(
-    ~~~~~~~~~~~~~^
-        dataset, store, writer, encoding=encoding, unlimited_dims=unlimited_dims
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/api.py", line 1919, in dump_to_store
-    store.store(variables, attrs, check_encoding, writer, unlimited_dims=unlimited_dims)
-    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/common.py", line 377, in store
-    self.set_variables(
-    ~~~~~~~~~~~~~~~~~~^
-        variables, check_encoding_set, writer, unlimited_dims=unlimited_dims
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/common.py", line 415, in set_variables
-    target, source = self.prepare_variable(
-                     ~~~~~~~~~~~~~~~~~~~~~^
-        name, v, check, unlimited_dims=unlimited_dims
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/xarray/backends/scipy_.py", line 252, in prepare_variable
-    self.ds.createVariable(name, data.dtype, variable.dims)
-    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/glade/work/knudsenl/conda-envs/dedalus3/lib/python3.13/site-packages/scipy/io/_netcdf.py", line 388, in createVariable
-    raise ValueError("NetCDF 3 does not support type %s" % type)
-ValueError: NetCDF 3 does not support type complex128
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+[ Info: Initializing simulation...
+[ Info:     ... simulation initialization complete (1.728 minutes)
+[ Info: Executing initial time step...
+[ Info:     ... initial time step complete (4.989 seconds).
+[ Info: Simulation is stopping after running for 1.233 hours.
+[ Info: Simulation time 2.643 days equals or exceeds stop time 2.643 days.
