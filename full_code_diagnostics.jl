@@ -186,8 +186,8 @@ b = Field(@at (Center, Center, Center) ba - bm)
 bt = Field(@at (Center, Center, Center) B+ba)
 
 Ri = RichardsonNumber(model, ut, vt, wa, bt)
-Ro = RossbyNumber(model, ut, vt, wa, bt,coriolis)
-PV = ErtalPotentialVorticity(model, ut, vt, wa, bt,coriolis) # potential vorticity calculation
+Ro = RossbyNumber(model, ut, vt, wa, coriolis)
+PV = ErtalPotentialVorticity(model, ut, vt, wa, bt, coriolis) # potential vorticity calculation
 E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
 k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
 
