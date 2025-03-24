@@ -68,7 +68,7 @@ const δ = 0.1
 const γ = (1+S∞*(1-δ))^(-1) # 0 PV parameter
 const hu = (f*V∞)/(γ*N²*θ) # Height of Boundary Layer
 const uₒ = 0 # Initial u shear perturbation
-const vₒ = γ*(N²*θ)/(f)*δ # Initial v shear perturbation
+const vₒ = δ*γ*(N²*θ)/(f) # Initial v shear perturbation
 const bₒ = 0 #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const a1 = (f*vₒ)/(fˢ) 
