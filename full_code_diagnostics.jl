@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-θ = 0.05 # degrees 10^(-2) is previous value for 110 meter layer
+θ = 0.01 # degrees 10^(-2) is previous value for 110 meter layer
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
@@ -63,10 +63,10 @@ const V∞ = 0.1 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 1e-5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
-const γ = (1+S∞)^(-1) # 0 PV parameter
 const hu = (f*V∞)/(γ*N²*θ) # Height of Boundary Layer
 const fˢ = (f^2+θ^2*N²)^(0.5) # modified oscillation
-const δ = 0.75
+const δ = 0.4
+const γ = (1+S∞*(1-δ))^(-1) # 0 PV parameter
 const uₒ = 0 # Initial u shear perturbation
 const vₒ = γ*(N²*θ)/(f)*δ # Initial v shear perturbation
 const bₒ = 0 #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
