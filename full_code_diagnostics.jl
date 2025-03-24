@@ -185,7 +185,9 @@ bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
 b = Field(@at (Center, Center, Center) ba - bm)
 bt = Field(@at (Center, Center, Center) B+ba)
 
-PV = ErtelPotentialVorticity(model, ub, vb, 0, B, coriolis) # potential vorticity calculation
+Ri = RichardsonNumber(model, ut, vt, wt, bt)
+Ro = RossbyNumber(model, ut, vt, wt, bt,coriolis)
+PV = ErtelPotentialVorticity(model, ut, vt, wa, bt, coriolis) # potential vorticity calculation
 E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
 k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
 
@@ -214,7 +216,7 @@ GSP = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
 BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
 
 # output writers
-output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
+output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV, Ri, Ro) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
