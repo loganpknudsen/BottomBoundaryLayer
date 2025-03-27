@@ -198,9 +198,9 @@ AGSP = Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-upert(x,z,t,p) = p.a1*sn_fn(x,z,t,p) # shear
-vpert(x,z,t,p) = p.vₒ+p.b1*(cs_fn(x,z,t,p)-1)
-bpert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)
+upert(x,z,t,p) = p.a1*sn_fn(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)# shear
+vpert(x,z,t,p) = (p.vₒ+p.b1*(cs_fn(x,z,t,p)-1))*(p.hu-z)*heaviside(x,p.hu-z)
+bpert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)*(p.hu-z)*heaviside(x,p.hu-z)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
