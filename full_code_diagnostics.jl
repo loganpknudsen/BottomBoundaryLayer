@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-const θ = 5e-3 # degrees 10^(-2) is previous value for 110 meter layer
+const θ = 5e-2 # degrees 10^(-2) is previous value for 110 meter layer
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
@@ -64,7 +64,7 @@ const f = 1e-4 # coriolis parameter
 const N² = 1e-5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
 const fˢ = (f^2+θ^2*N²)^(0.5) # modified oscillation
-const δ = 0.1
+const δ = 0.5
 const γ = ((1+S∞*(1-δ))^(-1)+(3-S∞)*(3*(1+S∞)-S∞*(1-δ))^(-1))/2 # 0 PV parameter
 const hu = (f*V∞)/(γ*N²*θ) # Height of Boundary Layer
 const uₒ = 0 # Initial u shear perturbation
@@ -147,7 +147,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 60.1*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 25.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=1, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -217,15 +217,15 @@ BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), t
 
 ### TKE advection
 
-# KADV = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
+KADV = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
 
 # ### PWORK
 
-# PWORK = Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))
+PWORK = Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))
 
 # output writers
 output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV, Ri, Ro) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations , KADV, PWORK
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX, KADV, PWORK) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/f),
