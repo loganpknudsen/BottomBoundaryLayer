@@ -40,9 +40,9 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
 Lx = 2000meters
-Lz = 200meters
+Lz = 300
 Nx = 512 # 512 originally
-Nz = 128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Nz = 192 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-θ = 5*10^(-3) # degrees 10^(-2) is previous value for 110 meter layer
+θ = 1*10^(-2) # degrees 10^(-2) is previous value for 110 meter layer
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
@@ -59,7 +59,7 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.01 # m s⁻¹ interior velocity
+const V∞ = 0.02 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 1e-5/5 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number

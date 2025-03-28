@@ -40,9 +40,9 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
 Lx = 2000meters
-Lz = 200meters
+Lz = 300meters
 Nx = 512 # 512 originally
-Nz = 128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Nz = 192 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-const θ = 1e-1 # degrees 10^(-2) is previous value for 110 meter layer
+const θ = 1e-2 # degrees 10^(-2) is previous value for 110 meter layer
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
@@ -59,7 +59,7 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.05 # m s⁻¹ interior velocity
+const V∞ = 0.02 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 1e-6 # interior stratification
 const S∞ = (N²*θ^2)/(f^2) # slope burger number
@@ -99,28 +99,10 @@ constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(p.hu-
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
 B_field = BackgroundField(constant_stratification, parameters=p)
-# oscillation functions for background
-# @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
-# @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
-
-# u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) +p.a1*sn_fn(x,z,t,p) # shear
-# v_pert(x,z,t,p) = p.b1*cs_fn(x,z,t,p) - p.c1*sn_fn(x,z,t,p)+p.d1
-# b_pert(x,z,t,p) = p.e1*cs_fn(x,z,t,p) - p.h1*sn_fn(x,z,t,p)+p.bₒ-p.e1
-
-# u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-# v_adjustment(x, z, t, p) = p.V∞ - p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-# constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(p.hu-z)*heaviside(x,p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-
-# U_field = BackgroundField(u_adjustment, parameters=p)
-# V_field = BackgroundField(v_adjustment, parameters=p)
-# B_field = BackgroundField(constant_stratification, parameters=p)
-
-# Boundary condition set up
-# Free Slip Boundary Conditions
 
 b_bc_top= GradientBoundaryCondition(-1*N²)
-# b_bc_bottom= GradientBoundaryCondition(N²)
-buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) # ,bottom=b_bc_bottom
+
+buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) 
 
 # diffusitivity and viscosity values for closure
 const ν1 = 5e-5
@@ -147,7 +129,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 25.1*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 30.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=1, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
