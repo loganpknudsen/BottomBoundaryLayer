@@ -105,7 +105,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²)
 buoyancy_grad = FieldBoundaryConditions(top=b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 5e-5
+const ν1 = 1e-6
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -210,12 +210,12 @@ output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV, Ri, Ro) # pertubation fie
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX, KADV, PWORK) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
-                                                          schedule = TimeInterval(0.05*(2*pi)/f),
+                                                          schedule = TimeInterval(0.05*(2*pi)/fˢ),
                                                           filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*".nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
-                                                          schedule = TimeInterval(0.005*(2*pi)/f),
+                                                          schedule = TimeInterval(0.005*(2*pi)/fˢ),
                                                           filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*".nc",
                                                           overwrite_existing = true)
 
