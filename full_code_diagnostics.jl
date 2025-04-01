@@ -100,9 +100,9 @@ U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
 B_field = BackgroundField(constant_stratification, parameters=p)
 
-b_bc_top= GradientBoundaryCondition(-1*N²)
+b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 
-buoyancy_grad = FieldBoundaryConditions(bottom = b_bc_top) 
+buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
 const ν1 = 1e-4
