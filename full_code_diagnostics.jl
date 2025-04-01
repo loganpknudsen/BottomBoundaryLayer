@@ -72,7 +72,7 @@ const vₒ = δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
 const bₒ = 0 #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const a1 = (f*cosd(θ)*vₒ)/(fˢ) 
-const b1 = (f^2*cosd(θ)*vₒ)/(fˢ)^2
+const b1 = (f^2*cosd(θ)^2*vₒ)/(fˢ)^2
 # const c1 = (f*uₒ)/(fˢ)
 # const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
 const e1 = N²*sind(θ)*f*vₒ/(fˢ)^2
@@ -113,7 +113,7 @@ start_time = time_ns()
 # model set up 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
-                            advection = (),
+                            advection = Centered(order=2),
                             tracers = :b,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
