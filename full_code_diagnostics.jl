@@ -75,7 +75,7 @@ const a1 = (f*cosd(θ)*vₒ)/(fˢ)
 const b1 = (f^2*cosd(θ)^2*vₒ)/(fˢ)^2
 # const c1 = (f*uₒ)/(fˢ)
 # const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
-const e1 = N²*sind(θ)*f*vₒ/(fˢ)^2
+const e1 = N²*sind(θ)*f*cosd(θ)*vₒ/(fˢ)^2
 # const h1 = (N²*θ*uₒ)/(fˢ)
 
 # array of paramerers for background function
@@ -105,7 +105,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-4
+const ν1 = 1e-5
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
