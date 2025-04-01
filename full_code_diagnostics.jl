@@ -55,27 +55,27 @@ const θ = 5e-2 # degrees 10^(-2) is previous value for 110 meter layer
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
-buoyancy = BuoyancyForce(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
+buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters for simulation
 const V∞ = 0.01 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 1e-7 # interior stratification
-const S∞ = (N²*θ^2)/(f^2) # slope burger number
-const fˢ = (f^2+θ^2*N²)^(0.5) # modified oscillation
+const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
+const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = 0.5
 const γ = ((1+S∞*(1-δ))^(-1)+(3-S∞)*(3*(1+S∞)-S∞*(1-δ))^(-1))/2 # 0 PV parameter
-const hu = (f*V∞)/(γ*N²*θ) # Height of Boundary Layer
+const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
 const uₒ = 0 # Initial u shear perturbation
-const vₒ = δ*γ*(N²*θ)/(f) # Initial v shear perturbation
+const vₒ = δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
 const bₒ = 0 #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
-const a1 = (f*vₒ)/(fˢ) 
-const b1 = (f^2*vₒ)/(fˢ)^2
+const a1 = (f*cosd(θ)*vₒ)/(fˢ) 
+const b1 = (f^2*cosd(θ)*vₒ)/(fˢ)^2
 # const c1 = (f*uₒ)/(fˢ)
 # const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
-const e1 = N²*θ*f*vₒ/(fˢ)^2
+const e1 = N²*sind(θ)*f*vₒ/(fˢ)^2
 # const h1 = (N²*θ*uₒ)/(fˢ)
 
 # array of paramerers for background function
@@ -93,8 +93,8 @@ v_pert(x,z,t,p) = p.vₒ+p.b1*(cs_fn(x,z,t,p)-1)
 b_pert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)
 
 u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-v_adjustment(x, z, t, p) = p.V∞ - p.γ*(p.θ * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-constant_stratification(x, z, t, p) = p.N²*x*p.θ + p.N²*z + p.N²*p.γ*(p.hu-z)*heaviside(x,p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+v_adjustment(x, z, t, p) = p.V∞ - p.γ*(tand(p.θ) * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+constant_stratification(x, z, t, p) = p.N²*x*sind(p.θ) + p.N²*z*cosd(p.θ) + p.N²*p.γ*(p.hu-z)*heaviside(x,p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
@@ -190,7 +190,7 @@ VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, c
 WSP = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
 
 ### geostrophic shear production calcualtion
-gshear(x,z,t,p) = p.V∞-((p.γ * p.θ * p.N²)/(p.f))*(p.hu-z)*heaviside(x,p.hu-z)
+gshear(x,z,t,p) = p.V∞-((p.γ * tand(p.θ) * p.N²)/(p.f))*(p.hu-z)*heaviside(x,p.hu-z)
 GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid, clock= model.clock, parameters = p)
 GSP = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
 
