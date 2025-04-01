@@ -189,8 +189,10 @@ VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, c
 
 WSP = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
 
+@inline tnd_fn(x,z,t,p) = tand(p.θ)
+
 ### geostrophic shear production calcualtion
-gshear(x,z,t,p) = p.V∞-((p.γ * tand(p.θ) * p.N²)/(p.f))*(p.hu-z)*heaviside(x,p.hu-z)
+gshear(x,z,t,p) = p.V∞-((p.γ * tnd_fn(x,z,t,p) * p.N²)/(p.f))*(p.hu-z)*heaviside(x,p.hu-z)
 GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid, clock= model.clock, parameters = p)
 GSP = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
 
