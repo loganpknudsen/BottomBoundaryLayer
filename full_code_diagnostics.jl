@@ -150,34 +150,34 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 ua, va, wa = model.velocities
 ua = @at (Center, Center, Center) ua
 va = @at (Center, Center, Center) va
-w = @at (Center, Center, Center) wa # change back to ua, va, wa
+wa = @at (Center, Center, Center) wa # change back to ua, va, wa
 um = Field(Average(ua, dims=1)) #averaging
 vm = Field(Average(va, dims=1))
-# wm = Field(Average(wa, dims=1))
+wm = Field(Average(wa, dims=1))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
-# w = Field(wa - wm)
+w = Field(wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
 
-ut = Field(ub+ua)
-vt = Field(vb+va)
+# ut = Field(ub+ua)
+# vt = Field( vb+va)
 
 # buoyancy pertubation calculation
 ba = model.tracers.b
-bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
-b = Field(@at (Center, Center, Center) ba - bm)
-bt = Field(@at (Center, Center, Center) B+ba)
+bm = Field(Average(ba, dims=1))
+b = Field(ba - bm)
+# bt = Field(@at (Center, Center, Center) B+ba)
 
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
 PV = ErtelPotentialVorticity(model, ub, vb, 0, B, coriolis) # potential vorticity calculation
-E = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0) # kinetic energy dissaption calcualtion
+E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
 k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
 
 ### AGSP calculation
-AGSP = Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, 0)
+AGSP = Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
 
 ### wave shear production calculation
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
@@ -211,7 +211,7 @@ KADV = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
 PWORK = Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))
 
 # output writers
-output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV, Ri, Ro) # pertubation fields and PV
+output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX, KADV, PWORK) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
