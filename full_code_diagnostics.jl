@@ -129,7 +129,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 20.1*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 15.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=1, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -174,10 +174,10 @@ b = Field(ba - bm)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
 PV = ErtelPotentialVorticity(model, ub, vb, 0, B, coriolis) # potential vorticity calculation
 E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
-k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
+k = Field(Average(Oceanostics.TurbulentKineticEnergy(model, u, v, w))) # TKE calculation
 
 ### AGSP calculation
-AGSP = Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
+AGSP = Field(Average(Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)))
 
 ### wave shear production calculation
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
@@ -190,25 +190,25 @@ bpert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)*(p.hu-z)*heaviside(x,p.hu-z)
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
 
-WSP = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
+WSP = Field(Average(Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)))
 
 @inline tnd_fn(x,z,t,p) = tand(p.θ)
 
 ### geostrophic shear production calcualtion
 gshear(x,z,t,p) = p.V∞-((p.γ * tnd_fn(x,z,t,p) * p.N²)/(p.f))*(p.hu-z)*heaviside(x,p.hu-z)
 GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid, clock= model.clock, parameters = p)
-GSP = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
+GSP = Field(Average(Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)))
 
 ### Buoyancy Flux Calcuation
-BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
+BFLUX =  Field(Average(Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))))
 
 ### TKE advection
 
-KADV = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
+KADV = Field(Average(Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))))
 
 # ### PWORK
 
-PWORK = Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))
+PWORK = Field(Average(Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))))
 
 # output writers
 output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
