@@ -173,7 +173,7 @@ b = Field(ba - bm)
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
 PV = ErtelPotentialVorticity(model, ub, vb, 0, B, coriolis) # potential vorticity calculation
-E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
+E = Field(Average(KineticEnergyDissipationRate(model; U = um, V = vm, W = wm))) # kinetic energy dissaption calcualtion
 k = Field(Average(Oceanostics.TurbulentKineticEnergy(model, u, v, w))) # TKE calculation
 
 ### AGSP calculation
