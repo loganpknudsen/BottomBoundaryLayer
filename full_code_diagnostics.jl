@@ -129,7 +129,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 40.1*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 80.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=1, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -147,10 +147,13 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
-ua, va, wa = model.velocities # change back to ua, va, wa
-um = Field(@at (Face, Center, Center) Average(ua, dims=1)) #averaging
-vm = Field(@at (Center, Face, Center) Average(va, dims=1))
-wm = Field(@at (Center, Center, Face) Average(wa, dims=1))
+ua, va, wa = model.velocities
+ua = @at (Center, Center, Center) ua
+va = @at (Center, Center, Center) va
+wa = @at (Center, Center, Center) wa # change back to ua, va, wa
+um = Field(@at (Center, Center, Center) Average(ua, dims=1)) #averaging
+vm = Field(@at (Center, Center, Center) Average(va, dims=1))
+wm = Field(@at (Center, Center, Center) Average(wa, dims=1))
 u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
 v = Field(@at (Center, Center, Center) va - vm)
 w = Field(@at (Center, Center, Center) wa - wm)
