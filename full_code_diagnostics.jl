@@ -156,7 +156,7 @@ vm = Field(Average(va, dims=1))
 # wm = Field(Average(wa, dims=1))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
-w = Field(wa - wm)
+# w = Field(wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
