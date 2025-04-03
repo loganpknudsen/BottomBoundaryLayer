@@ -151,9 +151,9 @@ ua, va, wa = model.velocities  # change back to ua, va, wa
 um = Field(Average(ua, dims=1)) #averaging
 vm = Field(Average(va, dims=1))
 wm = Field(Average(wa, dims=1))
-u = Field(ua - um) # calculating the Pertubations
-v = Field(va - vm)
-w = Field(wa - wm)
+u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
+v = Field(@at (Center, Center, Center) va - vm)
+w = Field(@at (Center, Center, Center) wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
@@ -164,7 +164,7 @@ B = model.background_fields.tracers.b
 # buoyancy pertubation calculation
 ba = model.tracers.b
 bm = Field(Average(ba, dims=1))
-b = Field(ba - bm)
+b = Field(@at (Center, Center, Center) ba - bm)
 # bt = Field(@at (Center, Center, Center) B+ba)
 
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
