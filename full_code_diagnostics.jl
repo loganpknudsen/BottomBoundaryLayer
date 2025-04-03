@@ -105,7 +105,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-5
+const ν1 = 1e-4
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -151,13 +151,13 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 ua, va, wa = model.velocities
 ua = @at (Center, Center, Center) ua
 va = @at (Center, Center, Center) va
-wa = @at (Center, Center, Center) wa # change back to ua, va, wa
-um = Field(Average(ua, dims=(1,2))) #averaging
-vm = Field(Average(va, dims=(1,2)))
-wm = Field(Average(wa, dims=(1,2)))
+w = @at (Center, Center, Center) wa # change back to ua, va, wa
+um = Field(Average(ua, dims=(1))) #averaging
+vm = Field(Average(va, dims=(1)))
+# wm = Field(Average(wa, dims=(1)))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
-w = Field(wa - wm)
+# w = Field(wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
@@ -174,13 +174,13 @@ b = Field(ba - bm)
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
 PV = ErtelPotentialVorticity(model, ub, vb, 0, B, coriolis) # potential vorticity calculation
-eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm)
+eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
 k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
 k = Field(Average(k_c)) # TKE calculation
 
 ### AGSP calculation
-AGSP_c =Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
+AGSP_c =Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, 0)
 AGSP = Field(Average(AGSP_c))
 
 ### wave shear production calculation
@@ -218,17 +218,17 @@ BFLUX =  Field(Average(BFLUX_c))
 # PWORK = Field(Average(Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))))
 
 # output writers
-output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
+output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average_2.nc",
+                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average_2.nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
