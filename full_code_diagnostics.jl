@@ -147,10 +147,7 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
-ua, va, wa = model.velocities
-ua = @at (Center, Center, Center) ua
-va = @at (Center, Center, Center) va
-wa = @at (Center, Center, Center) wa # change back to ua, va, wa
+ua, va, wa = model.velocities  # change back to ua, va, wa
 um = Field(Average(ua, dims=1)) #averaging
 vm = Field(Average(va, dims=1))
 wm = Field(Average(wa, dims=1))
@@ -175,6 +172,7 @@ b = Field(ba - bm)
 PV = ErtelPotentialVorticity(model, ub, vb, 0, B, coriolis) # potential vorticity calculation
 E = Field(Average(KineticEnergyDissipationRate(model; U = um, V = vm, W = wm))) # kinetic energy dissaption calcualtion
 k = Field(Average(Oceanostics.TurbulentKineticEnergy(model, u, v, w))) # TKE calculation
+dkdt = Field(Average(Oceanostics.KineticEnergyTendency(model)))
 
 ### AGSP calculation
 AGSP = Field(Average(Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)))
@@ -212,7 +210,7 @@ PWORK = Field(Average(Oceanostics.PressureRedistributionTerm(model; velocities=(
 
 # output writers
 output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX, KADV, PWORK) # TKE Diagnostic Calculations 
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX, KADV, PWORK, dkdt) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
