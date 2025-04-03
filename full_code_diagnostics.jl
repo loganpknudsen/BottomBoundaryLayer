@@ -40,9 +40,9 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
 Lx = 2000meters
-Lz = 300meters
+Lz = 200meters
 Nx = 512 # 512 originally
-Nz = 192 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Nz = 128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -59,9 +59,9 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.01 # m s⁻¹ interior velocity
+const V∞ = 0.05 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
-const N² = 1e-6 # interior stratification
+const N² = 1e-5 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = 0.5
@@ -105,7 +105,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-4
+const ν1 = 1e-6
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
