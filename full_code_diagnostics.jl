@@ -147,13 +147,16 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
-ua, va, wa = model.velocities  # change back to ua, va, wa
+ua = @at (Center, Center, Center) model.velocitie.u 
+va = @at (Center, Center, Center) model.velocitie.v
+wa = @at (Center, Center, Center) model.velocitie.w
+# change back to ua, va, wa
 um = Field(Average(ua, dims=1)) #averaging
 vm = Field(Average(va, dims=1))
 wm = Field(Average(wa, dims=1))
-u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
-v = Field(@at (Center, Center, Center) va - vm)
-w = Field(@at (Center, Center, Center) wa - wm)
+u = Field(ua - um) # calculating the Pertubations
+v = Field(va - vm)
+w = Field(wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
@@ -164,7 +167,7 @@ B = model.background_fields.tracers.b
 # buoyancy pertubation calculation
 ba = model.tracers.b
 bm = Field(Average(ba, dims=1))
-b = Field(@at (Center, Center, Center) ba - bm)
+b = Field(ba - bm)
 # bt = Field(@at (Center, Center, Center) B+ba)
 
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
