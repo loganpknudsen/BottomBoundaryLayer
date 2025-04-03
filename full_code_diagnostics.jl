@@ -148,7 +148,7 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
 
-ua, va, wa = model.velocities
+ua, va, w = model.velocities
 # ua = @at (Center, Center, Center) ua
 # va = @at (Center, Center, Center) va
 # w = @at (Center, Center, Center) wa # change back to ua, va, wa
