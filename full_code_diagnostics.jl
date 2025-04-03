@@ -147,37 +147,56 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
-ua, va, wa = model.velocities
-ua = @at (Center, Center, Center) ua
-va = @at (Center, Center, Center) va
-wa = @at (Center, Center, Center) wa # change back to ua, va, wa
-um = Field(Average(ua, dims=1)) #averaging
-vm = Field(Average(va, dims=1))
-wm = Field(Average(wa, dims=1))
-u = Field(ua - um) # calculating the Pertubations
-v = Field(va - vm)
-w = Field(wa - wm)
+ua, va, wa = model.velocities # change back to ua, va, wa
+um = Field(@at (Face, Center, Center) Average(ua, dims=1)) #averaging
+vm = Field(@at (Center, Face, Center) Average(va, dims=1))
+wm = Field(@at (Center, Center, Face) Average(wa, dims=1))
+u = Field(@at (Center, Center, Center) ua - um) # calculating the Pertubations
+v = Field(@at (Center, Center, Center) va - vm)
+w = Field(@at (Center, Center, Center) wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
 
-# ut = Field(ub+ua)
-# vt = Field( vb+va)
+# ut = Field(@at (Center, Center, Center) ub+ua)
+# vt = Field(@at (Center, Center, Center) vb+va)
 
 # buoyancy pertubation calculation
 ba = model.tracers.b
-bm = Field(Average(ba, dims=1))
-b = Field(ba - bm)
+bm = Field(@at (Center, Center, Center) Average(ba, dims=1))
+b = Field(@at (Center, Center, Center) ba - bm)
+
+# ua, va, wa = model.velocities
+# ua = @at (Center, Center, Center) ua
+# va = @at (Center, Center, Center) va
+# wa = @at (Center, Center, Center) wa # change back to ua, va, wa
+# um = Field(Average(ua, dims=1)) #averaging
+# vm = Field(Average(va, dims=1))
+# wm = Field(Average(wa, dims=1))
+# u = Field(ua - um) # calculating the Pertubations
+# v = Field(va - vm)
+# w = Field(wa - wm)
+# ub = model.background_fields.velocities.u
+# vb = model.background_fields.velocities.v
+# B = model.background_fields.tracers.b
+
+# # ut = Field(ub+ua)
+# # vt = Field( vb+va)
+
+# # buoyancy pertubation calculation
+# ba = model.tracers.b
+# bm = Field(Average(ba, dims=1))
+# b = Field(ba - bm)
 # bt = Field(@at (Center, Center, Center) B+ba)
 
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
 PV = ErtelPotentialVorticity(model, ub, vb, 0, B, coriolis) # potential vorticity calculation
-E = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm) # kinetic energy dissaption calcualtion
-k = Oceanostics.TurbulentKineticEnergy(model, u, v, w) # TKE calculation
+E = Field(Average(KineticEnergyDissipationRate(model; U = um, V = vm, W = wm))) # kinetic energy dissaption calcualtion
+k = Field(Average(Oceanostics.TurbulentKineticEnergy(model, u, v, w))) # TKE calculation
 
 ### AGSP calculation
-AGSP = Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
+AGSP = Field(Average(Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)))
 
 ### wave shear production calculation
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
@@ -190,17 +209,17 @@ bpert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)*(p.hu-z)*heaviside(x,p.hu-z)
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
 
-WSP = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
+WSP = Field(Average(Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)))
 
 @inline tnd_fn(x,z,t,p) = tand(p.θ)
 
 ### geostrophic shear production calcualtion
 gshear(x,z,t,p) = p.V∞-((p.γ * tnd_fn(x,z,t,p) * p.N²)/(p.f))*(p.hu-z)*heaviside(x,p.hu-z)
 GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid, clock= model.clock, parameters = p)
-GSP = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
+GSP = Field(Average(Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)))
 
 ### Buoyancy Flux Calcuation
-BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
+BFLUX =  Field(Average(Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))))
 
 ### TKE advection
 
@@ -212,7 +231,7 @@ BFLUX =  Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), t
 
 # output writers
 output = (; u, ua, ub, v, va, vb, w, wa, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations  , KADV, PWORK
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
