@@ -149,9 +149,9 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 # calculate the pertubation in velocities
 
 ua, va, wa = model.velocities
-ua = @at (Center, Center, Center) ua
-va = @at (Center, Center, Center) va
-w = @at (Center, Center, Center) wa # change back to ua, va, wa
+# ua = @at (Center, Center, Center) ua
+# va = @at (Center, Center, Center) va
+# w = @at (Center, Center, Center) wa # change back to ua, va, wa
 um = Field(Average(ua, dims=(1))) #averaging
 vm = Field(Average(va, dims=(1)))
 # wm = Field(Average(wa, dims=(1)))
@@ -167,7 +167,7 @@ B = model.background_fields.tracers.b
 
 # buoyancy pertubation calculation
 ba = model.tracers.b
-bm = Field(Average(ba, dims=(1,2)))
+bm = Field(Average(ba, dims=(1)))
 b = Field(ba - bm)
 # bt = Field(@at (Center, Center, Center) B+ba)
 
