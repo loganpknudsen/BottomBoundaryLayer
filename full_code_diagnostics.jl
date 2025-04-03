@@ -118,7 +118,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-ns = 10^(-8) # standard deviation for noise
+ns = 10^(-4) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
@@ -149,21 +149,13 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 # calculate the pertubation in velocities
 
 ua, va, w = model.velocities
-# ua = @at (Center, Center, Center) ua
-# va = @at (Center, Center, Center) va
-# w = @at (Center, Center, Center) wa # change back to ua, va, wa
 um = Field(Average(ua, dims=(1))) #averaging
 vm = Field(Average(va, dims=(1)))
-# wm = Field(Average(wa, dims=(1)))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
-# w = Field(wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
-
-# ut = Field(ub+ua)
-# vt = Field( vb+va)
 
 # buoyancy pertubation calculation
 ba = model.tracers.b
@@ -223,12 +215,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average.nc",
+                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*".nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average.nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*".nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
