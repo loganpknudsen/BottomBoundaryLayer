@@ -152,9 +152,9 @@ ua, va, wa = model.velocities
 ua = @at (Center, Center, Center) ua
 va = @at (Center, Center, Center) va
 wa = @at (Center, Center, Center) wa # change back to ua, va, wa
-um = Field(Average(ua, dims=1)) #averaging
-vm = Field(Average(va, dims=1))
-wm = Field(Average(wa, dims=1))
+um = Field(Average(ua, dims=(1,2))) #averaging
+vm = Field(Average(va, dims=(1,2)))
+wm = Field(Average(wa, dims=(1,2)))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
 w = Field(wa - wm)
@@ -167,7 +167,7 @@ B = model.background_fields.tracers.b
 
 # buoyancy pertubation calculation
 ba = model.tracers.b
-bm = Field(Average(ba, dims=1))
+bm = Field(Average(ba, dims=(1,2)))
 b = Field(ba - bm)
 # bt = Field(@at (Center, Center, Center) B+ba)
 
@@ -223,12 +223,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average.nc",
+                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average_2.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average.nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_delta_"*string(δ)*"_bo_0_visc_"*string(ν1)*"_average_2.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
