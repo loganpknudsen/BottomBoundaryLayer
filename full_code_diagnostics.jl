@@ -36,6 +36,9 @@ function parse_commandline()
             "--gamma"
                 help = "pathname to save data under"
                 default = "0.8679318911470805"
+            "--freqf"
+                help = "pathname to save data under"
+                default = "1e-4"
         end
         return parse_args(s)
 end
