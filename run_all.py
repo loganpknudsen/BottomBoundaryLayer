@@ -70,7 +70,7 @@ def parseNaming(name):
     
     freqf = float(params[0].replace('f',''))
     theta = float(params[1])
-    strat = 1 * 10**(-1 * float(params[3].replace('1e','')))
+    strat = 1 * 10**(-1 * float(params[2].replace('1e','')))
     if params[3] == "gammau":
         gamma = (1+0.5*(strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8))**(-1)
     elif params[3] == "gammal":
