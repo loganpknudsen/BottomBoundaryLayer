@@ -90,7 +90,7 @@ coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 
 # parameters for simulation
 const V∞ = 0.05 # m s⁻¹ interior velocity
-const N² = params.N2 # interior stratification
+const N² = params.N² # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = params.δ
