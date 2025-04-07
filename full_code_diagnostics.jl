@@ -19,7 +19,7 @@ function parse_commandline()
         @add_arg_table s begin
             "paramset"
                 help = "sets which parameters to use"
-                default = "f1e4N21e5threta029gammau"
+                default = "f1e4N21e5theta029gammau"
             "--fruntime", "-T"
                 help = "how many inertial periods sim runs"
                 arg_type = Float64
