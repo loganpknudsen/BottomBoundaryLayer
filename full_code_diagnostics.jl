@@ -59,7 +59,7 @@ path_name = args["path"]
 setname = args["paramset"]
 
 @info "Loading parameters..."
-include("../parameters.jl")
+include("parameters.jl")
 params = getproperty(DenseParams(), Symbol(setname))
 
 # grid specifications
