@@ -48,8 +48,6 @@ end
 
 args=parse_commandline()
 
-path_name = args["path"]
-
 @info("command line args:")
 for (arg,val) in args
   @info("   $arg => $val")
