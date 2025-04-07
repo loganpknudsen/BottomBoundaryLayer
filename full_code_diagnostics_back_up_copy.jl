@@ -14,38 +14,26 @@ using ArgParse
 using CUDA 
 using Oceanostics
 
-function parse_commandline()
-        s = ArgParseSettings()
-        @add_arg_table s begin
-            "paramset"
-                help = "sets which parameters to use"
-                default = "f1e4N21e5threta029gammau"
-            "--fruntime", "-T"
-                help = "how many inertial periods sim runs"
-                arg_type = Float64
-                default = 30.0
-            "path"
-                help = "pathname to save data under"
-                default = ""
-        end
-        return parse_args(s)
-end
+# Path file is saved under
+# function parse_commandline()
+#     s = ArgParseSettings()
+#     @add_arg_table s begin
+#         "path"
+#         help = "pathname to save data under"
+#         default = ""
+#     end
+#     return parse_args(s)
+# end
 
-args=parse_commandline()
+# args=parse_commandline()
 
-path_name = args["path"]
+# @info("command line args:")
+# for (arg,val) in args
+#   @info("   $arg => $val")
+# end
 
-@info("command line args:")
-for (arg,val) in args
-  @info("   $arg => $val")
-end
+path_name = "/glade/derecho/scratch/knudsenl/data/new_data/paper_data/" #args["path"]
 
-path_name = args["path"]
-setname = args["paramset"]
-
-@info "Loading parameters..."
-include("../parameters.jl")
-params = getproperty(DenseParams(), Symbol(setname))
 
 # grid specifications
 arch = has_cuda_gpu() ? GPU() : CPU()
@@ -63,8 +51,8 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-const θ = params.θ # degrees 10^(-2) is previous value for 110 meter layer
-const f = params.f
+const θ = 0.6 # degrees 10^(-2) is previous value for 110 meter layer
+const f = 1e-4
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
@@ -74,11 +62,11 @@ coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 # parameters for simulation
 const V∞ = 0.05 # m s⁻¹ interior velocity
 const f = 1e-5 # coriolis parameter
-const N² = params.N² # interior stratification
+const N² = 1e-6 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
-const δ = params.δ
-const γ = params.γ #((cosd(θ)*(1+S∞*(1-δ)))^(-1)+(3-S∞)*((3*cosd(θ)*(1+S∞)-4*δ*cosd(θ)*S∞))^(-1))/2 # 0 PV parameter
+const δ = 0.5
+const γ = (cosd(θ)*(1+S∞*(1-δ)))^(-1) #((cosd(θ)*(1+S∞*(1-δ)))^(-1)+(3-S∞)*((3*cosd(θ)*(1+S∞)-4*δ*cosd(θ)*S∞))^(-1))/2 # 0 PV parameter
 const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
 const uₒ = 0 # Initial u shear perturbation
 const vₒ = δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
@@ -142,7 +130,7 @@ wi(x, z) = ns*Random.randn()
 # set simulation and decide run time
 set!(model, u=ui, v=vi, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = params.T*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 20.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=1, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
