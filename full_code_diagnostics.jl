@@ -62,6 +62,8 @@ setname = args["paramset"]
 include("parameters.jl")
 params = getproperty(DenseParams(), Symbol(setname))
 
+print(params)
+
 # grid specifications
 arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
