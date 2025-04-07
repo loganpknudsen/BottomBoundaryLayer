@@ -24,7 +24,7 @@ function parse_commandline()
                 help = "how many inertial periods sim runs"
                 arg_type = Float64
                 default = 30.0
-            "path"
+            "--path"
                 help = "pathname to save data under"
                 default = ""
         end
