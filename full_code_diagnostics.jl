@@ -27,6 +27,15 @@ function parse_commandline()
             "--path"
                 help = "pathname to save data under"
                 default = "/glade/derecho/scratch/knudsenl/data/new_data/paper_data/"
+            "--strat"
+                help = "pathname to save data under"
+                default = "1.0e-5"
+            "--theta"
+                help = "pathname to save data under"
+                default = "0.29"
+            "--gamma"
+                help = "pathname to save data under"
+                default = "0.8679318911470805"
         end
         return parse_args(s)
 end
