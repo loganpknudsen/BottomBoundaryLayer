@@ -6,7 +6,7 @@ import numpy as np
 ##############################
 #   FREQF-THETA-N2_gamma.jld2
 all_sims = [ '1f-0.29-1e5-gammal',
-             'f-0.29-1e5-gammau']
+             '1f-0.29-1e5-gammau']
 
 
 #+++ Options
