@@ -39,6 +39,9 @@ function parse_commandline()
             "--freqf"
                 help = "pathname to save data under"
                 default = "1e-4"
+            "--suffix"
+                help = "pathname to save data under"
+                default = "1e-4"
         end
         return parse_args(s)
 end
