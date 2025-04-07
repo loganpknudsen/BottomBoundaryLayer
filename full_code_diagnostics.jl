@@ -26,7 +26,7 @@ function parse_commandline()
                 default = 30.0
             "--path"
                 help = "pathname to save data under"
-                default = ""
+                default = "/glade/derecho/scratch/knudsenl/data/new_data/paper_data/"
         end
         return parse_args(s)
 end
