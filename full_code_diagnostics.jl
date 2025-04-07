@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-const θ = 0.29 # degrees 10^(-2) is previous value for 110 meter layer
+const θ = 0.6 # degrees 10^(-2) is previous value for 110 meter layer
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
 # realistic mid latitude for now
@@ -60,8 +60,8 @@ coriolis = ConstantCartesianCoriolis(f = 1e-4, rotation_axis = ĝ)
 
 # parameters for simulation
 const V∞ = 0.05 # m s⁻¹ interior velocity
-const f = 1e-4 # coriolis parameter
-const N² = 1e-5 # interior stratification
+const f = 1e-5 # coriolis parameter
+const N² = 1e-6 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = 0.5
