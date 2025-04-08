@@ -4,7 +4,7 @@
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
-#PBS -l select=1:ncpus=1:mem=160GB
+#PBS -l select=1:ncpus=1:mem=80GB
 ### Run Time
 #PBS -l walltime=18:00:00
 ### To the casper queue

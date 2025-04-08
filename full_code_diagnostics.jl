@@ -87,7 +87,7 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.05 # m s⁻¹ interior velocity
+const V∞ = params.V∞ # m s⁻¹ interior velocity
 const N² = params.N² # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
@@ -145,7 +145,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-ns = 10^(-4) # standard deviation for noise
+ns = 10^(-8) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
@@ -168,7 +168,7 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5))
 progress_message(sim) =
         @printf("i: %04d, t: %s, Δt: %s, wall time: %s, Intertial Period %s\n",
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
-        prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9),sim.model.clock.time*f/2π)
+        prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9),sim.model.clock.time*fˢ/2π)
 
 simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1000)) # TimeInterval(0.5*(2*pi)/f) 
 
