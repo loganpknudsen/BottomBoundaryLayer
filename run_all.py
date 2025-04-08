@@ -68,7 +68,7 @@ def parseNaming(name):
     
     params = name.split('_')[-1].split('-')
     
-    freqf = float(params[0].replace('f',''))
+    freqf = float(params[0].replace('f',''))**(-1)
     theta = float(10**(-1*len(params[1].replace("theta",""))))*float(params[1].replace("theta",""))
     strat = 1 * 10**(-1 * float(params[2].replace('N21e','')))
     if params[3] == "gammau":
