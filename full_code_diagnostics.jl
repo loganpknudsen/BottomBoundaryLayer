@@ -54,7 +54,7 @@ for (arg,val) in args
 end
 
 path_name = "/glade/derecho/scratch/knudsenl/data/new_data/" # args["path"]
-setname = args["paramset"]
+setname = args["suffix"]
 
 @info "Loading parameters..."
 include("parameters.jl")
@@ -242,12 +242,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 @info path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc"
 
-simulation.output_writers[:fields] = JLD2OutputWriter(model, output;
+simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
                                                           filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ),
                                                           overwrite_existing = true)
 
-simulation.output_writers[:diagnostics] = JLD2OutputWriter(model, output2;
+simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
                                                           filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ),
                                                           overwrite_existing = true)
