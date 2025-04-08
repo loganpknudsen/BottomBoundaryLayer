@@ -106,7 +106,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-6
+const ν1 = 1e-4
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -133,7 +133,7 @@ set!(model, u=ui, v=vi, w=wi)
 simulation = Simulation(model, Δt = 1seconds, stop_time = 30.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
-wizard = TimeStepWizard(cfl=1, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
+wizard = TimeStepWizard(cfl=0.75, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 # simulation.output_writers[:checkpointer] = Checkpointer(model; schedule=TimeInterval((5*(2*pi)/f)seconds), prefix="model_checkpoint")
