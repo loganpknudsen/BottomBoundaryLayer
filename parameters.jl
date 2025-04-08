@@ -24,7 +24,7 @@ using Parameters
         S∞ = (1e-5*tand(0.29)^2)/((1e-4)^2),
         γ = (3-(1e-5*tand(0.29)^2)/((1e-4)^2))*(cosd(0.29)*(3*(1+(1e-5*tand(0.29)^2)/((1e-4)^2))-2*(1e-5*tand(0.29)^2)/((1e-4)^2)))^(-1),
     )
-    f1e4theta1N21e6gammau = (f = 1e-4,
+    f1e4theta1N21e5gammau = (f = 1e-4,
         N² = 1e-5,               # maximum wave velocity
         θ = 1,
         δ = δ,
