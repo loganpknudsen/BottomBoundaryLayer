@@ -46,12 +46,7 @@ pbs_script = \
 #PBS -l gpu_type=v100
 ### email 
 #PBS -M knudsen@umd.edu
-#PBS -m abe                                                                                                                                   
-
-###module purge                                                                                                                                  
-###module load ncarenv/1.3 gnu/9.1.0 ncarcompilers/0.5.0                                                                                         
-###module load netcdf/4.7.4 openmpi/4.1.0                                                                                                        
-###module load cuda/11.4.0                                                                                                                       
+#PBS -m abe                                                                                                                                                                                                                                                        
 
 module --force purge
 module --ignore-cache load ncarenv/23.10 gcc ncarcompilers netcdf
@@ -61,7 +56,7 @@ module --ignore-cache load julia/1.10.2
 ### file to run                    
 
 julia --pkgimages=no --project=. {julia_file} --path {savepath} --strat {strat} --theta {theta} --freqf {freqf} --suffix\
-    {simname_full} -T {IPeriods} | tee logs/{simname_full}.out
+    {simname_full} -T {IPeriods}
 """
 
 def parseNaming(name):
