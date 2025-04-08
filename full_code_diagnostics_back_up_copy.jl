@@ -106,7 +106,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 5e-5
+const ν1 = 1e-5
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -119,7 +119,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-ns = 10^(-8) # standard deviation for noise
+ns = 10^(-10) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
