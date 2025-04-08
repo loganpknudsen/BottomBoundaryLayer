@@ -210,7 +210,7 @@ upert(x,z,t,p) = p.a1*sn_fn(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)# shear
 vpert(x,z,t,p) = (p.vₒ+p.b1*(cs_fn(x,z,t,p)-1))*(p.hu-z)*heaviside(x,p.hu-z)
 bpert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)*(p.hu-z)*heaviside(x,p.hu-z)
 
-# UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
+UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
 
 WSP_c = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
@@ -242,12 +242,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 @info path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc"
 
-simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
+simulation.output_writers[:fields] = JLD2OutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
                                                           filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc",
                                                           overwrite_existing = true)
 
-simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
+simulation.output_writers[:diagnostics] = JLD2OutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
                                                           filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc",
                                                           overwrite_existing = true)
