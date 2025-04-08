@@ -119,7 +119,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-ns = 10^(-4) # standard deviation for noise
+ns = 10^(-8) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
