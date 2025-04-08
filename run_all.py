@@ -3,10 +3,10 @@ import math
 import numpy as np
 #+++ Define simnames
 
-##############################
+############################## f1e4theta029N21e5gammau
 #   FREQF-THETA-N2_gamma.jld2
-all_sims = [ '1f-0.29-1e5-gammal',
-             '1f-0.29-1e5-gammau']
+all_sims = [ 'f1e4-theta029-N21e5-gammau',
+             'f1e4-theta029-N21e5-gammal']
 
 
 #+++ Options
@@ -81,7 +81,7 @@ for sim in all_sims:
 
     #+++ Define simulation name
     #simname_full = f"IntWave-{dims}-{resScale}-" + sim["wavelength"] + "-" + sim["flowspd"]
-    simname_full = sim 
+    simname_full = sim.replace("-","") 
     
     freqf, theta, strat, gamma= parseNaming(simname_full)
     # print(f)
