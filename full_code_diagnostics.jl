@@ -240,6 +240,8 @@ BFLUX =  Field(Average(BFLUX_c))
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
 
+@info path_name
+
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
                                                           filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc",

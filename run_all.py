@@ -60,7 +60,7 @@ module --ignore-cache load julia/1.10.2
 
 ### file to run                    
 
-julia --pkgimages=no --project=Project.toml {julia_file} --path {savepath} --strat {strat} --theta {theta} --freqf {freqf} --suffix\
+julia --pkgimages=no --project=. {julia_file} --path {savepath} --strat {strat} --theta {theta} --freqf {freqf} --suffix\
     {simname_full} -T {IPeriods} | tee logs/{simname_full}.out
 """
 
