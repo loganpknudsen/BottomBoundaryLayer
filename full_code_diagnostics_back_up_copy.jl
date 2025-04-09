@@ -130,7 +130,7 @@ vi(x, z) = ns*Random.randn()*heaviside(x,hu-1-z)
 # set simulation and decide run time
 set!(model, u=ui, v=vi) #, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 2.1*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 20.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.75, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
