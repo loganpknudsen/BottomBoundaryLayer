@@ -122,9 +122,9 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
 ns = 10^(-6) # standard deviation for noise
 
 # initial conditions to start instability
-ui(x, z) = ns*Random.randn()*heaviside(x,hu-1-z)
-vi(x, z) = ns*Random.randn()*heaviside(x,hu-1-z)
-wi(x, z) = ns*Random.randn()*heaviside(x,hu-1-z)
+ui(x, z) = ns*Random.randn() #*heaviside(x,hu-1-z)
+vi(x, z) = ns*Random.randn() #*heaviside(x,hu-1-z)
+wi(x, z) = ns*Random.randn() #*heaviside(x,hu-1-z)
 # bp(x,z) = ns*Random.randn()
 
 # set simulation and decide run time
