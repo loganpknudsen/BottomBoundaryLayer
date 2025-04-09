@@ -149,11 +149,13 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
 
-ua, va, w = model.velocities
+ua, va, wa = model.velocities
 um = Field(Average(ua, dims=(1))) #averaging
 vm = Field(Average(va, dims=(1)))
+wm = Field(Average(wa, dims=(1)))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
+w = Field(wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
@@ -166,8 +168,8 @@ b = Field(ba - bm)
 
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
-PV = ErtelPotentialVorticity(model, ub, vb, 0, B, coriolis) # potential vorticity calculation
-eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
+PV = ErtelPotentialVorticity(model, ub+ua, vb+va, wa, B+ba, coriolis) # potential vorticity calculation
+eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
 k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
 k = Field(Average(k_c)) # TKE calculation
