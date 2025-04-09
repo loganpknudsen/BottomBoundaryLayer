@@ -124,11 +124,11 @@ ns = 10^(-6) # standard deviation for noise
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
 vi(x, z) = ns*Random.randn()
-wi(x, z) = ns*Random.randn()
+# wi(x, z) = ns*Random.randn()
 # bp(x,z) = ns*Random.randn()
 
 # set simulation and decide run time
-set!(model, u=ui, v=vi, w=wi)
+set!(model, u=ui, v=vi) #, w=wi)
 
 simulation = Simulation(model, Δt = 1seconds, stop_time = 30.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
