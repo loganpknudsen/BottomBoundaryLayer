@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-const θ = 0.29 # degrees 10^(-2) is previous value for 110 meter layer
+const θ = 0.5 # degrees 10^(-2) is previous value for 110 meter layer
 const f = 1e-4
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
@@ -60,9 +60,9 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.05 # m s⁻¹ interior velocity
+const V∞ = 0.01 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
-const N² = 1e-5 # interior stratification
+const N² = 1e-6 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = 0.5
@@ -106,7 +106,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-4
+const ν1 = 1e-5
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -149,13 +149,11 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
 
-ua, va, wa = model.velocities
+ua, va, w = model.velocities
 um = Field(Average(ua, dims=(1))) #averaging
 vm = Field(Average(va, dims=(1)))
-wm = Field(Average(wa, dims=(1)))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
-w = Field(wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
@@ -168,8 +166,8 @@ b = Field(ba - bm)
 
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
-PV = ErtelPotentialVorticity(model, ub+ua, vb+va, wa, B+ba, coriolis) # potential vorticity calculation
-eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm)
+PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B, coriolis) # potential vorticity calculation
+eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
 k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
 k = Field(Average(k_c)) # TKE calculation
