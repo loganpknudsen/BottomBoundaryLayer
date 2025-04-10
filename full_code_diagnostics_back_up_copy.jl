@@ -114,7 +114,7 @@ start_time = time_ns()
 # model set up 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
-                            advection =  Centered(order=2), # WENO(), #
+                            advection =  Centered(order=4), # WENO(), #
                             tracers = :b,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
