@@ -39,10 +39,10 @@ path_name = "/glade/derecho/scratch/knudsenl/data/new_data/paper_data/" #args["p
 arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
-Lx = 3000meters
-Lz = 600meters
-Nx = 1536 #1024 # 512 originally
-Nz = 768 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Lx = 6000meters
+Lz = 1100meters
+Nx = 3072 #1024 # 512 originally
+Nz = 1408 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
