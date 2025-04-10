@@ -39,10 +39,10 @@ path_name = "/glade/derecho/scratch/knudsenl/data/new_data/paper_data/" #args["p
 arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
-Lx = 2000meters
-Lz = 200meters
-Nx = 1024 # 512 originally
-Nz = 256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Lx = 3000meters
+Lz = 600meters
+Nx = 1536 #1024 # 512 originally
+Nz = 768 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -60,7 +60,7 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.001 # m s⁻¹ interior velocity
+const V∞ = 0.005 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 2e-7 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
