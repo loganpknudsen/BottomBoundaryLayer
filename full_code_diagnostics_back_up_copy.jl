@@ -114,7 +114,7 @@ start_time = time_ns()
 # model set up 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
-                            advection =  Centered(order=4), # WENO(), #
+                            advection =  Centered(order=2), # WENO(), #
                             tracers = :b,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
@@ -130,7 +130,7 @@ wi(x, z) = ns*Random.randn() #*heaviside(x,hu-1-z)
 # set simulation and decide run time
 set!(model, u=ui, v=vi) #, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 15.1*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 30.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.75, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -149,13 +149,13 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
 
-ua, va, wa = model.velocities
+ua, va, w = model.velocities
 um = Field(Average(ua, dims=(1))) #averaging
 vm = Field(Average(va, dims=(1)))
-wm = Field(Average(wa, dims=(1)))
+# wm = Field(Average(wa, dims=(1)))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
-w = Field(wa - wm)
+# w = Field(wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
