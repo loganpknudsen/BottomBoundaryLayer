@@ -168,14 +168,14 @@ b = Field(ba - bm)
 
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
-PV = ErtelPotentialVorticity(model, ub+ua, vb+va, wa, B, coriolis) # potential vorticity calculation
-eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm)
+PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B, coriolis) # potential vorticity calculation
+eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
 k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
 k = Field(Average(k_c)) # TKE calculation
 
 ### AGSP calculation
-AGSP_c =Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
+AGSP_c =Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, 0)
 AGSP = Field(Average(AGSP_c))
 
 ### wave shear production calculation
