@@ -40,9 +40,9 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
 Lx = 6000meters
-Lz = 1100meters
+Lz = 600meters
 Nx = 3072 #1024 # 512 originally
-Nz = 1408 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Nz = 768 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -60,7 +60,7 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.01 # m s⁻¹ interior velocity
+const V∞ = 0.005 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 2e-7 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
