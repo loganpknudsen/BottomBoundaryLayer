@@ -60,9 +60,9 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.05 # m s⁻¹ interior velocity
+const V∞ = 0.001 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
-const N² = 1e-5 # interior stratification
+const N² = 2e-7 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = 0.5
@@ -119,7 +119,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-ns = 10^(-6) # standard deviation for noise
+ns = 10^(-10) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn() #*heaviside(x,hu-1-z)

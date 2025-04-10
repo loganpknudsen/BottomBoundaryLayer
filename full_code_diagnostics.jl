@@ -69,8 +69,8 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 
 Lx = 2000meters
 Lz = 200meters
-Nx = 512 # 512 originally
-Nz = 128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Nx = 1024 # 512 originally
+Nz = 256 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -141,7 +141,7 @@ start_time = time_ns()
 # model set up 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
-                            advection =  Centered(order=4), # WENO(), #
+                            advection =  Centered(order=2), # WENO(), #
                             tracers = :b,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
