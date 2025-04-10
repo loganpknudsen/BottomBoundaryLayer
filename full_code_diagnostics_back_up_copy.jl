@@ -210,11 +210,11 @@ BFLUX =  Field(Average(BFLUX_c))
 
 # ### PWORK
 
-# PWORK = Field(Average(Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))))
+PWORK = Field(Average(Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))))
 
 # output writers
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
