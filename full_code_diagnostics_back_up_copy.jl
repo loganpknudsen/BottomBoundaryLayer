@@ -114,7 +114,7 @@ start_time = time_ns()
 # model set up 
 model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
-                            advection =  Centered(order=4), # WENO(), #
+                            advection =  Centered(order=2), # WENO(), #
                             tracers = :b,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
@@ -204,17 +204,9 @@ GSP = Field(Average(GSP_c))
 BFLUX_c = Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
 BFLUX =  Field(Average(BFLUX_c))
 
-### TKE advection
-
-# KADV = Field(Average(Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))))
-
-# ### PWORK
-
-PWORK = Field(Average(Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))))
-
 # output writers
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK) # TKE Diagnostic Calculations 
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
