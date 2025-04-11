@@ -42,7 +42,7 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 Lx = 6000meters
 Lz = 1300meters
 Nx = 3072 #1024 # 512 originally
-Nz = 768 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Nz = 1664 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -119,7 +119,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-ns = 10^(-10) # standard deviation for noise
+ns = 10^(-5) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn() #*heaviside(x,hu-1-z)
@@ -130,7 +130,7 @@ wi(x, z) = ns*Random.randn() #*heaviside(x,hu-1-z)
 # set simulation and decide run time
 set!(model, u=ui, v=vi) #, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 200.1*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 30.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.75, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
