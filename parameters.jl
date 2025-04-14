@@ -103,7 +103,7 @@ using Parameters
         S∞ = (1e-5*tand(0.5)^2)/((175e-7)^2),
         γ = (3-1e-5*tand(0.5)^2*(175e-7)^(-2))*(cosd(0.5)*(3*(1+1e-5*tand(0.5)^2*(175e-7)^(-2))-4*0.5*1e-5*tand(0.5)^2*(175e-7)^(-2)))^(-1),
     )
-    f1e4theta05N21e5delta05Vinf02gammau = (f = 1e-4,
+    f1e4theta20N21e5delta05Vinf02gammau = (f = 1e-4,
         N² = 1e-5,               # maximum wave velocity
         θ = 2,
         δ = 0.5,
@@ -114,7 +114,7 @@ using Parameters
         S∞ = (1e-5*tand(2)^2)/((1e-4)^2),
         γ = (cosd(2)*(1+(1e-5*tand(2)^2)/((1e-4)^2)*(1-0.5)))^(-1),
     )
-    f1e4theta05N21e5delta05Vinf02gammam = (f = 1e-4,
+    f1e4theta20N21e5delta05Vinf02gammam = (f = 1e-4,
         N² = 1e-5,               # maximum wave velocity
         θ = 2,
         δ = 0.5,
@@ -125,7 +125,7 @@ using Parameters
         S∞ = (1e-5*tand(2)^2)/((1e-4)^2),
         γ = ((cosd(2)*(1+0.5*1e-5*(tand(2))^2*10^(8)))^(-1)+(3-1e-5*tand(2)^2*10^(8))*(cosd(2)*(3*(1+1e-5*tand(2)^2*10^(-8))-4*1e-5*0.5*tand(2)^2*10^(8)))^(-1))/2,
     )
-    f1e4theta05N21e5delta05Vinf02gammal = (f = 1e-4,
+    f1e4theta20N21e5delta05Vinf02gammal = (f = 1e-4,
         N² = 1e-5,               # maximum wave velocity
         θ = 2,
         δ = 0.5,
@@ -136,7 +136,7 @@ using Parameters
         S∞ = (1e-5*tand(2)^2)/((1e-4)^2),
         γ = (3-1e-5*tand(2)^2*10^(8))*(cosd(2)*(3*(1+1e-5*tand(2)^2*10^(8))-4*0.5*tand(2)^2*10^(8)*1e-5))^(-1),
     )
-    f1e4theta05N21e5delta025Vinf02gammau = (f = 1e-4,
+    f1e4theta20N21e5delta025Vinf02gammau = (f = 1e-4,
         N² = 1e-5,               # maximum wave velocity
         θ = 2,
         δ = 0.25,
@@ -147,7 +147,7 @@ using Parameters
         S∞ = (1e-5*tand(2)^2)/((1e-4)^2),
         γ = (cosd(2)*(1+(1e-5*tand(2)^2)/((1e-4)^2)*(1-0.25)))^(-1),
     )
-    f1e4theta05N21e5delta075Vinf02gammau = (f = 1e-4,
+    f1e4theta20N21e5delta075Vinf02gammau = (f = 1e-4,
         N² = 1e-5,               # maximum wave velocity
         θ = 2,
         δ = 0.75,
