@@ -39,7 +39,7 @@ path_name = "/glade/derecho/scratch/knudsenl/data/new_data/paper_data/" #args["p
 arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
-Lx = 3000meters
+Lx = 2000meters
 Lz = 200meters
 Nx = 1024 #1024 # 512 originally
 Nz = 256 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
