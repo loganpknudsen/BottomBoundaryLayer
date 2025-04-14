@@ -71,7 +71,7 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
 Lx = 2000meters
-Lz = params.Lz meters
+Lz = params.Lz
 Nx = 1024 # 512 originally
 Nz = params.Nz # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
