@@ -10,9 +10,9 @@
 ### To the casper queue
 #PBS -q casper
 ### output
-#PBS -o Sim5.out
+#PBS -o run_all.out
 ### error
-#PBS -e Sim5.err
+#PBS -e run_all.err
 ### email 
 #PBS -M knudsen@umd.edu
 #PBS -m abe

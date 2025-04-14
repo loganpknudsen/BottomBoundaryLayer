@@ -86,12 +86,12 @@ def parseNaming(name):
     theta = float(10**(-1*len(params[1].replace("theta",""))+1))*float(params[1].replace("theta",""))
     strat = 1 * 10**(-1 * float(params[2].replace('N21e','')))
     delta = float(params[3].replace('delta',''))*10**(-1)
-    if params[4] == "gammau":
-        gamma = (1+0.5*(strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8))**(-1)
-    elif params[4] == "gammal":
-        gamma = (3-strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)*(3*(1+strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)-2*strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)**(-1)
-    elif params[4] == "gammam":
-        gamma = ((1+0.5*(strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8))**(-1)+(3-strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)*(3*(1+strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)-2*strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)**(-1))/2
+    if params[5] == "gammau":
+        gamma = (1+(1-delta)*(strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8))**(-1)
+    elif params[5] == "gammal":
+        gamma = (3-strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)*(3*(1+strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)-4*delta*strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)**(-1)
+    elif params[5] == "gammam":
+        gamma = ((1+(1-delta)*(strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8))**(-1)+(3-strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)*(3*(1+strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)-4*delta*strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)**(-1))/2
     return freqf, theta, strat, delta, gamma
     
 for sim in all_sims:
@@ -105,7 +105,7 @@ for sim in all_sims:
     # print(f)
     # freq = f'{freqf*f:10}'
     pbs_script_filled = pbs_script.format(simname_full=simname_full, savepath=savepath, julia_file=julia_file, IPeriods=IPeriods,
-                                          freqf=freqf, theta=theta, strat=strat, gamma=gamma,delta=delta)
+                                          freqf=freqf, theta=theta, strat=strat, gamma=gamma, delta=delta)
 
     cmd1 = f"qsub {aux_filename}"
     if verbose>1: print(pbs_script_filled)
