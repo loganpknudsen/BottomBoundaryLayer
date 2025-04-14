@@ -68,9 +68,9 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
 Lx = 2000meters
-Lz = 200meters
+Lz = params.Lz meters
 Nx = 1024 # 512 originally
-Nz = 256 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Nz = params.Nz # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -90,10 +90,10 @@ coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 # parameters for simulation
 const V∞ = params.V∞ # m s⁻¹ interior velocity
 const N² = params.N² # interior stratification
-const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
+const S∞ = ((N²*tand(θ)^2)/(f^2))^(0.5) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = params.δ
-const γ = params.γ #((cosd(θ)*(1+S∞*(1-δ)))^(-1)+(3-S∞)*((3*cosd(θ)*(1+S∞)-4*δ*cosd(θ)*S∞))^(-1))/2 # 0 PV parameter
+const γ = params.γ  # PV parameter
 const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
 const uₒ = 0 # Initial u shear perturbation
 const vₒ = δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
@@ -133,7 +133,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-4
+const ν1 = 1e-5
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -146,7 +146,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
-ns = 10^(-8) # standard deviation for noise
+ns = V∞*10^(-2) # standard deviation for noise
 
 # initial conditions to start instability
 ui(x, z) = ns*Random.randn()
@@ -160,7 +160,7 @@ set!(model, u=ui, v=vi, w=wi)
 simulation = Simulation(model, Δt = 1seconds, stop_time = params.T*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
-wizard = TimeStepWizard(cfl=1, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
+wizard = TimeStepWizard(cfl=0.75, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 # simulation.output_writers[:checkpointer] = Checkpointer(model; schedule=TimeInterval((5*(2*pi)/f)seconds), prefix="model_checkpoint")
@@ -241,16 +241,16 @@ BFLUX =  Field(Average(BFLUX_c))
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
 
-@info path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc"
+# @info path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc"
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ),
+                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ),
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
