@@ -1,6 +1,6 @@
 #!/bin/bash -l
 ### Job Name
-#PBS -N tiltedBBL
+#PBS -N run_all
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
