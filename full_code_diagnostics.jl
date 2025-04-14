@@ -20,7 +20,7 @@ function parse_commandline()
         @add_arg_table s begin
             "paramset"
                 help = "sets which parameters to use"
-                default = "f1e4N21e5theta029gammau"
+                default = "f1e4theta029N21e5delta05Vinf005gammau"
             "--fruntime", "-T"
                 help = "how many inertial periods sim runs"
                 arg_type = Float64
@@ -29,23 +29,23 @@ function parse_commandline()
                 help = "pathname to save data under"
                 default = "/glade/derecho/scratch/knudsenl/data/new_data/"
             "--strat"
-                help = "pathname to save data under"
-                default = "1.0e-5"
+                help = "Stratification"
+                default = 1.0e-5
             "--theta"
-                help = "pathname to save data under"
-                default = "0.29"
+                help = "angle"
+                default = 0.29
             "--delta"
-                help = "pathname to save data under"
-                default = "0.29"
+                help = "geostrophic scaling factor"
+                default = 0.5
             "--gamma"
-                help = "pathname to save data under"
-                default = "0.8679318911470805"
+                help = "PV parameter"
+                default = 0.8679318911470805
             "--freqf"
-                help = "pathname to save data under"
-                default = "1e-4"
+                help = "coriolis parameter"
+                default = 1e-4
             "--suffix"
-                help = "pathname to save data under"
-                default = "1e-4"
+                help = "parameter set name"
+                default = "f1e4theta029N21e5delta05Vinf005gammau"
         end
         return parse_args(s)
 end
@@ -136,7 +136,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-5
+const ν1 = 1e-4
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -163,7 +163,7 @@ set!(model, u=ui, v=vi, w=wi)
 simulation = Simulation(model, Δt = 1seconds, stop_time = params.T*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
-wizard = TimeStepWizard(cfl=0.75, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
+wizard = TimeStepWizard(cfl=0.95, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
 simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5)) 
 
 # simulation.output_writers[:checkpointer] = Checkpointer(model; schedule=TimeInterval((5*(2*pi)/f)seconds), prefix="model_checkpoint")
@@ -196,7 +196,7 @@ b = Field(ba - bm)
 
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
-PV = ErtelPotentialVorticity(model, ub, vb, 0, B, coriolis) # potential vorticity calculation
+PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B, coriolis) # potential vorticity calculation
 eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
 k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
@@ -248,12 +248,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc",
+                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*".nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation

@@ -24,4 +24,4 @@ module --ignore-cache load conda
 conda activate dedalus3
 ### file to run
 
-python3 -u run_all.py
+python3 -u run_all.
