@@ -89,4 +89,34 @@ def parseNaming(name):
     if params[5] == "gammau":
         gamma = (1+(1-delta)*(strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8))**(-1)
     elif params[5] == "gammal":
-        gamma = (3-strat*np.tan(theta*np.pi/180)**2*freqf**(-
+        gamma = (3-strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)*(3*(1+strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)-4*delta*strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)**(-1)
+    elif params[5] == "gammam":
+        gamma = ((1+(1-delta)*(strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8))**(-1)+(3-strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)*(3*(1+strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)-4*delta*strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)**(-1))/2
+    return freqf, theta, strat, delta, gamma
+    
+for sim in all_sims:
+
+    #+++ Define simulation name
+    #simname_full = f"IntWave-{dims}-{resScale}-" + sim["wavelength"] + "-" + sim["flowspd"]
+    simname_full = sim
+    
+    freqf, theta, strat, delta, gamma= parseNaming(simname_full)
+    simname_full = simname_full.replace("-","") 
+    # print(f)
+    # freq = f'{freqf*f:10}'
+    pbs_script_filled = pbs_script.format(simname_full=simname_full, savepath=savepath, julia_file=julia_file, IPeriods=IPeriods,
+                                          freqf=freqf, theta=theta, strat=strat, gamma=gamma, delta=delta)
+
+    cmd1 = f"qsub {aux_filename}"
+    if verbose>1: print(pbs_script_filled)
+    if verbose>0: print(cmd1)
+    #---
+
+    #+++ Run command
+    if not dry_run:
+        with open(aux_filename, "w") as f:
+            f.write(pbs_script_filled)
+        system(cmd1)
+    #---
+
+    print()
