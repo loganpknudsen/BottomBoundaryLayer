@@ -25,6 +25,21 @@ all_sims = [ 'f1e4-theta029-N21e5-delta05-Vinf005-gammau',
              'f1e4-theta30-N21e6-delta05-Vinf005-gammal',
              'f1e4-theta30-N21e6-delta025-Vinf005-gammau',
              'f1e4-theta30-N21e6-delta075-Vinf005-gammau',
+             'f1e4-theta01812-N21e5-delta05-Vinf01-gammau',
+             'f1e4-theta01812-N21e5-delta05-Vinf01-gammam',
+             'f1e4-theta01812-N21e5-delta05-Vinf01-gammal',
+             'f1e4-theta09059-N21e5-delta05-Vinf01-gammau',
+             'f1e4-theta09059-N21e5-delta05-Vinf01-gammam',
+             'f1e4-theta09059-N21e5-delta05-Vinf01-gammal',
+             'f1e4-theta181130-N21e5-delta05-Vinf01-gammau',
+             'f1e4-theta181130-N21e5-delta05-Vinf01-gammam',
+             'f1e4-theta181130-N21e5-delta05-Vinf01-gammal',
+             'f1e4-theta27160-N21e5-delta05-Vinf01-gammau',
+             'f1e4-theta27160-N21e5-delta05-Vinf01-gammam',
+             'f1e4-theta27160-N21e5-delta05-Vinf01-gammal',
+             'f1e4-theta36190-N21e5-delta05-Vinf01-gammau',
+             'f1e4-theta36190-N21e5-delta05-Vinf01-gammam',
+             'f1e4-theta36190-N21e5-delta05-Vinf01-gamma005',
              ]
 
 
@@ -92,6 +107,8 @@ def parseNaming(name):
         gamma = (3-strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)*(3*(1+strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)-4*delta*strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)**(-1)
     elif params[5] == "gammam":
         gamma = ((1+(1-delta)*(strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8))**(-1)+(3-strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)*(3*(1+strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)-4*delta*strat*np.tan(theta*np.pi/180)**2*freqf**(-2)*1e8)**(-1))/2
+    elif params[5] == "gamma005":
+        gamma = 0.05
     return freqf, theta, strat, delta, gamma
     
 for sim in all_sims:
