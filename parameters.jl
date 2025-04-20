@@ -246,7 +246,7 @@ using Parameters
         S∞ = (1e-5*tand(0.1812)^2)/((1e-4)^2),
         γ = ((cosd(0.1812)*(1+0.5*1e-5*tand(0.1812)^2*10^(8)))^(-1)+(3-1e-5*tand(0.1812)^2*10^(8))*(cosd(0.1812)*(3*(1+1e-5*tand(0.1812)^2*10^(8))-4*0.5*1e-5*tand(0.1812)^2*(10)^(8)))^(-1))/2,
     ) 
-    f1e4theta01812N21e5delta0Vinf01gammal = (f = 1e-4,
+    f1e4theta01812N21e5delta05Vinf01gammal = (f = 1e-4,
         N² = 1e-5,               # maximum wave velocity
         θ = 0.1812,
         δ = 0.5,
