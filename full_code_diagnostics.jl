@@ -57,7 +57,7 @@ for (arg,val) in args
   @info("   $arg => $val")
 end
 
-path_name = "/glade/derecho/scratch/knudsenl/data/new_data/" # args["path"]
+path_name = "/glade/derecho/scratch/knudsenl/data/new_data/vinffixed/" # args["path"]
 setname = args["suffix"]
 
 @info "Loading parameters..."
