@@ -40,11 +40,11 @@ all_sims = [ #'f1e4-theta029-N21e5-delta05-Vinf005-gammau',
             #  'f1e4-theta181130-N21e5-delta075-Vinf01-gammau',
             #  'f1e4-theta27160-N21e5-delta05-Vinf01-gammau',
             #  'f1e4-theta27160-N21e5-delta05-Vinf01-gammam',
-             'f1e4-theta27160-N21e5-delta05-Vinf01-gammal',
+            #  'f1e4-theta27160-N21e5-delta05-Vinf01-gammal',
             #  'f1e4-theta27160-N21e5-delta025-Vinf01-gammau',
             #  'f1e4-theta27160-N21e5-delta075-Vinf01-gammau',
             #  'f1e4-theta36190-N21e5-delta05-Vinf01-gammau',
-             'f1e4-theta36190-N21e5-delta05-Vinf01-gammam',
+            #  'f1e4-theta36190-N21e5-delta05-Vinf01-gammam',
              'f1e4-theta36190-N21e5-delta05-Vinf01-gamma005',
              ]
 

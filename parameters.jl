@@ -448,7 +448,7 @@ using Parameters
         N² = 1e-5,               # maximum wave velocity
         θ = 3.619,
         δ = 0.5,
-        T = 180,
+        T = 240,
         Nz = 512,
         Lz = 400,
         V∞ = 0.1,
