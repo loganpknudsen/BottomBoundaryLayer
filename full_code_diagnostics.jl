@@ -259,4 +259,4 @@ simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
 # With initial conditions set and an output writer at the ready, we run the simulation
 # simulation.stop_time = 15*((2π)/f)seconds
 
-run!(simulation) # , pi
+run!(simulation) # , pickup=true
