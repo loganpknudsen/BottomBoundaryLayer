@@ -40,9 +40,9 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
 Lx = 2000meters
-Lz = 300meters
+Lz = 100meters
 Nx = 1024 #1024 # 512 originally
-Nz = 384 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Nz = 128 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-const θ = 2.5 # degrees 10^(-2) is previous value for 110 meter layer
+const θ = 1.8113 # degrees 10^(-2) is previous value for 110 meter layer
 const f = 1e-4
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
@@ -60,7 +60,7 @@ buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
 coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 
 # parameters for simulation
-const V∞ = 0.2 # m s⁻¹ interior velocity
+const V∞ = 0.1 # m s⁻¹ interior velocity
 const f = 1e-4 # coriolis parameter
 const N² = 1e-5 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
@@ -152,6 +152,7 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 ua, va, w = model.velocities
 um = Field(Average(ua, dims=(1))) #averaging
 vm = Field(Average(va, dims=(1)))
+# wm = Field(Average(w, dims=(1)))
 # wm = Field(Average(wa, dims=(1)))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
@@ -171,7 +172,9 @@ b = Field(ba - bm)
 PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B, coriolis) # potential vorticity calculation
 eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
-k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
+epsiso = IsotropicKineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
+E_iso = Field(Average(epsiso)) # kinetic energy dissaption calcualtion
+k_c = Oceanostics.TurbulentKineticEnergy(model, ua, va, w; U=um, V=vm, W=0)
 k = Field(Average(k_c)) # TKE calculation
 
 ### AGSP calculation
@@ -204,9 +207,10 @@ GSP = Field(Average(GSP_c))
 BFLUX_c = Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
 BFLUX =  Field(Average(BFLUX_c))
 
+
 # output writers
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
