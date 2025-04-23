@@ -215,8 +215,10 @@ PWORK =  Field(Average(PWORK_c))
 ADV_c = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
 ADV =  Field(Average(ADV_c))
 
+include("diagnostics.jl")
+
 ### ADV Calculation
-DIFF_c = Oceanostics.KineticEnergyStressTerm(model)
+DIFF_c = KineticEnergyStress(model; velocities=(u=u, v=v, w=w))
 DIFF =  Field(Average(DIFF_c))
 
 
