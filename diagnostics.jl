@@ -1,15 +1,4 @@
 module TKEBudgetTerms
-using DocStringExtensions
-
-export TurbulentKineticEnergy, KineticEnergy
-export KineticEnergyTendency
-export AdvectionTerm
-export KineticEnergyStressTerm
-export KineticEnergyForcingTerm
-export IsotropicKineticEnergyDissipationRate, KineticEnergyDissipationRate
-export PressureRedistributionTerm
-export BuoyancyProductionTerm
-export XShearProductionRate, YShearProductionRate, ZShearProductionRate
 
 using Oceananigans: NonhydrostaticModel, HydrostaticFreeSurfaceModel, fields
 using Oceananigans.Operators
@@ -18,13 +7,7 @@ using Oceananigans.AbstractOperations: KernelFunctionOperation
 using Oceananigans.Grids: Center, Face
 using Oceananigans.Fields: ZeroField
 using Oceananigans.Models.NonhydrostaticModels: u_velocity_tendency, v_velocity_tendency, w_velocity_tendency
-using Oceananigans.Advection: div_𝐯u, div_𝐯v, div_𝐯w
-using Oceananigans.TurbulenceClosures: viscous_flux_ux, viscous_flux_uy, viscous_flux_uz,
-                                       viscous_flux_vx, viscous_flux_vy, viscous_flux_vz,
-                                       viscous_flux_wx, viscous_flux_wy, viscous_flux_wz,
-                                       ∂ⱼ_τ₁ⱼ, ∂ⱼ_τ₂ⱼ, ∂ⱼ_τ₃ⱼ
-using Oceananigans.TurbulenceClosures: immersed_∂ⱼ_τ₁ⱼ, immersed_∂ⱼ_τ₂ⱼ, immersed_∂ⱼ_τ₃ⱼ
-using Oceananigans.BuoyancyFormulations: x_dot_g_bᶠᶜᶜ, y_dot_g_bᶜᶠᶜ, z_dot_g_bᶜᶜᶠ
+using Oceananigans.TurbulenceClosures: ∂ⱼ_τ₁ⱼ, ∂ⱼ_τ₂ⱼ, ∂ⱼ_τ₃ⱼ
 
 using Oceanostics: _νᶜᶜᶜ
 using Oceanostics: validate_location, validate_dissipative_closure, perturbation_fields
@@ -56,26 +39,11 @@ using Oceanostics: validate_location, validate_dissipative_closure, perturbation
     return u∂ⱼ_τ₁ⱼ+ v∂ⱼ_τ₂ⱼ + w∂ⱼ_τ₃ⱼ
 end
 
-"""
-    $(SIGNATURES)
 
-Return a `KernelFunctionOperation` that computes the diffusive term of the KE prognostic equation:
-
-```
-DIFF = uᵢ∂ⱼτᵢⱼ
-```
-
-where `uᵢ` are the velocity components and `τᵢⱼ` is the diffusive flux of `i` momentum in the
-`j`-th direction.
-
-"""
 function KineticEnergyStress(model; velocities=model.velocities ,location = (Center, Center, Center))
-    validate_location(location, "KineticEnergyStressTerm")
+    validate_location(location, "KineticEnergyStress")
     model_fields = fields(model)
 
-    if model isa HydrostaticFreeSurfaceModel
-        model_fields = (; model_fields..., w=ZeroField())
-    end
     dependencies = (model.closure,
                     model.diffusivity_fields,
                     model.clock,
@@ -83,4 +51,6 @@ function KineticEnergyStress(model; velocities=model.velocities ,location = (Cen
                     model.buoyancy,
                     velocities)
     return KernelFunctionOperation{Center, Center, Center}(uᵢ∂ⱼ_τᵢⱼᶜᶜᶜ, model.grid, dependencies...)
+end
+
 end
