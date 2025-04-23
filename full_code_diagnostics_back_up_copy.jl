@@ -130,7 +130,7 @@ wi(x, z) = ns*Random.randn() #*heaviside(x,hu-1-z)
 # set simulation and decide run time
 set!(model, u=ui, v=vi) #, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 80.1*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 60.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.75, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -222,7 +222,7 @@ DIFF =  Field(Average(DIFF_c))
 
 # output writers
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK) # TKE Diagnostic Calculations 
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK, ADV, DIFF) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
