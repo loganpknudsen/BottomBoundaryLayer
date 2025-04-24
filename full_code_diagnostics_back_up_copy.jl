@@ -66,7 +66,7 @@ const N² = 1e-5 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = 0.5
-const γ = (3-S∞)*((3*cosd(θ)*(1+S∞)-4*δ*cosd(θ)*S∞))^(-1) # 0 PV parameter
+const γ = (cosd(θ)*(1+(1-δ)*S∞^2))^(-1) # 0 PV parameter
 const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
 const uₒ = 0 # Initial u shear perturbation
 const vₒ = δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
@@ -149,14 +149,14 @@ simulation.callbacks[:progress] = Callback(progress_message, IterationInterval(1
 # diagnostic calculations, it is saved in 2 files with one saving the flow field and the other tke diagnostics
 # calculate the pertubation in velocities
 
-ua, va, w = model.velocities
+ua, va, wa = model.velocities
 um = Field(Average(ua, dims=(1))) #averaging
 vm = Field(Average(va, dims=(1)))
 # wm = Field(Average(w, dims=(1)))
-# wm = Field(Average(wa, dims=(1)))
+wm = Field(Average(wa, dims=(1)))
 u = Field(ua - um) # calculating the Pertubations
 v = Field(va - vm)
-# w = Field(wa - wm)
+w = Field(wa - wm)
 ub = model.background_fields.velocities.u
 vb = model.background_fields.velocities.v
 B = model.background_fields.tracers.b
@@ -170,13 +170,13 @@ b = Field(ba - bm)
 # Ri = RichardsonNumber(model, ut, vt, wa, bt)
 # Ro = RossbyNumber(model, ut, vt, wa, coriolis)
 PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B, coriolis) # potential vorticity calculation
-eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
+eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = wm)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
-k_c = Oceanostics.TurbulentKineticEnergy(model, ua, va, w; U=um, V=vm, W=0)
+k_c = Oceanostics.TurbulentKineticEnergy(model, ua, va, w; U=um, V=vm, W=wm)
 k = Field(Average(k_c)) # TKE calculation
 
 ### AGSP calculation
-AGSP_c =Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, 0)
+AGSP_c =Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, wm)
 AGSP = Field(Average(AGSP_c))
 
 ### wave shear production calculation
