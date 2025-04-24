@@ -216,7 +216,7 @@ ADV =  Field(Average(ADV_c))
 include("diagnostics.jl")
 
 ### ADV Calculation
-DIFF_c = KineticEnergyStress(model; U=um,V=vm,W=0,visc=ν1)
+DIFF_c = KineticEnergyStress(model; U=um, V=vm, W=0, visc=ν1)
 DIFF =  Field(Average(DIFF_c))
 
 
