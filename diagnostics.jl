@@ -44,7 +44,7 @@ function KineticEnergyStress(model; U=ZeroField(), V=ZeroField(), W=ZeroField(),
     dependencies = (model.closure,
                     model.diffusivity_fields,
                     model.clock,
-                    fields(model),
+                    model_fields,
                     model.buoyancy,
                     mean_velocities=(U,V,W),
                     visc)
