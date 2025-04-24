@@ -218,7 +218,7 @@ ADV =  Field(Average(ADV_c))
 include("diagnostics.jl")
 
 ### ADV Calculation
-DIFF_c = diagnostics.KineticEnergyStress(model; velocities=(u=u, v=v, w=w))
+DIFF_c = KineticEnergyStress(model; velocities=(u=u, v=v, w=w))
 DIFF =  Field(Average(DIFF_c))
 
 
