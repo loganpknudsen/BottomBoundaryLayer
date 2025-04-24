@@ -23,22 +23,21 @@ using Oceanostics: validate_location, validate_dissipative_closure, perturbation
 
 @inline ψf(i, j, k, grid, ψ, f, args...) = @inbounds ψ[i, j, k] * f(i, j, k, grid, args...)
 
-@inline function uᵢ∂ⱼ_τᵢⱼᶜᶜᶜ(i, j, k, grid, closure,
+@inline function DIFF_k(i, j, k, grid, closure,
                                             diffusivity_fields,
                                             clock,
                                             model_fields,
                                             buoyancy,
-                                            velocities)
-
-    u∂ⱼ_τ₁ⱼ = ℑxᶜᵃᵃ(i, j, k, grid, ψf, velocities.u, ∂ⱼ_τ₁ⱼ, closure, diffusivity_fields, clock, model_fields, buoyancy)
-    v∂ⱼ_τ₂ⱼ = ℑyᵃᶜᵃ(i, j, k, grid, ψf, velocities.v, ∂ⱼ_τ₂ⱼ, closure, diffusivity_fields, clock, model_fields, buoyancy)
-    w∂ⱼ_τ₃ⱼ = ℑzᵃᵃᶜ(i, j, k, grid, ψf, velocities.w, ∂ⱼ_τ₃ⱼ, closure, diffusivity_fields, clock, model_fields, buoyancy)
-
-    return u∂ⱼ_τ₁ⱼ+ v∂ⱼ_τ₂ⱼ + w∂ⱼ_τ₃ⱼ
+                                            mean_velocities,
+                                            visc)
+    k = (ℑxᶜᵃᵃ(i, j, k, grid, ψ′², model.velocities.u, mean_velocities.U) + ℑyᵃᶜᵃ(i, j, k, grid, ψ′², model.velocities.v, mean_velocities.V) + ℑzᵃᵃᶜ(i, j, k, grid, ψ′², model.velocities.w, mean_velocities.W)) / 2
+    dkdz = ∂zᶜᶜᶜ(i, j, k, grid, k)
+    d2kdz2 = ∂zᶜᶜᶜ(i, j, k, grid, dkdz)
+    return visc*d2kdz2
 end
 
 
-function KineticEnergyStress(model; velocities=model.velocities ,location = (Center, Center, Center))
+function KineticEnergyStress(model; U=ZeroField(), V=ZeroField(), W=ZeroField(), visc=1e-5,location = (Center, Center, Center))
     validate_location(location, "KineticEnergyStress")
     model_fields = fields(model)
 
@@ -47,6 +46,7 @@ function KineticEnergyStress(model; velocities=model.velocities ,location = (Cen
                     model.clock,
                     fields(model),
                     model.buoyancy,
-                    velocities)
-    return KernelFunctionOperation{Center, Center, Center}(uᵢ∂ⱼ_τᵢⱼᶜᶜᶜ, model.grid, dependencies...)
+                    mean_velocities=(U,V,W),
+                    visc)
+    return KernelFunctionOperation{Center, Center, Center}(DIFF_k, model.grid, dependencies...)
 end

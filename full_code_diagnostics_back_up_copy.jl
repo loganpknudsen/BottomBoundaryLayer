@@ -130,7 +130,7 @@ wi(x, z) = ns*Random.randn() #*heaviside(x,hu-1-z)
 # set simulation and decide run time
 set!(model, u=ui, v=vi) #, w=wi)
 
-simulation = Simulation(model, Δt = 1seconds, stop_time = 60.1*((2*pi)/fˢ)seconds) # stop_iteration=10
+simulation = Simulation(model, Δt = 1seconds, stop_time = 40.1*((2*pi)/fˢ)seconds) # stop_iteration=10
 
 # time step wizard
 wizard = TimeStepWizard(cfl=0.75, max_change=1.1seconds, max_Δt=100.0seconds, min_Δt=0.01seconds) 
@@ -172,8 +172,6 @@ b = Field(ba - bm)
 PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B, coriolis) # potential vorticity calculation
 eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
-epsiso = IsotropicKineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
-E_iso = Field(Average(epsiso)) # kinetic energy dissaption calcualtion
 k_c = Oceanostics.TurbulentKineticEnergy(model, ua, va, w; U=um, V=vm, W=0)
 k = Field(Average(k_c)) # TKE calculation
 
@@ -218,7 +216,7 @@ ADV =  Field(Average(ADV_c))
 include("diagnostics.jl")
 
 ### ADV Calculation
-DIFF_c = KineticEnergyStress(model; velocities=(u=u, v=v, w=w))
+DIFF_c = KineticEnergyStress(model; U=um,V=vm,W=0,visc=ν1)
 DIFF =  Field(Average(DIFF_c))
 
 
