@@ -213,16 +213,11 @@ PWORK =  Field(Average(PWORK_c))
 ADV_c = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
 ADV =  Field(Average(ADV_c))
 
-include("diagnostics.jl")
-
-### ADV Calculation
-DIFF_c = KineticEnergyStress(model; U=um, V=vm, W=0, visc=ν1)
-DIFF =  Field(Average(DIFF_c))
 
 
 # output writers
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK, ADV, DIFF) # TKE Diagnostic Calculations 
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK, ADV) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
