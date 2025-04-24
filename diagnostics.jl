@@ -1,5 +1,3 @@
-module TKEBudgetTerms
-
 using Oceananigans: NonhydrostaticModel, HydrostaticFreeSurfaceModel, fields
 using Oceananigans.Operators
 using Oceananigans.AbstractOperations
@@ -51,6 +49,4 @@ function KineticEnergyStress(model; velocities=model.velocities ,location = (Cen
                     model.buoyancy,
                     velocities)
     return KernelFunctionOperation{Center, Center, Center}(uᵢ∂ⱼ_τᵢⱼᶜᶜᶜ, model.grid, dependencies...)
-end
-
 end
