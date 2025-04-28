@@ -215,7 +215,7 @@ ADV =  Field(Average(ADV_c))
 
 include("diagnostics.jl")
 
-TRANS_c = KineticEnergyTransport(model; U=um, V=vm, W=0)
+TRANS_c = KineticEnergyTransport(model; U=um, V=vm, W=wm)
 TRANS =  Field(Average(TRANS_c))
 
 # output writers
