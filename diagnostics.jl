@@ -30,7 +30,7 @@ using Oceanostics: validate_location, validate_dissipative_closure, perturbation
 @inline ψf(i, j, k, grid, ψ, f) = @inbounds ψ[i, j, k] * f[i, j, k]
 
 @inline function TRNS(i, j, k, grid, model,      
-                    q                       closure,
+                                            closure,
                                             diffusivity_fields,
                                             clock,
                                             model_fields,
