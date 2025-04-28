@@ -213,7 +213,7 @@ PWORK =  Field(Average(PWORK_c))
 ADV_c = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
 ADV =  Field(Average(ADV_c))
 
-include("diagnostic.jl")
+include("diagnostics.jl")
 
 TRANS_c = KineticEnergyTransport(model; U=um, V=vm, W=0)
 TRANS =  Field(Average(TRANS_c))
