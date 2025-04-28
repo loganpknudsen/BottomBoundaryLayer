@@ -29,7 +29,8 @@ using Oceanostics: validate_location, validate_dissipative_closure, perturbation
 
 @inline ψf(i, j, k, grid, ψ, f) = @inbounds ψ[i, j, k] * f[i, j, k]
 
-@inline function TRNS(i, j, k, grid, closure,
+@inline function TRNS(i, j, k, grid, model,      
+                    q                       closure,
                                             diffusivity_fields,
                                             clock,
                                             model_fields,
@@ -48,7 +49,8 @@ function KineticEnergyTransport(model; U=ZeroField(),V=ZeroField(),W=ZeroField()
     validate_location(location, "KineticEnergyTransport")
     model_fields = fields(model)
 
-    dependencies = (model.closure,
+    dependencies = (model,
+                    model.closure,
                     model.diffusivity_fields,
                     model.clock,
                     model_fields,
