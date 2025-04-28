@@ -24,9 +24,13 @@
 │ In any other case, please file an issue.
 └ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
 [ Info: Arch => GPU()
+┌ Warning: Overwriting existing /glade/derecho/scratch/knudsenl/data/new_data/paper_data/flow_fields_height_115.0940282812028_theta_0.5_stratification_1.0e-6_interior_velocity_0.01_visc_1.0e-5_Sinf_0.007615822143738319_gamma_0.9956089976218538_f_0.0001.nc.
+└ @ Oceananigans.OutputWriters ~/.julia/packages/Oceananigans/thcPW/src/OutputWriters/netcdf_output_writer.jl:433
+┌ Warning: Overwriting existing /glade/derecho/scratch/knudsenl/data/new_data/paper_data/TKE_terms_height_115.0940282812028_theta_0.5_stratification_1.0e-6_interior_velocity_0.01_visc_1.0e-5_Sinf_0.007615822143738319_gamma_0.9956089976218538_f_0.0001.nc.
+└ @ Oceananigans.OutputWriters ~/.julia/packages/Oceananigans/thcPW/src/OutputWriters/netcdf_output_writer.jl:433
 [ Info: Initializing simulation...
-[ Info:     ... simulation initialization complete (1.758 minutes)
+[ Info:     ... simulation initialization complete (2.069 minutes)
 [ Info: Executing initial time step...
-[ Info:     ... initial time step complete (5.062 seconds).
-[ Info: Simulation is stopping after running for 16.459 minutes.
-[ Info: Simulation time 12.789 hours equals or exceeds stop time 12.789 hours.
+[ Info:     ... initial time step complete (4.992 seconds).
+[ Info: Simulation is stopping after running for 10.107 minutes.
+[ Info: Simulation time 29.052 days equals or exceeds stop time 29.052 days.

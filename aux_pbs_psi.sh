@@ -1,0 +1,30 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+#!/bin/bash -l
+### Job Name
+#PBS -N f1e4theta36190N21e5delta05Vinf01gamma005  
+### Project Code Allocation
+#PBS -A UMCP0023
+### Resources :ngpus=1
+#PBS -l select=1:ncpus=16:mem=80GB:ngpus=1
+### Run Time
+#PBS -l walltime=8:00:00
+### To the casper queue
+#PBS -q casper
+### output
+#PBS -o logs/f1e4theta36190N21e5delta05Vinf01gamma005.out 
+### error
+#PBS -e logs/f1e4theta36190N21e5delta05Vinf01gamma005.err
+### type of GPU
+#PBS -l gpu_type=v100
+### email 
+#PBS -M knudsen@umd.edu
+#PBS -m abe                                                                                                                                                                                                                                                        
+
+module --force purge
+module --ignore-cache load ncarenv/23.10 gcc ncarcompilers netcdf
+module --ignore-cache load cuda
+module --ignore-cache load julia/1.10.2
+
+### file to run                    
+
+julia --pkgimages=no --project=. full_code_diagnostics.jl --path /glade/derecho/scratch/knudsenl/data/new_data/ --strat 1e-05 --theta 3.619 --freqf 0.0001 --delta 0.5 --suffix    f1e4theta36190N21e5delta05Vinf01gamma005 -T 30.0
