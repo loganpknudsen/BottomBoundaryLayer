@@ -33,8 +33,10 @@ using Oceanostics: validate_location, validate_dissipative_closure, perturbation
                                             diffusivity_fields,
                                             clock,
                                             model_fields,
-                                            mean_velocities)
-    k = ℑxᶜᵃᵃ(i, j, k, grid, ψ′², model.velocities.u, mean_velocities.U) #+ ℑyᵃᶜᵃ(i, j, k, grid, ψ′², model.velocities.v, mean_velocities.V) + ℑzᵃᵃᶜ(i, j, k, grid, ψ′², model.velocities.w, mean_velocities.W)) / 2
+                                            U,
+                                            V,
+                                            W)
+    k = ℑxᶜᵃᵃ(i, j, k, grid, ψ′², model.velocities.u, U) #+ ℑyᵃᶜᵃ(i, j, k, grid, ψ′², model.velocities.v, mean_velocities.V) + ℑzᵃᵃᶜ(i, j, k, grid, ψ′², model.velocities.w, mean_velocities.W)) / 2
     wpert = ℑzᵃᵃᶜ(i, j, k, grid, ψ′, model.velocities.w, mean_velocities.W)
     wk = ψf(i,j,k,grid, wpert,k)
     dwkdz = ∂zᶜᶜᶜ(i, j, k, grid, wk)
@@ -50,6 +52,8 @@ function KineticEnergyTransport(model; U=ZeroField(),V=ZeroField(),W=ZeroField()
                     model.diffusivity_fields,
                     model.clock,
                     model_fields,
-                    mean_velocities=(U,V,W))
+                    U,
+                    V,
+                    W)
     return KernelFunctionOperation{Center, Center, Center}(TRNS, model.grid, dependencies...)
 end
