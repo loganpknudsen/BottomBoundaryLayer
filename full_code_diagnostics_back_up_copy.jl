@@ -106,7 +106,7 @@ b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
 
 # diffusitivity and viscosity values for closure
-const ν1 = 1e-4
+const ν1 = 1e-5
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
@@ -213,11 +213,14 @@ PWORK =  Field(Average(PWORK_c))
 ADV_c = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
 ADV =  Field(Average(ADV_c))
 
+include("diagnostic.jl")
 
+TRANS_c = KineticEnergyTransport(model; U=um, V=vm, W=0)
+TRANS =  Field(Average(TRANS_c))
 
 # output writers
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK, ADV) # TKE Diagnostic Calculations 
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK, ADV, TRANS) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),

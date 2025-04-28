@@ -23,22 +23,21 @@ using Oceanostics: validate_location, validate_dissipative_closure, perturbation
 
 @inline ψf(i, j, k, grid, ψ, f, args...) = @inbounds ψ[i, j, k] * f(i, j, k, grid, args...)
 
-@inline function DIFF_k(i, j, k, grid, closure,
+@inline function TRNS(i, j, k, grid, closure,
                                             diffusivity_fields,
                                             clock,
                                             model_fields,
                                             buoyancy,
-                                            mean_velocities,
-                                            visc)
+                                            mean_velocities)
     k = (ℑxᶜᵃᵃ(i, j, k, grid, ψ′², model.velocities.u, mean_velocities.U) + ℑyᵃᶜᵃ(i, j, k, grid, ψ′², model.velocities.v, mean_velocities.V) + ℑzᵃᵃᶜ(i, j, k, grid, ψ′², model.velocities.w, mean_velocities.W)) / 2
-    dkdz = ∂zᶜᶜᶜ(i, j, k, grid, k)
-    d2kdz2 = ∂zᶜᶜᶜ(i, j, k, grid, dkdz)
-    return visc*d2kdz2
+    wk = ℑzᵃᵃᶜ(i, j, k, grid, ψf, model.velocities.w-mean_velocities.W, k)
+    dwkdz = ∂zᶜᶜᶜ(i, j, k, grid, wk)
+    return dwkdz
 end
 
 
-function KineticEnergyStress(model; U=ZeroField(), V=ZeroField(), W=ZeroField(), visc=1e-5,location = (Center, Center, Center))
-    validate_location(location, "KineticEnergyStress")
+function KineticEnergyTransport(model; U=ZeroField(),V=ZeroField(),W=ZeroField(),location = (Center, Center, Center))
+    validate_location(location, "KineticEnergyTransport")
     model_fields = fields(model)
 
     dependencies = (model.closure,
@@ -46,7 +45,6 @@ function KineticEnergyStress(model; U=ZeroField(), V=ZeroField(), W=ZeroField(),
                     model.clock,
                     model_fields,
                     model.buoyancy,
-                    mean_velocities=(U,V,W),
-                    visc)
-    return KernelFunctionOperation{Center, Center, Center}(DIFF_k, model.grid, dependencies...)
+                    mean_velocities=(U,V,W))
+    return KernelFunctionOperation{Center, Center, Center}(TRNS, model.grid, dependencies...)
 end
