@@ -569,7 +569,7 @@ using Parameters
         N² = 1e-5,               # maximum wave velocity
         θ = 3.1676,
         δ = 0.5,
-        T = 60,
+        T = 120,
         Nz = 192,
         Lz = 150,
         V∞ = 0.1,
@@ -580,12 +580,6 @@ using Parameters
         N² = 1e-5,               # maximum wave velocity
         θ = 3.1676,
         δ = 0.5,
-        T = 60,
+        T = 180,
         Nz = 576,
         Lz = 450,
-        V∞ = 0.1,
-        S∞ = (1e-5*tand(3.1676)^2)/((1e-4)^2),
-        γ =  0.05,
-    )
-
-end
