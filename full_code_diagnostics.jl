@@ -57,7 +57,7 @@ for (arg,val) in args
   @info("   $arg => $val")
 end
 
-path_name = "/glade/derecho/scratch/knudsenl/data/new_data/vinffixed/" # args["path"]
+path_name = "/glade/derecho/scratch/knudsenl/data/new_data/mastersthesis/" # args["path"]
 setname = args["suffix"]
 
 @info "Loading parameters..."
@@ -133,7 +133,7 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 
 b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 
-buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
+buoyancy_grad = FieldBoundaryConditions(top = b_bc_top, bottom=b_bc_top) 
 
 # diffusitivity and viscosity values for closure
 const ν1 = 1e-5
