@@ -132,7 +132,7 @@ V_field = BackgroundField(v_adjustment, parameters=p)
 B_field = BackgroundField(constant_stratification, parameters=p)
 
 b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
-b_bc_bottom= ValueBoundaryCondtion(0) # GradientBoundaryCondition(-1*N²*cosd(θ)+γ*N²)
+b_bc_bottom= ValueBoundaryCondition(0) # GradientBoundaryCondition(-1*N²*cosd(θ)+γ*N²)
 
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top, bottom=b_bc_bottom) 
 
