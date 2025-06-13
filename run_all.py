@@ -149,9 +149,4 @@ for sim in all_sims:
 
     #+++ Run command
     if not dry_run:
-        with open(aux_filename, "w") as f:
-            f.write(pbs_script_filled)
-        system(cmd1)
-    #---
-
-    print()
+        with open(aux_file
