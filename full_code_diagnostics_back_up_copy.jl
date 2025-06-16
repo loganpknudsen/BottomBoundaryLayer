@@ -101,9 +101,11 @@ U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
 B_field = BackgroundField(constant_stratification, parameters=p)
 
-b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
+b_bc_top= GradientBoundaryCondition(1*N²*cosd(θ))
+# b_cross(x,z,t,p) = sind(p.θ)*N²
+b_bc_bottom= ValueBoundaryCondition(0) # GradientBoundaryCondition(-1*N²*cosd(θ)+γ*N²)
 
-buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) 
+buoyancy_grad = FieldBoundaryConditions(top = b_bc_top, bottom=b_bc_bottom) 
 
 # diffusitivity and viscosity values for closure
 const ν1 = 1e-5
@@ -206,21 +208,21 @@ BFLUX_c = Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), 
 BFLUX =  Field(Average(BFLUX_c))
 
 ### PWORK Calculation
-PWORK_c = Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))
-PWORK =  Field(Average(PWORK_c))
+# PWORK_c = Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))
+# PWORK =  Field(Average(PWORK_c))
 
-### ADV Calculation
-ADV_c = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
-ADV =  Field(Average(ADV_c))
+# ### ADV Calculation
+# ADV_c = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
+# ADV =  Field(Average(ADV_c))
 
-include("diagnostics.jl")
+# include("diagnostics.jl")
 
-TRANS_c = KineticEnergyTransport(model; U=um, V=vm, W=wm)
-TRANS =  Field(Average(TRANS_c))
+# TRANS_c = KineticEnergyTransport(model; U=um, V=vm, W=wm)
+# TRANS =  Field(Average(TRANS_c))
 
 # output writers
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX, PWORK, ADV, TRANS) # TKE Diagnostic Calculations 
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
