@@ -234,7 +234,4 @@ simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_f_"*string(f)*"_case_3.nc",
                                                           overwrite_existing = true)
 
-# With initial conditions set and an output writer at the ready, we run the simulation
-# simulation.stop_time = 15*((2π)/f)seconds
-
-run!(simulation) # , pickup=true
+# With initial conditions set and an output writer at the ready, we run the si

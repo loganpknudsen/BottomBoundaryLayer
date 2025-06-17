@@ -212,11 +212,11 @@ bm = Field(Average(ba, dims=(1)))
 b = Field(ba - bm)
 
 ### Total Richardson Number calculation
-Ri = RichardsonNumber(model, ut, vt, wa, bt)
+Ri = RichardsonNumber(model, ub+ua, vb+va, wa, B+ba)
 
 ### Potential Vorticity calculation
 
-PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B, coriolis) 
+PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B+ba, coriolis) 
 
 ### Dissaption calcuation
 
