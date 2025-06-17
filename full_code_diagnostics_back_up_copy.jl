@@ -74,13 +74,13 @@ const bₒ = 0 #*(N²*tand(θ))/(f) #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const a1 = (f*cosd(θ)*vₒ+bₒ*sind(θ))/(fˢ) 
 const b1 = (f^2*cosd(θ)^2*vₒ+f*cosd(θ)*bₒ*sind(θ))/(fˢ)^2
-# const c1 = (f*uₒ)/(fˢ)
+const c1 = (f*uₒ)/(fˢ)
 # const d1 = ((fˢ^2-f^2)*vₒ-f*bₒ*θ)/(fˢ)^2
 const e1 = (N²*sind(θ)^2*bₒ+ N²*sind(θ)*f*cosd(θ)*vₒ)/(fˢ)^2
-# const h1 = (N²*θ*uₒ)/(fˢ)
+const h1 = (N²*sind(θ)*uₒ)/(fˢ)
 
 # array of paramerers for background function
-p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, e1)
+p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1, e1, h1)
 
 # heaviside function for boundary layer
 heaviside(x,z) = 0.5*(1+tanh(10000*z))
@@ -89,9 +89,9 @@ heaviside(x,z) = 0.5*(1+tanh(10000*z))
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-u_pert(x,z,t,p) = p.a1*sn_fn(x,z,t,p) # shear
-v_pert(x,z,t,p) = p.vₒ+p.b1*(cs_fn(x,z,t,p)-1)
-b_pert(x,z,t,p) = p.bₒ+p.e1*(cs_fn(x,z,t,p) - 1)
+u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) + p.a1*sn_fn(x,z,t,p) # shear
+v_pert(x,z,t,p) = p.vₒ+p.b1*(cs_fn(x,z,t,p)-1) - p.c1*sn_fn(x,z,t,p)
+b_pert(x,z,t,p) = p.bₒ+p.e1*(cs_fn(x,z,t,p) - 1) - p.h1*sn_fn(x,z,t,p)
 
 u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 v_adjustment(x, z, t, p) = p.V∞ - p.γ*(tand(p.θ) * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
