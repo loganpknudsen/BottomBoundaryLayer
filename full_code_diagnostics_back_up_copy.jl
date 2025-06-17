@@ -66,11 +66,11 @@ const N² = 1e-5 # interior stratification
 const S∞ = (N²*tand(θ)^2)/(f^2) # slope burger number
 const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = 0.5
-const γ = (1+δ)*(cosd(θ)*(1+δ+S∞^2))^(-1) # 0 PV parameter
+const γ = (cosd(θ)*(1+S∞^2))^(-1) # 0 PV parameter
 const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
-const uₒ = 0 # Initial u shear perturbation
+const uₒ = δ*γ*N²*tand(θ)/f # Initial u shear perturbation
 const vₒ = 0 # δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
-const bₒ = -δ*N²*(1-γ) #*(N²*tand(θ))/(f) #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
+const bₒ = 0 #*(N²*tand(θ))/(f) #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const a1 = (f*cosd(θ)*vₒ+bₒ*sind(θ))/(fˢ) 
 const b1 = (f^2*cosd(θ)^2*vₒ+f*cosd(θ)*bₒ*sind(θ))/(fˢ)^2
