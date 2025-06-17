@@ -68,8 +68,8 @@ const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = 0.5
 const γ = (cosd(θ)*(1+S∞^2))^(-1) # 0 PV parameter
 const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
-const uₒ = δ*γ*N²*tand(θ)/f # Initial u shear perturbation
-const vₒ = 0 # δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
+const uₒ = 0 # Initial u shear perturbation
+const vₒ = δ*γ*N²*tand(θ)/f # δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
 const bₒ = 0 #*(N²*tand(θ))/(f) #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
 const a1 = (f*cosd(θ)*vₒ+bₒ*sind(θ))/(fˢ) 
@@ -185,9 +185,9 @@ AGSP = Field(Average(AGSP_c))
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-upert(x,z,t,p) = p.a1*sn_fn(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)# shear
-vpert(x,z,t,p) = (p.vₒ+p.b1*(cs_fn(x,z,t,p)-1))*(p.hu-z)*heaviside(x,p.hu-z)
-bpert(x,z,t,p) = p.e1*(cs_fn(x,z,t,p) - 1)*(p.hu-z)*heaviside(x,p.hu-z)
+upert(x,z,t,p) = (p.a1*sn_fn(x,z,t,p)*(p.hu-z)+p.uₒ*cs_fn(x,z,t,p))*heaviside(x,p.hu-z)# shear
+vpert(x,z,t,p) = (p.vₒ+p.b1*(cs_fn(x,z,t,p)-1)- p.c1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
+bpert(x,z,t,p) = (p.bₒ+p.e1*(cs_fn(x,z,t,p) - 1) - p.h1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
@@ -226,12 +226,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_f_"*string(f)*"_case_3.nc",
+                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_f_"*string(f)*"_base.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_f_"*string(f)*"_case_3.nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_theta_"*string(θ)*"_stratification_"*string(N²)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_f_"*string(f)*"_base.nc",
                                                           overwrite_existing = true)
 
 # With initial conditions set and an output writer at the ready, we run the simulation
