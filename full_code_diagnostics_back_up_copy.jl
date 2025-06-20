@@ -40,9 +40,9 @@ arch = has_cuda_gpu() ? GPU() : CPU()
 @info("Arch => $arch")
 
 Lx = 2000meters
-Lz = 100meters
+Lz = 150meters
 Nx = 1024 #1024 # 512 originally
-Nz = 128 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
+Nz = 128*1.5 #256 #128 # # 128 originally Note to self, maintain 2 to 1 resolution ration
 
 grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
                        size = (Nx, Nz),
@@ -51,7 +51,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 # tilted domain parameters
-const θ = 1.8113 # degrees 10^(-2) is previous value for 110 meter layer
+const θ = 1.8113/2 # degrees 10^(-2) is previous value for 110 meter layer
 const f = 1e-4
 ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
 
