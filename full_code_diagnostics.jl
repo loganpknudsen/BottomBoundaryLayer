@@ -212,7 +212,7 @@ bm = Field(Average(ba, dims=(1)))
 b = Field(ba - bm)
 
 ### Total Richardson Number calculation
-Ri = RichardsonNumber(model, ub+ua, vb+va, wa, B+ba)
+Ri = RichardsonNumber(model, ub+ua, vb+va, w, B+ba)
 
 ### Potential Vorticity calculation
 
