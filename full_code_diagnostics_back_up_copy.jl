@@ -185,7 +185,7 @@ AGSP = Field(Average(AGSP_c))
 @inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
 
-upert(x,z,t,p) = (p.a1*sn_fn(x,z,t,p)*(p.hu-z)+p.uₒ*cs_fn(x,z,t,p))*heaviside(x,p.hu-z)# shear
+upert(x,z,t,p) = (p.a1*sn_fn(x,z,t,p)*(p.hu-z)+p.uₒ*cs_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)# shear
 vpert(x,z,t,p) = (p.vₒ+p.b1*(cs_fn(x,z,t,p)-1)- p.c1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
 bpert(x,z,t,p) = (p.bₒ+p.e1*(cs_fn(x,z,t,p) - 1) - p.h1*sn_fn(x,z,t,p))*(p.hu-z)*heaviside(x,p.hu-z)
 
