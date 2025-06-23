@@ -207,19 +207,6 @@ GSP = Field(Average(GSP_c))
 BFLUX_c = Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
 BFLUX =  Field(Average(BFLUX_c))
 
-### PWORK Calculation
-# PWORK_c = Oceanostics.PressureRedistributionTerm(model; velocities=(u=u, v=v, w=w))
-# PWORK =  Field(Average(PWORK_c))
-
-# ### ADV Calculation
-# ADV_c = Oceanostics.AdvectionTerm(model; velocities=(u=u, v=v, w=w))
-# ADV =  Field(Average(ADV_c))
-
-# include("diagnostics.jl")
-
-# TRANS_c = KineticEnergyTransport(model; U=um, V=vm, W=wm)
-# TRANS =  Field(Average(TRANS_c))
-
 # output writers
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
 output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
