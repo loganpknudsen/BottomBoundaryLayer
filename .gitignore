@@ -11,5 +11,7 @@
 *.pub
 *githubkey
 *.out
-*.gif
-*.pdf
+# *.gif
+# *.pdf
+# *.png
+# *.jpeg
