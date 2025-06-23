@@ -68,7 +68,7 @@ const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = 0.5
 const γ = (cosd(θ)*(1+(1-0*δ)*S∞))^(-1) # 0 PV parameter
 const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
-const uₒ = -δ*γ*N²*tand(θ)/f  # Initial u shear perturbation
+const uₒ = δ*γ*N²*tand(θ)/f  # Initial u shear perturbation
 const vₒ = 0# δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
 const bₒ = 0 #*(N²*tand(θ))/(f) #-γ*((N²*θ)/(f))^2*δ#vₒ*((θ*N²)/(f))*0.1 # initial stratification perturbation
 # a1-h1 are constants for the following oscillations, calculate here for efficiency
