@@ -283,3 +283,39 @@ Allocations: 129909091 (Pool: 129787064; Big: 122027); GC: 145
 [ Info:     ... initial time step complete (5.257 seconds).
 [ Info: Simulation is stopping after running for 27.962 minutes.
 [ Info: Simulation time 19.517 days equals or exceeds stop time 19.517 days.
+  Activating project at `~/BottomBoundaryLayer`
+┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
+│ Please consider using an official build from https://julialang.org/downloads/.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:180
+┌ Warning: CUDA runtime library `libcublasLt.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcublasLt.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libnvJitLink.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libnvJitLink.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+┌ Warning: CUDA runtime library `libcusparse.so.12` was loaded from a system path, `/glade/u/apps/common/23.08/spack/opt/spack/cuda/12.2.1/lib64/libcusparse.so.12`.
+│ 
+│ This may cause errors. Ensure that you have not set the LD_LIBRARY_PATH
+│ environment variable, or that it does not contain paths to CUDA libraries.
+│ 
+│ In any other case, please file an issue.
+└ @ CUDA ~/.julia/packages/CUDA/Tl08O/src/initialization.jl:219
+[ Info: Arch => GPU()
+┌ Warning: Overwriting existing /glade/derecho/scratch/knudsenl/data/new_data/initial_conditions_test/flow_fields_height_63.213952337529214_theta_1.8113_stratification_1.0e-5_interior_velocity_0.1_visc_1.0e-5_Sinf_1.0000574057737353_gamma_0.500235593669851_f_0.0001_case_2.nc.
+└ @ Oceananigans.OutputWriters ~/.julia/packages/Oceananigans/thcPW/src/OutputWriters/netcdf_output_writer.jl:433
+┌ Warning: Overwriting existing /glade/derecho/scratch/knudsenl/data/new_data/initial_conditions_test/TKE_terms_height_63.213952337529214_theta_1.8113_stratification_1.0e-5_interior_velocity_0.1_visc_1.0e-5_Sinf_1.0000574057737353_gamma_0.500235593669851_f_0.0001_case_2.nc.
+└ @ Oceananigans.OutputWriters ~/.julia/packages/Oceananigans/thcPW/src/OutputWriters/netcdf_output_writer.jl:433
+[ Info: Initializing simulation...
+[ Info:     ... simulation initialization complete (2.610 minutes)
+[ Info: Executing initial time step...
+[ Info:     ... initial time step complete (5.158 seconds).
+[ Info: Simulation is stopping after running for 22.693 minutes.
+[ Info: Simulation time 15.434 days equals or exceeds stop time 15.434 days.
