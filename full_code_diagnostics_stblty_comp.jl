@@ -106,13 +106,13 @@ const γ = params.γ  # stratification parameter
 const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
 const uₒ = δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
 # a1-c1 are constants for the following oscillations, calculated here for efficiency
-const a1 = (f*cosd(θ)*vₒ)/(fˢ) 
-const b1 = (f^2*cosd(θ)^2*vₒ)/(fˢ)^2
-const c1 = N²*sind(θ)*f*cosd(θ)*vₒ/(fˢ)^2
+# const a1 = (f*cosd(θ)*vₒ)/(fˢ) 
+# const b1 = (f^2*cosd(θ)^2*vₒ)/(fˢ)^2
+# const c1 = N²*sind(θ)*f*cosd(θ)*vₒ/(fˢ)^2
 
 # array of paramerers for background function
 
-p =(; N², θ, f, V∞, hu, γ, uₒ, fˢ, a1, b1, c1)
+p =(; N², θ, f, V∞, hu, γ, uₒ, fˢ)
 
 # heaviside function for boundary layer
 
