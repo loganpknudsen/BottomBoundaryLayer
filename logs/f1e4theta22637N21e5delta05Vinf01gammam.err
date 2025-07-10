@@ -36,8 +36,8 @@
 [ Info: Loading parameters...
 [ Info: Arch => GPU()
 [ Info: Initializing simulation...
-[ Info:     ... simulation initialization complete (2.147 minutes)
+[ Info:     ... simulation initialization complete (2.186 minutes)
 [ Info: Executing initial time step...
-[ Info:     ... initial time step complete (5.228 seconds).
-[ Info: Simulation is stopping after running for 24.811 minutes.
+[ Info:     ... initial time step complete (5.151 seconds).
+[ Info: Simulation is stopping after running for 25.252 minutes.
 [ Info: Simulation time 27.278 days equals or exceeds stop time 27.278 days.

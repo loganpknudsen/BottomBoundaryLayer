@@ -35,13 +35,9 @@
 [ Info:    path => /glade/derecho/scratch/knudsenl/data/new_data/
 [ Info: Loading parameters...
 [ Info: Arch => GPU()
-┌ Warning: Overwriting existing /glade/derecho/scratch/knudsenl/data/new_data/final_paper/flow_fields_height_47.41001066043573_interior_velocity_0.1_visc_1.0e-5_Sinf_1.0000287024749517_gamma_0.6669871728624278_theta_1.8113_f_0.0001_N2_1.0e-5.nc.
-└ @ Oceananigans.OutputWriters ~/.julia/packages/Oceananigans/thcPW/src/OutputWriters/netcdf_output_writer.jl:433
-┌ Warning: Overwriting existing /glade/derecho/scratch/knudsenl/data/new_data/final_paper/TKE_terms_height_47.41001066043573_interior_velocity_0.1_visc_1.0e-5_Sinf_1.0000287024749517_gamma_0.6669871728624278_theta_1.8113_f_0.0001_N2_1.0e-5.nc.
-└ @ Oceananigans.OutputWriters ~/.julia/packages/Oceananigans/thcPW/src/OutputWriters/netcdf_output_writer.jl:433
 [ Info: Initializing simulation...
-[ Info:     ... simulation initialization complete (2.070 minutes)
+[ Info:     ... simulation initialization complete (2.137 minutes)
 [ Info: Executing initial time step...
-[ Info:     ... initial time step complete (4.986 seconds).
-[ Info: Simulation is stopping after running for 27.936 minutes.
+[ Info:     ... initial time step complete (4.826 seconds).
+[ Info: Simulation is stopping after running for 28.076 minutes.
 [ Info: Simulation time 30.868 days equals or exceeds stop time 30.868 days.
