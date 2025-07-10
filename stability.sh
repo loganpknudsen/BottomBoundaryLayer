@@ -10,9 +10,9 @@
 ### To the casper queue
 #PBS -q casper
 ### output
-#PBS -o run_all.out
+#PBS -o stability.out
 ### error
-#PBS -e run_all.err
+#PBS -e stability.err
 ### email 
 #PBS -M knudsen@umd.edu
 #PBS -m abe
@@ -21,6 +21,8 @@
 module --force purge
 module --ignore-cache load ncarenv-basic/23.10
 module --ignore-cache load conda
+conda load scipy
+conda load xarray
 ### file to run
 
 python3 -u stability_analysis_full_run.py
