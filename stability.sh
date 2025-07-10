@@ -1,6 +1,6 @@
 #!/bin/bash -l
 ### Job Name
-#PBS -N run_all
+#PBS -N stability
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
@@ -21,8 +21,7 @@
 module --force purge
 module --ignore-cache load ncarenv-basic/23.10
 module --ignore-cache load conda
-conda load scipy
-conda load xarray
+conda activate dedalus3
 ### file to run
 
 python3 -u stability_analysis_full_run.py
