@@ -24,7 +24,7 @@ theta_list = 1.8113*np.pi/180*np.arange(dtheta,2+dtheta,dtheta) #*np.array([0.1,
 f = 1e-4
 
 tau = 2*np.pi
-dt = 100
+dt = 200
 t = np.linspace(0, tau+1/dt, dt)
 dm = 0.25
 m = np.arange(-40, 40+dm, dm)
