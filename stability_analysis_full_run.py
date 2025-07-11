@@ -24,9 +24,9 @@ theta_list = 1.8113*np.pi/180*np.arange(dtheta,2+dtheta,dtheta) #*np.array([0.1,
 f = 1e-4
 
 tau = 2*np.pi
-dt = 200
+dt = 100
 t = np.linspace(0, tau+1/dt, dt)
-dm = 0.25
+dm = 0.5
 m = np.arange(-40, 40+dm, dm)
 dgm = 50
 ddelta = 25
@@ -43,8 +43,8 @@ for theta in theta_list:
         S2 = N2*np.tan(theta)**2/f**2
         beta = (1+S2)**(0.5)
         fstar = f*np.cos(theta)*beta
-        gml = (1+(1-2)*S2)/(1+S2)+0.1 #max(0.01,(3-S2)*(np.cos(theta)*(3*(1+S2)))**(-1))
-        gmu = (1+(1-4/5)*S2)/(1+S2) #(np.cos(theta)*(1+S2))**(-1)
+        gml = (1+(1-2)*S2)/(1+S2) #max(0.01,(3-S2)*(np.cos(theta)*(3*(1+S2)))**(-1))
+        gmu = (1+(1-4/5)*S2)/(1+S2)-0.1*S2/(1+S2) #(np.cos(theta)*(1+S2))**(-1)
         gm_list = np.linspace(gml,gmu+1/dgm,dgm)
         for gm in gm_list:
             lmbd = N2*np.tan(theta)*gm/f
