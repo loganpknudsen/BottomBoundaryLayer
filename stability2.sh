@@ -1,6 +1,6 @@
 #!/bin/bash -l
 ### Job Name
-#PBS -N tiltedBBL
+#PBS -N stability2
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources
@@ -10,9 +10,9 @@
 ### To the casper queue
 #PBS -q casper
 ### output
-#PBS -o Sim6.out
+#PBS -o stability2.out
 ### error
-#PBS -e Sim6.err
+#PBS -e stability2.err
 ### email 
 #PBS -M knudsen@umd.edu
 #PBS -m abe
@@ -24,4 +24,4 @@ module --ignore-cache load conda
 conda activate dedalus3
 ### file to run
 
-python3 -u PSI_non_dim_full_form.py
+python3 -u stability_analysis_full_run.py

@@ -97,4 +97,4 @@ output_file = xr.Dataset({"growth_rate":(["theta","delta","strat_index",],np.abs
            "strat_values":(["theta","delta","strat_index"],gms)},
            coords = {"theta":theta_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_3.nc")
+output_file.to_netcdf("stability_analysis_output_3.nc"
