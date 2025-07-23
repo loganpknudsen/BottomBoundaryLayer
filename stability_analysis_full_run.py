@@ -26,10 +26,10 @@ f = 1e-4
 tau = 2*np.pi
 dt = 500
 t = np.linspace(0, tau+1/dt, dt)
-dm = 0.1
+dm = 0.5
 m = np.arange(-40, 40+dm, dm)
 dgm = 20
-ddelta = 25
+ddelta = 50
 delta_list = np.linspace(1/ddelta,1+1/ddelta,ddelta)
 for theta in theta_list:
     print("S2 "+str(N2**(0.5)*np.tan(theta)/f))
@@ -97,4 +97,4 @@ output_file = xr.Dataset({"growth_rate":(["theta","delta","strat_index",],np.abs
            "strat_values":(["theta","delta","strat_index"],gms)},
            coords = {"theta":theta_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_2.nc")
+output_file.to_netcdf("stability_analysis_output_3.nc")
