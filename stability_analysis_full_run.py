@@ -19,24 +19,25 @@ max_grs = []
 max_ms = []
 max_frs = []
 N2 = 1e-5
-dtheta = 0.05 #0.01
+dtheta = 0.1 #0.01
 theta_list = 1.8113*np.pi/180*np.arange(dtheta,2+dtheta,dtheta) #*np.array([0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2])
 f = 1e-4
 
 tau = 2*np.pi
-dt = 100
+dt = 500
 t = np.linspace(0, tau+1/dt, dt)
-dm = 0.5
+dm = 0.1
 m = np.arange(-40, 40+dm, dm)
-dgm = 50
+dgm = 20
 ddelta = 25
-delta_list = np.linspace(0,1+1/ddelta,ddelta)
+delta_list = np.linspace(1/ddelta,1+1/ddelta,ddelta)
 for theta in theta_list:
+    print("S2 "+str(N2**(0.5)*np.tan(theta)/f))
     max_grs_sub2 = []
     max_ms_sub2 = []
     max_frs_sub2 = []
     for i in delta_list:
-        print(i)
+        print("delta "+str(i))
         max_grs_sub = []
         max_ms_sub = []
         max_frs_sub = []
@@ -96,4 +97,4 @@ output_file = xr.Dataset({"growth_rate":(["theta","delta","strat_index",],np.abs
            "strat_values":(["theta","delta","strat_index"],gms)},
            coords = {"theta":theta_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
 
-output_file.to_netcdf("stability_analysis_output.nc")
+output_file.to_netcdf("stability_analysis_output_2.nc")
