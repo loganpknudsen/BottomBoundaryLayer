@@ -13,3 +13,6 @@
 *.out
 *.gif
 *.pdf
+*.png
+*.jpeg
+*.err
