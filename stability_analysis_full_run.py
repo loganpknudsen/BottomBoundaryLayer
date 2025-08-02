@@ -17,6 +17,7 @@ def PSI_system(v,t,m,theta,gm,S2,delta,lmbd,fstar):
 max_grs = []
 max_ms = []
 max_frs = []
+gms = []
 N2 = 1e-5
 dtheta = 0.5 #0.01
 theta_list = [1.8113*np.pi/180] #*np.arange(dtheta,2+dtheta,dtheta) #*np.array([0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2])
@@ -25,19 +26,17 @@ f = 1e-4
 tau = 2*np.pi
 dt = 500
 t = np.linspace(0, tau+1/dt, dt)
-dm = 0.5
+dm = 1
 m = np.arange(-40, 40+dm, dm)
-dgm = 100
-ddelta = 100
-delta_list = np.linspace(0.4,0.6+1/ddelta,ddelta)
-# delta_list = np.linspace(1/ddelta,1+1/ddelta,ddelta)
+dgm = 375
+ddelta = 200
+delta_list = np.linspace(0,1+1/ddelta,ddelta)
 for theta in theta_list:
-    print("S2 "+str(N2**(0.5)*np.tan(theta)/f))
+    gms_2 = []
     max_grs_sub2 = []
     max_ms_sub2 = []
     max_frs_sub2 = []
     for i in delta_list:
-        print("delta "+str(i))
         max_grs_sub = []
         max_ms_sub = []
         max_frs_sub = []
@@ -45,10 +44,9 @@ for theta in theta_list:
         beta = (1+S2)**(0.5)
         fstar = f*np.cos(theta)*beta
         gml = (1+(1-10/9)*S2)/(1+S2) 
-        gmu = (1+(1-5/6)*S2)/(1+S2)-0.1*S2/(1+S2) 
-        # gml = (1+(1-2)*S2)/(1+S2)
-        # gmu = (1+(1-4/5)*S2)/(1+S2)-0.1*S2/(1+S2) 
+        gmu = (1+(1-5/6)*S2)/(1+S2)-0.1*S2/(1+S2)
         gm_list = np.linspace(gml,gmu+1/dgm,dgm)
+        gms_2.append(gm_list)
         for gm in gm_list:
             lmbd = N2*np.tan(theta)*gm/f
             frequencies = []
@@ -74,26 +72,16 @@ for theta in theta_list:
     max_grs.append(max_grs_sub2)
     max_ms.append(max_ms_sub2)
     max_frs.append(max_frs_sub2)
+    gms.append(gms_2)
+gms = np.array(gms) 
 max_gr = np.array(max_grs)
 max_ms = np.array(max_ms)
 max_fr = np.array(max_frs)
 
-gms = []
-for theta in theta_list:
-    gms_2 = []
-    for i in delta_list:
-        S2 = N2*np.tan(theta)**2/f**2
-        gml = (1+(1-2)*S2)/(1+S2) #max(0.05,(3-S2)*(np.cos(theta)*(3*(1+S2)))**(-1))
-        gmu = (1+(1-4/5)*S2)/(1+S2) #(np.cos(theta)*(1+S2))**(-1)
-        gm_list = np.linspace(gml,gmu,dgm)
-        gms_2.append(gm_list)
-    gms.append(gms_2)
-gms = np.array(gms) 
-print(np.shape(gms))
 output_file = xr.Dataset({"growth_rate":(["theta","delta","strat_index",],np.abs(max_gr[:,:,:,0])),
             "frequency":(["theta","delta","strat_index"],np.abs(max_fr[:,:,:,0])),
             "slope_angle":(["theta","delta","strat_index"],max_ms),
            "strat_values":(["theta","delta","strat_index"],gms)},
            coords = {"theta":theta_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_9.nc")
+output_file.to_netcdf("stability_analysis_output_10.nc")
