@@ -43,8 +43,8 @@ for theta in theta_list:
         S2 = N2*np.tan(theta)**2/f**2
         beta = (1+S2)**(0.5)
         fstar = f*np.cos(theta)*beta
-        gml = (1+(1-10/9)*S2)/(1+S2) 
-        gmu = (1+(1-5/6)*S2)/(1+S2)-0.1*S2/(1+S2)
+        gml = (1+(1-2)*S2)/(1+S2) 
+        gmu = (1+(1-4/5)*S2)/(1+S2)-0.1*S2/(1+S2)
         gm_list = np.linspace(gml,gmu+1/dgm,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
