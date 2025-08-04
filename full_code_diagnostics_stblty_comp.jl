@@ -125,7 +125,7 @@ heaviside(x,z) = 0.5*(1+tanh(10000*z))
 
 u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) 
 v_pert(x,z,t,p) = -f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
-b_pert(x,z,t,p) = -p.N²*sind(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
+b_pert(x,z,t,p) = p.N²*sind(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
 
 ### Total Background Velocity and Buoyancy
 
