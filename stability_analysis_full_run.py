@@ -43,8 +43,8 @@ for theta in theta_list:
         S2 = N2*np.tan(theta)**2/f**2
         beta = (1+S2)**(0.5)
         fstar = f*np.cos(theta)*beta
-        gml = (1+(1-4/3)*S2)/(1+S2) 
-        gmu = (1+(1-1)*S2)/(1+S2) #-0.1*S2/(1+S2)
+        gml = (1+(1-1)*S2)/(1+S2) 
+        gmu = (1+(1-4/5)*S2)/(1+S2) #-0.1*S2/(1+S2)
         gm_list = np.linspace(gml,gmu+1/dgm,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
@@ -84,4 +84,4 @@ output_file = xr.Dataset({"growth_rate":(["theta","delta","strat_index",],np.abs
            "strat_values":(["theta","delta","strat_index"],gms)},
            coords = {"theta":theta_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_second_third.nc")
+output_file.to_netcdf("stability_analysis_output_third_third.nc")
