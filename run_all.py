@@ -116,14 +116,14 @@ def parseNaming(name):
     
     params = name.split('_')[-1].split('-')
     
-    Sinf = float(params[0].replace('f',''))*10**(-1)
+    Sinf = float(params[0].replace('S',''))*10**(-1)
     if params[1] == "gammau":
         gamma = (1+Sinf**2)**(-1)
-    elif params[5] == "gammal":
+    elif params[1] == "gammal":
         gamma = (3-Sinf**2)*(3*(1+Sinf**2))**(-1)
-    elif params[5] == "gammam":
+    elif params[1] == "gammam":
         gamma = ((1+Sinf**2)**(-1)+(3-Sinf**2)*(3*(1+Sinf**2))**(-1))/2
-    elif params[5] == "gamma005":
+    elif params[1] == "gamma005":
         gamma = 0.05
     return Sinf, gamma
     
