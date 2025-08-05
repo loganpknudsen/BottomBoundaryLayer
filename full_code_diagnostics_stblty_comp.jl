@@ -88,9 +88,9 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 ### tilted domain parameters
-const θ = params.θ 
-const f = params.f
-ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
+const θ = 0.01 # params.θ 
+const f = 1e-4 # params.f
+ĝ = [θ, 0, 1] # gravity vector
 
 ### realistic mid latitude for now
 buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
@@ -99,20 +99,18 @@ coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 ### parameters for simulation
 const V∞ = params.V∞ # m s⁻¹ interior velocity
 const N² = params.N² # interior stratification
-const S∞ = ((N²*tand(θ)^2)/(f^2))^(0.5) # slope burger number
-const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
+const S∞ = params.S # slope burger number
+const fˢ = f*(1+S∞^2)^(0.5) # modified oscillation
 const δ = params.δ # geostrophic scaling factor
 const γ = params.γ  # stratification parameter
-const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
-const uₒ = δ*γ*(N²*tand(θ))/(f*cosd(θ)) # Initial v shear perturbation
-# a1-c1 are constants for the following oscillations, calculated here for efficiency
-# const a1 = (f*cosd(θ)*vₒ)/(fˢ) 
-# const b1 = (f^2*cosd(θ)^2*vₒ)/(fˢ)^2
-# const c1 = N²*sind(θ)*f*cosd(θ)*vₒ/(fˢ)^2
+const Λ = N²*γ*θ/f
+const H = V∞/Λ # Height of Boundary Layer
+const uₒ = δ*Λ  # Initial shear perturbation
+const ϕ = params.ϕ
 
 # array of paramerers for background function
 
-p =(; N², θ, f, V∞, hu, γ, uₒ, fˢ)
+p =(; N², θ, f, V∞, H, γ, uₒ, fˢ, Λ, ϕ)
 
 # heaviside function for boundary layer
 
@@ -120,18 +118,18 @@ heaviside(x,z) = 0.5*(1+tanh(10000*z))
 
 # oscillation functions for background
 
-@inline sn_fn(x,z,t,p) = sin(p.fˢ*t+pi/2)
-@inline cs_fn(x,z,t,p) = cos(p.fˢ*t+pi/2)
+@inline sn_fn(x,z,t,p) = sin(p.fˢ*t+p.ϕ)
+@inline cs_fn(x,z,t,p) = cos(p.fˢ*t+p.ϕ)
 
 u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) 
-v_pert(x,z,t,p) = -f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
-b_pert(x,z,t,p) = -p.N²*sind(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
+v_pert(x,z,t,p) = -f*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)
+b_pert(x,z,t,p) = -p.N²*p.θ*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)
 
 ### Total Background Velocity and Buoyancy
 
-u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-v_adjustment(x, z, t, p) = p.V∞ - p.γ*(tand(p.θ) * p.N²)/(p.f*cosd(p.θ))*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-constant_stratification(x, z, t, p) = p.N²*x*sind(p.θ) + p.N²*z*cosd(p.θ) + p.N²*p.γ*(p.hu-z)*heaviside(x,p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
+v_adjustment(x, z, t, p) = p.V∞ - p.Λ*(p.H-z)*heaviside(x,p.H-z) + v_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
+constant_stratification(x, z, t, p) = p.N²*(x*p.θ + z) + p.N²*p.γ*(p.H-z)*heaviside(x,p.H-z) + b_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
@@ -139,7 +137,7 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 
 ### Boundary Conditions for Buoyancy
 
-b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
+b_bc_top= GradientBoundaryCondition(-1*N²)
 b_bc_bottom= ValueBoundaryCondition(0) 
 
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top, bottom=b_bc_bottom) 
@@ -233,11 +231,11 @@ AGSP = Field(Average(AGSP_c))
 
 ### WSP calculation
 
-@inline sn_fn(x,z,t,p) = sin(p.fˢ*t+pi/2)
-@inline cs_fn(x,z,t,p) = cos(p.fˢ*t+pi/2)
+@inline sn_fn(x,z,t,p) = sin(p.fˢ*t+p.ϕ)
+@inline cs_fn(x,z,t,p) = cos(p.fˢ*t+p.ϕ)
 
-upert(x,z,t,p) =  p.uₒ*cs_fn(x,z,t,p) *(p.hu-z)*heaviside(x,p.hu-z)# shear
-vpert(x,z,t,p) = -f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+upert(x,z,t,p) =  p.uₒ*cs_fn(x,z,t,p) *(p.H-z)*heaviside(x,p.H-z)# shear
+vpert(x,z,t,p) = -f*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
@@ -251,7 +249,7 @@ WSP = Field(Average(WSP_c))
 
 ### GSP calcualtion
 
-gshear(x,z,t,p) = p.V∞-((p.γ * tnd_fn(x,z,t,p) * p.N²)/(p.f))*(p.hu-z)*heaviside(x,p.hu-z)
+gshear(x,z,t,p) = p.V∞-p.Λ*(p.H-z)*heaviside(x,p.H-z)
 GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid, clock= model.clock, parameters = p)
 GSP_c = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
 GSP = Field(Average(GSP_c))
