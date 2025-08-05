@@ -1,3 +1,6 @@
+
+[68200] signal (15): Terminated
+in expression starting at /glade/u/home/knudsenl/BottomBoundaryLayer/full_code_diagnostics_stblty_comp.jl:283
   Activating project at `~/BottomBoundaryLayer`
 ┌ Warning: You are using a non-official build of Julia. This may cause issues with CUDA.jl.
 │ Please consider using an official build from https://julialang.org/downloads/.
@@ -35,9 +38,13 @@
 [ Info:    path => /glade/derecho/scratch/knudsenl/data/new_data/
 [ Info: Loading parameters...
 [ Info: Arch => GPU()
+┌ Warning: Overwriting existing /glade/derecho/scratch/knudsenl/data/new_data/stbly/flow_fields_height_319.89501882373406_interior_velocity_0.1_visc_1.0e-5_Sinf_0.10000852195890678_gamma_0.9884518385926058_theta_0.1812_f_0.0001_N2_1.0e-5.nc.
+└ @ Oceananigans.OutputWriters ~/.julia/packages/Oceananigans/thcPW/src/OutputWriters/netcdf_output_writer.jl:433
+┌ Warning: Overwriting existing /glade/derecho/scratch/knudsenl/data/new_data/stbly/TKE_terms_height_319.89501882373406_interior_velocity_0.1_visc_1.0e-5_Sinf_0.10000852195890678_gamma_0.9884518385926058_theta_0.1812_f_0.0001_N2_1.0e-5.nc.
+└ @ Oceananigans.OutputWriters ~/.julia/packages/Oceananigans/thcPW/src/OutputWriters/netcdf_output_writer.jl:433
 [ Info: Initializing simulation...
-[ Info:     ... simulation initialization complete (2.201 minutes)
+[ Info:     ... simulation initialization complete (2.217 minutes)
 [ Info: Executing initial time step...
-[ Info:     ... initial time step complete (5.139 seconds).
-[ Info: Simulation is stopping after running for 33.469 minutes.
+[ Info:     ... initial time step complete (5.132 seconds).
+[ Info: Simulation is stopping after running for 34.845 minutes.
 [ Info: Simulation time 21.708 days equals or exceeds stop time 21.708 days.
