@@ -53,6 +53,7 @@ end
 ### Path Saved To
 
 path_name = "/glade/derecho/scratch/knudsenl/data/new_data/test/" # args["path"]
+print(args["suffix"])
 setname = args["suffix"]
 
 ### Load in Parameters
