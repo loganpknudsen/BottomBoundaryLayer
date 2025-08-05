@@ -104,7 +104,7 @@ const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = params.δ # geostrophic scaling factor
 const γ = params.γ  # stratification parameter
 const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
-const uₒ = δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
+const uₒ = δ*γ*(N²*tand(θ))/(f*cosd(p.θ)) # Initial v shear perturbation
 # a1-c1 are constants for the following oscillations, calculated here for efficiency
 # const a1 = (f*cosd(θ)*vₒ)/(fˢ) 
 # const b1 = (f^2*cosd(θ)^2*vₒ)/(fˢ)^2
@@ -124,13 +124,13 @@ heaviside(x,z) = 0.5*(1+tanh(10000*z))
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t+pi/2)
 
 u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) 
-v_pert(x,z,t,p) = -f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
+v_pert(x,z,t,p) = f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
 b_pert(x,z,t,p) = p.N²*sind(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
 
 ### Total Background Velocity and Buoyancy
 
 u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-v_adjustment(x, z, t, p) = p.V∞ - p.γ*(tand(p.θ) * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+v_adjustment(x, z, t, p) = p.V∞ - p.γ*(tand(p.θ) * p.N²)/(p.f*cosd(p.θ))*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 constant_stratification(x, z, t, p) = p.N²*x*sind(p.θ) + p.N²*z*cosd(p.θ) + p.N²*p.γ*(p.hu-z)*heaviside(x,p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
