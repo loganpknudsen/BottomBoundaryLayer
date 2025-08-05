@@ -5,7 +5,7 @@ import numpy as np
 
 ############################## f1e4theta029N21e5gammau
 #   FREQF-THETA-N2_gamma.jld2
-all_sims = ['S01_gammau'
+all_sims = ['S01-gammau'
             #'f1e4-theta029-N21e5-delta05-Vinf005-gammau',
             #  'f1e4-theta029-N21e5-delta05-Vinf005-gammam',
             #  'f1e4-theta029-N21e5-delta05-Vinf005-gammal',
