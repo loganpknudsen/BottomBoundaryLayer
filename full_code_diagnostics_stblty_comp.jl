@@ -104,7 +104,7 @@ const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
 const δ = params.δ # geostrophic scaling factor
 const γ = params.γ  # stratification parameter
 const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
-const uₒ = δ*γ*(N²*tand(θ))/(f*cosd(p.θ)) # Initial v shear perturbation
+const uₒ = δ*γ*(N²*tand(θ))/(f*cosd(θ)) # Initial v shear perturbation
 # a1-c1 are constants for the following oscillations, calculated here for efficiency
 # const a1 = (f*cosd(θ)*vₒ)/(fˢ) 
 # const b1 = (f^2*cosd(θ)^2*vₒ)/(fˢ)^2
@@ -237,7 +237,7 @@ AGSP = Field(Average(AGSP_c))
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t+pi/2)
 
 upert(x,z,t,p) =  p.uₒ*cs_fn(x,z,t,p) *(p.hu-z)*heaviside(x,p.hu-z)# shear
-vpert(x,z,t,p) = -f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+vpert(x,z,t,p) = f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
