@@ -124,8 +124,8 @@ heaviside(x,z) = 0.5*(1+tanh(10000*z))
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t+pi/2)
 
 u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) 
-v_pert(x,z,t,p) = f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
-b_pert(x,z,t,p) = p.N²*sind(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
+v_pert(x,z,t,p) = -f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
+b_pert(x,z,t,p) = -p.N²*sind(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)
 
 ### Total Background Velocity and Buoyancy
 
@@ -237,7 +237,7 @@ AGSP = Field(Average(AGSP_c))
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t+pi/2)
 
 upert(x,z,t,p) =  p.uₒ*cs_fn(x,z,t,p) *(p.hu-z)*heaviside(x,p.hu-z)# shear
-vpert(x,z,t,p) = f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+vpert(x,z,t,p) = -f*cosd(p.θ)/(p.fˢ)*p.uₒ*sn_fn(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
