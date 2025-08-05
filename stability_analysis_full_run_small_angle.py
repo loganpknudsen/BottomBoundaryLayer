@@ -8,8 +8,8 @@ def m_t(t,m,fstar,delta,lmbd):
 
 def PSI_system(v,t,m,theta,gm,S2,delta,lmbd,fstar):
     psi, D = v
-    A0 = (np.tan(theta)**2-S2)/(np.tan(theta)*(1+S2))*(m-np.tan(theta)*(np.tan(theta)**2-S2)**(-1)*((S2/(np.tan(theta)**2))*(1-gm*np.cos(theta)**(-4))+np.tan(theta)**2))
-    A1 = m+(S2-np.tan(theta)**2)*(np.tan(theta)*(1+S2))**(-1)
+    A0 = -S2/(theta*(1+S2))*(m+(1-gm)/theta)
+    A1 = m+(S2)*(theta*(1+S2))**(-1)
     dpsidt = (A0-A1*m_t(t,m,fstar,delta,lmbd))*D
     dDdt = (1+m_t(t,m,fstar,delta,lmbd)**2)**(-1)*psi
     return [dpsidt, dDdt]
@@ -19,17 +19,17 @@ max_ms = []
 max_frs = []
 gms = []
 N2 = 1e-5
-dtheta = 0.5 #0.01
+dS = 0.5 #0.01
 theta = 0.01
-S_list = np.arange(0.1,2.1,0.1)
+S_list = np.arange(dS,2+dS,dS)
 f = 1e-4
 
 tau = 2*np.pi
 dt = 500
 t = np.linspace(0, tau+1/dt, dt)
-dm = 0.5
+dm = 1
 m = np.arange(-40, 40+dm, dm)
-dgm = 400
+dgm = 200
 ddelta = 200
 delta_list = np.linspace(0,1+1/ddelta,ddelta)
 for S in S_list:
@@ -42,15 +42,15 @@ for S in S_list:
         max_ms_sub = []
         max_frs_sub = []
         S2 = S**2
-        theta = S*f/np.tan(0.01)
+        theta = S*f/theta
         beta = (1+S2)**(0.5)
-        fstar = f*np.cos(theta)*beta
-        gml = (1+(1-4/3)*S2)/(1+S2) 
-        gmu = (1+(1-1)*S2)/(1+S2)
+        fstar = f*beta
+        gml = (1+(1-2)*S2)/(1+S2) 
+        gmu = (1+(1-4/5)*S2)/(1+S2)
         gm_list = np.linspace(gml,gmu+1/dgm,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
-            lmbd = N2*np.tan(theta)*gm/f
+            lmbd = N2*theta*gm/f
             frequencies = []
             growth_rates = []
             for q in m:
@@ -84,6 +84,6 @@ output_file = xr.Dataset({"growth_rate":(["theta","delta","strat_index",],np.abs
             "frequency":(["theta","delta","strat_index"],np.abs(max_fr[:,:,:,0])),
             "slope_angle":(["theta","delta","strat_index"],max_ms),
            "strat_values":(["theta","delta","strat_index"],gms)},
-           coords = {"theta":theta_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
+           coords = {"slope_burger_number":S_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_third_third.nc")
+output_file.to_netcdf("stability_analysis_output_small_angle_test.nc")
