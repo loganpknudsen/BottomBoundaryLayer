@@ -30,7 +30,7 @@ function parse_commandline()
             "--path"
                 help = "pathname to save data under"
                 default = "/glade/derecho/scratch/knudsenl/data/new_data/"
-            "--strat"
+            "--Sinf"
                 help = "Sinf"
                 default = 1.0
             "--gamma"
