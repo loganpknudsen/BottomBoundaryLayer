@@ -31,20 +31,11 @@ function parse_commandline()
                 help = "pathname to save data under"
                 default = "/glade/derecho/scratch/knudsenl/data/new_data/"
             "--strat"
-                help = "Stratification"
-                default = 1.0e-5
-            "--theta"
-                help = "angle"
-                default = 0.29
-            "--delta"
-                help = "geostrophic scaling factor"
-                default = 0.5
+                help = "Sinf"
+                default = 1.0
             "--gamma"
                 help = "PV parameter"
-                default = 0.8679318911470805
-            "--freqf"
-                help = "coriolis parameter"
-                default = 1e-4
+                default = 0.5
             "--suffix"
                 help = "parameter set name"
                 default = "f1e4theta029N21e5delta05Vinf005gammau"
