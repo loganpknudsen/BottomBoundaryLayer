@@ -16,7 +16,6 @@ using CUDA
 using Oceanostics
 
 ### Load in Parameters
-print(" isolate 1 ")
 
 function parse_commandline()
         s = ArgParseSettings()
@@ -44,11 +43,7 @@ function parse_commandline()
         return parse_args(s)
 end
 
-print(" isolate 2 ")
-
 args=parse_commandline()
-
-print(" isolate 3 ")
 
 @info("command line args:")
 for (arg,val) in args
@@ -56,8 +51,6 @@ for (arg,val) in args
 end
 
 ### Path Saved To
-
-print(" isolate 4 ")
 
 path_name = "/glade/derecho/scratch/knudsenl/data/new_data/test/" # args["path"]
 setname = args["suffix"]
@@ -67,8 +60,6 @@ setname = args["suffix"]
 @info "Loading parameters..."
 include("parameters_stblty.jl")
 params = getproperty(DenseParams(), Symbol(setname))
-
-print(" isolate 5 ")
 
 print(params)
 
