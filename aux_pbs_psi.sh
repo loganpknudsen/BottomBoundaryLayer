@@ -27,4 +27,4 @@ module --ignore-cache load julia/1.10.2
 
 ### file to run                    
 
-julia --pkgimages=no --project=. full_code_diagnostics_stblty_comp.jl --path /glade/derecho/scratch/knudsenl/data/new_data/ --Sinf 1 --PVprm 0.5 --suffix\ S01gammau -T 30.0
+julia --pkgimages=no --project=. full_code_diagnostics_stblty_comp.jl --path /glade/derecho/scratch/knudsenl/data/new_data/ --Sinf 0.1 -PVprm 0.9900990099009901 --suffix    S01gammau -T 30.0
