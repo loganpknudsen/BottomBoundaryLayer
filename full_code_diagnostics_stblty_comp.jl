@@ -259,12 +259,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
+                                                          filename = path_name*"flow_fields_height_"*string(H)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(H)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
                                                           overwrite_existing = true)
 
 ### Run Simulation
