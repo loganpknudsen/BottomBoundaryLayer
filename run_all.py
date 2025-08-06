@@ -108,7 +108,7 @@ module --ignore-cache load julia/1.10.2
 
 ### file to run                    
 
-julia --pkgimages=no --project=. {julia_file} --path {savepath} --Sinf {Sinf} -PVprm {gm} --suffix\
+julia --pkgimages=no --project=. {julia_file} --path {savepath} --Sinf {Sinf} -PVprm {PVprm} --suffix\
     {simname_full} -T {IPeriods}
 """
 
