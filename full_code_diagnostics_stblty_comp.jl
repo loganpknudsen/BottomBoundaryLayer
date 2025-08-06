@@ -16,6 +16,7 @@ using CUDA
 using Oceanostics
 
 ### Load in Parameters
+print("isolate")
 
 function parse_commandline()
         s = ArgParseSettings()
@@ -33,7 +34,7 @@ function parse_commandline()
             "--Sinf"
                 help = "Sinf"
                 default = 1.0
-            "--gamma"
+            "--PVprm"
                 help = "PV parameter"
                 default = 0.5
             "--suffix"
@@ -42,6 +43,8 @@ function parse_commandline()
         end
         return parse_args(s)
 end
+
+print("isolate")
 
 args=parse_commandline()
 
@@ -53,7 +56,6 @@ end
 ### Path Saved To
 
 path_name = "/glade/derecho/scratch/knudsenl/data/new_data/test/" # args["path"]
-print(args["suffix"])
 setname = args["suffix"]
 
 ### Load in Parameters
