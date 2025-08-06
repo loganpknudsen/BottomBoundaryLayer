@@ -108,7 +108,7 @@ module --ignore-cache load julia/1.10.2
 
 ### file to run                    
 
-julia --pkgimages=no --project=. {julia_file} --path {savepath} --Sinf {Sinf} -PVprm {PVprm} --suffix\
+julia --pkgimages=no --project=. {julia_file} --path {savepath} --Sinf {Sinf}  --suffix\
     {simname_full} -T {IPeriods}
 """
 
@@ -139,7 +139,7 @@ for sim in all_sims:
     # print(f)
     # freq = f'{freqf*f:10}'
     pbs_script_filled = pbs_script.format(simname_full=simname_full, savepath=savepath, julia_file=julia_file, IPeriods=IPeriods,
-                                          Sinf=Sinf, PVprm=gm)
+                                          Sinf=Sinf)
 
     cmd1 = f"qsub {aux_filename}"
     if verbose>1: print(pbs_script_filled)
