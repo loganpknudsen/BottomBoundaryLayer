@@ -117,6 +117,7 @@ def parseNaming(name):
     params = name.split('_')[-1].split('-')
     
     Sinf = float(params[0].replace('S',''))*10**(-1)
+    print(Sinf)
     if params[1] == "gammau":
         gamma = (1+Sinf**2)**(-1)
     elif params[1] == "gammal":
