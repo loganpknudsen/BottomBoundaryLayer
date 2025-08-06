@@ -108,7 +108,7 @@ module --ignore-cache load julia/1.10.2
 
 ### file to run                    
 
-julia --pkgimages=no --project=. {julia_file} --path {savepath} --Sinf {Sinf} -PVprm {gamma} --suffix\
+julia --pkgimages=no --project=. {julia_file} --path {savepath} --Sinf {Sinf} -PVprm {gm} --suffix\
     {simname_full} -T {IPeriods}
 """
 
@@ -119,13 +119,13 @@ def parseNaming(name):
     Sinf = float(params[0].replace('S',''))*10**(-1)
     print(Sinf)
     if params[1] == "gammau":
-        gamma = (1+Sinf**2)**(-1)
+        gm = (1+Sinf**2)**(-1)
     elif params[1] == "gammal":
-        gamma = (3-Sinf**2)*(3*(1+Sinf**2))**(-1)
+        gm = (3-Sinf**2)*(3*(1+Sinf**2))**(-1)
     elif params[1] == "gammam":
-        gamma = ((1+Sinf**2)**(-1)+(3-Sinf**2)*(3*(1+Sinf**2))**(-1))/2
+        gm = ((1+Sinf**2)**(-1)+(3-Sinf**2)*(3*(1+Sinf**2))**(-1))/2
     elif params[1] == "gamma005":
-        gamma = 0.05
+        gm = 0.05
     return Sinf, gamma
     
 for sim in all_sims:
@@ -134,12 +134,12 @@ for sim in all_sims:
     #simname_full = f"IntWave-{dims}-{resScale}-" + sim["wavelength"] + "-" + sim["flowspd"]
     simname_full = sim
     
-    Sinf, gamma= parseNaming(simname_full)
+    Sinf, gm = parseNaming(simname_full)
     simname_full = simname_full.replace("-","") 
     # print(f)
     # freq = f'{freqf*f:10}'
     pbs_script_filled = pbs_script.format(simname_full=simname_full, savepath=savepath, julia_file=julia_file, IPeriods=IPeriods,
-                                          Sinf=Sinf, PVprm=gamma)
+                                          Sinf=Sinf, PVprm=gm)
 
     cmd1 = f"qsub {aux_filename}"
     if verbose>1: print(pbs_script_filled)
