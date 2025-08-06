@@ -126,7 +126,7 @@ def parseNaming(name):
         gm = ((1+Sinf**2)**(-1)+(3-Sinf**2)*(3*(1+Sinf**2))**(-1))/2
     elif params[1] == "gamma005":
         gm = 0.05
-    return Sinf, gamma
+    return Sinf, gm
     
 for sim in all_sims:
 
