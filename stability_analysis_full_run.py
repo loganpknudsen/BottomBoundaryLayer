@@ -29,7 +29,7 @@ dt = 500
 t = np.linspace(0, tau+1/dt, dt)
 dm = 0.5
 m = np.arange(-40, 40+dm, dm)
-dgm = 400
+dgm = 200
 ddelta = 200
 delta_list = np.linspace(0,1+1/ddelta,ddelta)
 for S in S_list:

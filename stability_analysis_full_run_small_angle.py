@@ -25,12 +25,12 @@ S_list = np.arange(dS,2+dS,dS)
 f = 1e-4
 
 tau = 2*np.pi
-dt = 500
+dt = 200
 t = np.linspace(0, tau+1/dt, dt)
 dm = 1
 m = np.arange(-40, 40+dm, dm)
 dgm = 200
-ddelta = 200
+ddelta = 100
 delta_list = np.linspace(0,1+1/ddelta,ddelta)
 for S in S_list:
     gms_2 = []
