@@ -18,7 +18,6 @@ max_grs = []
 max_ms = []
 max_frs = []
 gms = []
-N2 = 1e-5
 dS = 0.5 #0.01
 theta = 0.01
 S_list = np.arange(dS,2+dS,dS)
@@ -29,8 +28,8 @@ dt = 200
 t = np.linspace(0, tau+1/dt, dt)
 dm = 1
 m = np.arange(-40, 40+dm, dm)
-dgm = 200
-ddelta = 100
+dgm = 250
+ddelta = 250
 delta_list = np.linspace(0,1+1/ddelta,ddelta)
 for S in S_list:
     gms_2 = []
@@ -42,11 +41,11 @@ for S in S_list:
         max_ms_sub = []
         max_frs_sub = []
         S2 = S**2
-        theta = S*f/theta
+        N2 = S2*f**2/theta**2
         beta = (1+S2)**(0.5)
         fstar = f*beta
         gml = (1+(1-2)*S2)/(1+S2) 
-        gmu = (1+(1-4/5)*S2)/(1+S2)
+        gmu = (1+(1-4/3)*S2)/(1+S2)
         gm_list = np.linspace(gml,gmu+1/dgm,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
@@ -80,10 +79,10 @@ max_gr = np.array(max_grs)
 max_ms = np.array(max_ms)
 max_fr = np.array(max_frs)
 
-output_file = xr.Dataset({"growth_rate":(["theta","delta","strat_index",],np.abs(max_gr[:,:,:,0])),
-            "frequency":(["theta","delta","strat_index"],np.abs(max_fr[:,:,:,0])),
-            "slope_angle":(["theta","delta","strat_index"],max_ms),
-           "strat_values":(["theta","delta","strat_index"],gms)},
+output_file = xr.Dataset({"growth_rate":(["slope_burger_number","delta","strat_index",],np.abs(max_gr[:,:,:,0])),
+            "frequency":(["slope_burger_number","delta","strat_index"],np.abs(max_fr[:,:,:,0])),
+            "slope_angle":(["slope_burger_number","delta","strat_index"],max_ms),
+           "strat_values":(["slope_burger_number","delta","strat_index"],gms)},
            coords = {"slope_burger_number":S_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_small_angle_test.nc")
+output_file.to_netcdf("stability_analysis_output_small_angle_test_first_third.nc")
