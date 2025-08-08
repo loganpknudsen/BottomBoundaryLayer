@@ -29,7 +29,7 @@ t = np.linspace(0, tau+1/dt, dt)
 dm = 1
 m = np.arange(-40, 40+dm, dm)
 dgm = 250
-ddelta = 250
+ddelta = 100
 delta_list = np.linspace(0,1+1/ddelta,ddelta)
 for S in S_list:
     gms_2 = []
@@ -44,8 +44,8 @@ for S in S_list:
         N2 = S2*f**2/theta**2
         beta = (1+S2)**(0.5)
         fstar = f*beta
-        gml = (1+(1-1)*S2)/(1+S2) 
-        gmu = (1+(1-4/5)*S2)/(1+S2)
+        gml = (1+(1-2)*S2)/(1+S2) 
+        gmu = (1+(1-4/3)*S2)/(1+S2)
         gm_list = np.linspace(gml,gmu+1/dgm,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
@@ -85,4 +85,4 @@ output_file = xr.Dataset({"growth_rate":(["slope_burger_number","delta","strat_i
            "strat_values":(["slope_burger_number","delta","strat_index"],gms)},
            coords = {"slope_burger_number":S_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_small_angle_test_third_third.nc")
+output_file.to_netcdf("stability_analysis_output_small_angle_test_first_third.nc")
