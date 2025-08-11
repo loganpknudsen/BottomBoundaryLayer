@@ -83,6 +83,6 @@ output_file = xr.Dataset({"growth_rate":(["slope_burger_number","delta","strat_i
             "frequency":(["slope_burger_number","delta","strat_index"],np.abs(max_fr[:,:,:,0])),
             "slope_angle":(["slope_burger_number","delta","strat_index"],max_ms),
            "strat_values":(["slope_burger_number","delta","strat_index"],gms)},
-           coords = {"slope_burger_number":S_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
+           coords = {"slope_burger_number":S_list,"delta":delta_list,"strat_index":np.linspace(0,1,dgm)})
 
 output_file.to_netcdf("stability_analysis_output_small_angle_first_sixth.nc")
