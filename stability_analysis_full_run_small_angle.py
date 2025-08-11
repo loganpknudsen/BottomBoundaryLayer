@@ -46,7 +46,7 @@ for S in S_list:
         fstar = f*beta
         gml = (1+(1-2)*S2)/(1+S2) 
         gmu = (1+(1-5/3)*S2)/(1+S2)
-        gm_list = np.linspace(gml,gmu+1/dgm,dgm)
+        gm_list = np.linspace(gml,gmu,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
             lmbd = N2*theta*gm/f
