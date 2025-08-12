@@ -117,7 +117,7 @@ def parseNaming(name):
     
     Sinf = float(params[0].replace('S',''))*10**(-1)
     Ri_inv = float(params[1].replace('R',''))*10**(-2)
-    dlt = float(params[1].replace('delta',''))*10**(-1)
+    dlt = float(params[2].replace('delta',''))*10**(-1)
     # if params[1] == "gammau":
     #     gm = (1+Sinf**2)**(-1)
     # elif params[1] == "gammal":
