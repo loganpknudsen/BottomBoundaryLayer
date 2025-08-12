@@ -5,33 +5,59 @@ import numpy as np
 
 ############################## f1e4theta029N21e5gammau
 #   FREQF-THETA-N2_gamma.jld2
-all_sims = ['S01-gammau',
-            'S01-gammam',
-            'S025-gammal',
-            'S025-gammau',
-            'S025-gammam',
-            'S025-gammal',
-            'S05-gammau',
-            'S05-gammam',
-            'S05-gammal',
-            'S075-gammau',
-            'S075-gammam',
-            'S075-gammal',
-            'S10-gammau',
-            'S10-gammam',
-            'S10-gammal',
-            'S125-gammau',
-            'S125-gammam',
-            'S125-gammal',
-            'S15-gammau',
-            'S15-gammam',
-            'S15-gammal',
-            'S175-gammau',
-            'S175-gammam',
-            'S175-gamma005',
-            'S20-gammau',
-            'S20-gammam',
-            'S20-gamma005',
+all_sims = ['S05-R065-delta08',
+            'S05-R075-delta08',
+            'S05-R085-delta08',
+            'S05-R095-delta08',
+            'S05-R105-delta08',
+            'S10-R065-delta08',
+            'S10-R075-delta08',
+            'S10-R085-delta08',
+            'S10-R095-delta08',
+            'S10-R105-delta08',
+            'S15-R075-delta08',
+            'S15-R085-delta08',
+            'S15-R095-delta08',
+            'S15-R105-delta08',
+            'S05-R080-delta08',
+            'S05-R080-delta06',
+            'S05-R080-delta04',
+            'S05-R080-delta02',
+            'S10-R080-delta08',
+            'S10-R080-delta06',
+            'S10-R080-delta04',
+            'S10-R080-delta02',
+            'S15-R080-delta08',
+            'S15-R080-delta06',
+            'S15-R080-delta04',
+            'S15-R080-delta02',
+            # 'S01-gammau',
+            # 'S01-gammam',
+            # 'S025-gammal',
+            # 'S025-gammau',
+            # 'S025-gammam',
+            # 'S025-gammal',
+            # 'S05-gammau',
+            # 'S05-gammam',
+            # 'S05-gammal',
+            # 'S075-gammau',
+            # 'S075-gammam',
+            # 'S075-gammal',
+            # 'S10-gammau',
+            # 'S10-gammam',
+            # 'S10-gammal',
+            # 'S125-gammau',
+            # 'S125-gammam',
+            # 'S125-gammal',
+            # 'S15-gammau',
+            # 'S15-gammam',
+            # 'S15-gammal',
+            # 'S175-gammau',
+            # 'S175-gammam',
+            # 'S175-gamma005',
+            # 'S20-gammau',
+            # 'S20-gammam',
+            # 'S20-gamma005',
              ]
 
 
@@ -90,16 +116,17 @@ def parseNaming(name):
     params = name.split('_')[-1].split('-')
     
     Sinf = float(params[0].replace('S',''))*10**(-1)
-    print(Sinf)
-    if params[1] == "gammau":
-        gm = (1+Sinf**2)**(-1)
-    elif params[1] == "gammal":
-        gm = (3-Sinf**2)*(3*(1+Sinf**2))**(-1)
-    elif params[1] == "gammam":
-        gm = ((1+Sinf**2)**(-1)+(3-Sinf**2)*(3*(1+Sinf**2))**(-1))/2
-    elif params[1] == "gamma005":
-        gm = 0.05
-    return Sinf, gm
+    Ri_inv = float(params[1].replace('R',''))*10**(-2)
+    dlt = float(params[1].replace('delta',''))*10**(-1)
+    # if params[1] == "gammau":
+    #     gm = (1+Sinf**2)**(-1)
+    # elif params[1] == "gammal":
+    #     gm = (3-Sinf**2)*(3*(1+Sinf**2))**(-1)
+    # elif params[1] == "gammam":
+    #     gm = ((1+Sinf**2)**(-1)+(3-Sinf**2)*(3*(1+Sinf**2))**(-1))/2
+    # elif params[1] == "gamma005":
+    #     gm = 0.05
+    return Sinf, Ri_inv, dlt
     
 for sim in all_sims:
 
@@ -107,7 +134,7 @@ for sim in all_sims:
     #simname_full = f"IntWave-{dims}-{resScale}-" + sim["wavelength"] + "-" + sim["flowspd"]
     simname_full = sim
     
-    Sinf, gm = parseNaming(simname_full)
+    Sinf, Ri_inv, delta = parseNaming(simname_full)
     simname_full = simname_full.replace("-","") 
     # print(f)
     # freq = f'{freqf*f:10}'
