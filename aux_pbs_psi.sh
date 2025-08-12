@@ -1,7 +1,7 @@
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 #!/bin/bash -l
 ### Job Name
-#PBS -N S01gammau  
+#PBS -N S20gamma005  
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources :ngpus=1
@@ -11,9 +11,9 @@
 ### To the casper queue
 #PBS -q casper
 ### output
-#PBS -o logs/S01gammau.out 
+#PBS -o logs/S20gamma005.out 
 ### error
-#PBS -e logs/S01gammau.err
+#PBS -e logs/S20gamma005.err
 ### type of GPU
 #PBS -l gpu_type=v100
 ### email 
@@ -27,4 +27,4 @@ module --ignore-cache load julia/1.10.2
 
 ### file to run                    
 
-julia --pkgimages=no --project=. full_code_diagnostics_stblty_comp.jl --path /glade/derecho/scratch/knudsenl/data/new_data/ --Sinf 1 --suffix S01gammau -T 30.0
+julia --pkgimages=no --project=. full_code_diagnostics_stblty_comp.jl --path /glade/derecho/scratch/knudsenl/data/new_data/ --Sinf 2.0  --suffix    S20gamma005 -T 30.0
