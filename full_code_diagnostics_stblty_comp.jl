@@ -81,7 +81,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 ### tilted domain parameters
 const θ = 0.01 # params.θ 
 const f = 1e-4 # params.f
-ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
+ĝ = [sin(θ), 0, cos(θ)] # gravity vector
 
 ### realistic mid latitude for now
 buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
