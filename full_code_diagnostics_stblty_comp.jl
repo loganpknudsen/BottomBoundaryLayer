@@ -79,7 +79,7 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 ### tilted domain parameters
-const θ = 0.01 # params.θ 
+const θ = 0.1 # params.θ 
 const f = 1e-4 # params.f
 ĝ = [sin(θ), 0, cos(θ)] # gravity vector
 
@@ -91,10 +91,10 @@ coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 const V∞ = params.V∞ # m s⁻¹ interior velocity
 const N² = params.N² # interior stratification
 const S∞ = params.S # slope burger number
-const fˢ = f*(1+S∞^2)^(0.5) # modified oscillation
+const fˢ = f*cos(θ)*(1+S∞^2)^(0.5) # modified oscillation
 const δ = params.δ # geostrophic scaling factor
 const γ = params.γ  # stratification parameter
-const Λ = N²*γ*θ/f
+const Λ = N²*γ*tan(θ)/(f*cos(θ))
 const H = V∞/Λ # Height of Boundary Layer
 const uₒ = δ*Λ  # Initial shear perturbation
 const ϕ = params.ϕ
@@ -113,14 +113,14 @@ heaviside(x,z) = 0.5*(1+tanh(10000*z))
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t+p.ϕ)
 
 u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) 
-v_pert(x,z,t,p) = -f*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)
-b_pert(x,z,t,p) = -p.N²*p.θ*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)
+v_pert(x,z,t,p) = -f*cos(p.θ)*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)
+b_pert(x,z,t,p) = -p.N²*sin(p.θ)*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)
 
 ### Total Background Velocity and Buoyancy
 
 u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
 v_adjustment(x, z, t, p) = p.V∞ - p.Λ*(p.H-z)*heaviside(x,p.H-z) + v_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
-constant_stratification(x, z, t, p) = p.N²*(x*p.θ + z) + p.N²*p.γ*(p.H-z)*heaviside(x,p.H-z) + b_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
+constant_stratification(x, z, t, p) = p.N²*(x*sin(p.θ) + cos(p.θ)*z) + p.N²*p.γ/cos(p.θ)*(p.H-z)*heaviside(x,p.H-z) + b_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
@@ -226,17 +226,13 @@ AGSP = Field(Average(AGSP_c))
 @inline cs_fn(x,z,t,p) = cos(p.fˢ*t+p.ϕ)
 
 upert(x,z,t,p) =  p.uₒ*cs_fn(x,z,t,p) *(p.H-z)*heaviside(x,p.H-z)# shear
-vpert(x,z,t,p) = -f*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
+vpert(x,z,t,p) = -f*cos(p.θ)*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
 
 WSP_c = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
 WSP = Field(Average(WSP_c))
-
-### Tangent calculation
-
-@inline tnd_fn(x,z,t,p) = tand(p.θ)
 
 ### GSP calcualtion
 
