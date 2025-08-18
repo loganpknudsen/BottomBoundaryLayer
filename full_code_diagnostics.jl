@@ -141,10 +141,10 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 
 ### Boundary Conditions for Buoyancy
 
-b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
+# b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 b_bc_bottom= ValueBoundaryCondition(0) 
 
-buoyancy_grad = FieldBoundaryConditions(top = b_bc_top, bottom=b_bc_bottom) 
+buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) # , bottom=b_bc_bottom
 
 ### diffusitivity and viscosity values for closure
 

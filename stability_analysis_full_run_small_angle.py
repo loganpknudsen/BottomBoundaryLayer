@@ -19,7 +19,7 @@ max_ms = []
 max_frs = []
 gms = []
 dS = 0.01 #0.5
-theta = 0.01
+theta = 0.1
 S_list = np.arange(dS,2+dS,dS)
 f = 1e-4
 
@@ -30,7 +30,7 @@ dm = 1
 m = np.arange(-200, 200+dm, dm)
 dgm = 50
 ddelta = 100
-delta_list = [5] # np.linspace(0,1+1/ddelta,ddelta)
+delta_list = [0.8] # np.linspace(0,1+1/ddelta,ddelta)
 for S in S_list:
     gms_2 = []
     max_grs_sub2 = []
