@@ -52,7 +52,7 @@ end
 
 ### Path Saved To
 
-path_name = "/glade/derecho/scratch/knudsenl/data/new_data/final_draft/u_initial/" # args["path"]
+path_name = "/glade/derecho/scratch/knudsenl/data/new_data/final_draft/" # args["path"]
 setname = args["suffix"]
 
 ### Load in Parameters
