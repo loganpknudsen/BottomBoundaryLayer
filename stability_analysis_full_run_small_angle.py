@@ -26,9 +26,9 @@ f = 1e-4
 tau = 2*np.pi
 dt = 500
 t = np.linspace(0, tau+1/dt, dt)
-dm = 4
-m = np.arange(-200, 200+dm, dm)
-dgm = 100
+dm = 1
+m = np.arange(-50, 10+dm, dm)
+dgm = 50
 ddelta = 100
 delta_list = np.linspace(0,1+1/ddelta,ddelta)
 for S in S_list:
@@ -85,4 +85,4 @@ output_file = xr.Dataset({"growth_rate":(["slope_burger_number","delta","strat_i
            "strat_values":(["slope_burger_number","delta","strat_index"],gms)},
            coords = {"slope_burger_number":S_list,"delta":delta_list,"strat_index":np.linspace(0,1,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_fifth_fifth.nc")
+output_file.to_netcdf("stability_analysis_output_test.nc")
