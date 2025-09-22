@@ -26,10 +26,10 @@ f = 1e-4
 tau = 2*np.pi
 dt = 500
 t = np.linspace(0, tau+1/dt, dt)
-dm = 0.5
+dm = 0.25
 m = np.arange(-25, 5+dm, dm)
-dgm = 100
-ddelta = 100
+dgm = 200
+ddelta = 200
 delta_list = np.linspace(0,1+1/ddelta,ddelta)
 for S in S_list:
     gms_2 = []
@@ -44,8 +44,8 @@ for S in S_list:
         N2 = S2*f**2/theta**2
         beta = (1+S2)**(0.5)
         fstar = f*beta
-        gml = (1+(1-1)*S2)/(1+S2) 
-        gmu = (1+(1-10/11)*S2)/(1+S2)
+        gml = (1+(1-10/5)*S2)/(1+S2) 
+        gmu = (1+(1-10/6)*S2)/(1+S2)
         gm_list = np.linspace(gml,gmu,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
@@ -85,4 +85,4 @@ output_file = xr.Dataset({"growth_rate":(["slope_burger_number","delta","strat_i
            "strat_values":(["slope_burger_number","delta","strat_index"],gms)},
            coords = {"slope_burger_number":S_list,"delta":delta_list,"strat_index":np.linspace(0,1,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_sixth_sixth.nc")
+output_file.to_netcdf("stability_analysis_output_first_sixth_high_res.nc")
