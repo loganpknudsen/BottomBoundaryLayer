@@ -24,7 +24,7 @@ S_list = np.arange(dS,2,dS)
 f = 1e-4
 
 tau = 2*np.pi
-dt = 500
+dt = 200
 t = np.linspace(0, tau+1/dt, dt)
 dm = 1
 m = np.arange(-50, 10+dm, dm)
