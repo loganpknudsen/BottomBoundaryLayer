@@ -24,4 +24,4 @@ module --ignore-cache load conda
 conda activate dedalus3
 ### file to run
 
-python3 -u stability_analysis_full_run_small_angle.py
+python3 -u stability_analysis_full_run_freq_space.py
