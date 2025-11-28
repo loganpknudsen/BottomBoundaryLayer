@@ -1,7 +1,7 @@
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 #!/bin/bash -l
 ### Job Name
-#PBS -N S175R095delta08  
+#PBS -N S10R080delta02  
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources :ngpus=1
@@ -11,9 +11,9 @@
 ### To the casper queue
 #PBS -q casper
 ### output
-#PBS -o logs/S175R095delta08.out 
+#PBS -o logs/S10R080delta02.out 
 ### error
-#PBS -e logs/S175R095delta08.err
+#PBS -e logs/S10R080delta02.err
 ### type of GPU
 #PBS -l gpu_type=v100
 ### email 
@@ -27,4 +27,4 @@ module --ignore-cache load julia/1.10.2
 
 ### file to run                    
 
-julia --pkgimages=no --project=. full_code_diagnostics_stblty_comp.jl --path /glade/derecho/scratch/knudsenl/data/new_data/ --Sinf 17.5  --suffix    S175R095delta08 -T 30.0
+julia --pkgimages=no --project=. full_code_diagnostics_stblty_comp.jl --path /glade/derecho/scratch/knudsenl/data/new_data/ --Sinf 1.0  --suffix    S10R080delta02 -T 30.0
