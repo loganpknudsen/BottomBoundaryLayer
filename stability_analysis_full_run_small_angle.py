@@ -18,18 +18,18 @@ max_grs = []
 max_ms = []
 max_frs = []
 gms = []
-dS = 0.025 #0.5
+dS = 0.01 #0.5
 theta = 0.1
 S_list = np.arange(dS,2,dS)
 f = 1e-4
 
 tau = 2*np.pi
 dt = 500
-t = np.linspace(0, tau+1/dt, dt)
+t = np.linspace(0, tau, dt)
 dm = 0.1
 m = np.arange(-50, 5+dm, dm)
-dgm = 5
-ddelta = 50
+dgm = 100
+ddelta = 5
 delta_list = np.linspace(0,1,ddelta)
 for S in S_list:
     gms_2 = []
@@ -44,8 +44,8 @@ for S in S_list:
         N2 = S2*f**2/theta**2
         beta = (1+S2)**(0.5)
         fstar = f*beta
-        gml = (1+S**2)**(-1)
-        gmu = (3-S**2)*(3*(1+S**2))**(-1)
+        gml = 0
+        gmu = 1
         gm_list = np.linspace(gml,gmu,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
@@ -85,4 +85,4 @@ output_file = xr.Dataset({"growth_rate":(["slope_burger_number","delta","strat_i
            "strat_values":(["slope_burger_number","delta","strat_index"],gms)},
            coords = {"slope_burger_number":S_list,"delta":delta_list,"strat_index":np.linspace(0,1,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_delta_sinf.nc")
+output_file.to_netcdf("stability_analysis_output_delta_gamma_sinf.nc")
