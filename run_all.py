@@ -5,12 +5,16 @@ import numpy as np
 
 ############################## f1e4theta029N21e5gammau
 #   FREQF-THETA-N2_gamma.jld2
-all_sims = [#'S05-R065-delta08',
+all_sims = ['S025-R065-delta08',
+            'S025-R075-delta08',
+            'S025-R085-delta08',
+            'S025-R095-delta08',
+            #'S05-R065-delta08',
             # 'S05-R075-delta08',
             # 'S05-R085-delta08',
             # 'S05-R095-delta08',
             # 'S05-R105-delta08',
-            'S10-R065-delta08',
+            # 'S10-R065-delta08',
             # 'S10-R075-delta08',
             # 'S10-R085-delta08',
             # 'S10-R095-delta08',
