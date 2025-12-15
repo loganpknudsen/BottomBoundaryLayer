@@ -5,7 +5,7 @@
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources :ngpus=1
-#PBS -l select=1:ncpus=16:mem=80GB:ngpus=1
+#PBS -l select=1:ncpus=128:mpiprocs=4:ngpus=4:gpu_type=a100
 ### Run Time
 #PBS -l walltime=8:00:00
 ### To the casper queue
