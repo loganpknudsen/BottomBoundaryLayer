@@ -104,7 +104,7 @@ pbs_script = \
 ### error
 #PBS -e logs/{simname_full}.err
 ### type of GPU
-#PBS -l gpu_type=v100
+### PBS -l gpu_type=v100
 ### email 
 #PBS -M knudsen@umd.edu
 #PBS -m abe                                                                                                                                                                                                                                                        
