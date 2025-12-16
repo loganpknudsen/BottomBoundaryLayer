@@ -5,23 +5,27 @@ import numpy as np
 
 ############################## f1e4theta029N21e5gammau
 #   FREQF-THETA-N2_gamma.jld2
-all_sims = ['S025-R065-delta08',
-            'S025-R075-delta08',
-            'S025-R085-delta08',
-            'S025-R095-delta08',
+all_sims = [#'S025-R065-delta08',
+            #'S025-R075-delta08',
+            #'S025-R085-delta08',
+            #'S025-R095-delta08',
+            "S025-R10-delta08",
             #'S05-R065-delta08',
             # 'S05-R075-delta08',
             # 'S05-R085-delta08',
             # 'S05-R095-delta08',
+            'S05-R10-delta08',
             # 'S05-R105-delta08',
             # 'S10-R065-delta08',
             # 'S10-R075-delta08',
             # 'S10-R085-delta08',
             # 'S10-R095-delta08',
+            'S10-R10-delta08',
             # 'S10-R105-delta08',
             # 'S15-R075-delta08',
             # 'S15-R085-delta08',
             # 'S15-R095-delta08',
+            'S15-R10-delta08',
             # 'S15-R105-delta08',
             # 'S05-R080-delta08',
             # 'S05-R080-delta06',
@@ -94,7 +98,7 @@ pbs_script = \
 ### Project Code Allocation
 #PBS -A UMCP0023
 ### Resources :ngpus=1
-#PBS -l select=1:ncpus=128:mpiprocs=4:ngpus=4:gpu_type=a100
+#PBS -l select=1:ncpus=1:mpiprocs=1:mem=80gb:ngpus=1:gpu_type=a100
 ### Run Time
 #PBS -l walltime=8:00:00
 ### To the casper queue
