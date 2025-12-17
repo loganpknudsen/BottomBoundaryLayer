@@ -339,7 +339,7 @@ using Parameters
     )
     S025R10delta08 = (S = 0.25,
         N² = (0.25)^2*(1e-4)^2/(tan(0.1))^2,
-        Ri_inv = 0.95,
+        Ri_inv = 1.0,
         ϕ = pi/2,
         δ = 0.8,
         T = 60,
@@ -394,7 +394,7 @@ using Parameters
     )
     S05R10delta08 = (S = 0.5,
         N² = (0.5)^2*(1e-4)^2/(tan(0.1))^2,
-        Ri_inv = 0.95,
+        Ri_inv = 1.0,
         ϕ = pi/2,
         δ = 0.8,
         T = 60,
@@ -460,7 +460,7 @@ using Parameters
     )
     S10R105delta08 = (S = 1.0,
         N² = (1.0)^2*(1e-4)^2/(tan(0.1))^2,
-        Ri_inv = 1.05,
+        Ri_inv = 1.0,
         ϕ = pi/2,
         δ = 0.8,
         T = 60,
@@ -515,7 +515,7 @@ using Parameters
     )
     S15R10delta08 = (S = 1.5,
         N² = (1.5)^2*(1e-4)^2/(tan(0.1))^2,
-        Ri_inv = 1.05,
+        Ri_inv = 1.0,
         ϕ = pi/2,
         δ = 0.8,
         T = 60,
