@@ -26,10 +26,10 @@ f = 1e-4
 tau = 2*np.pi
 dt = 500
 t = np.linspace(0, tau, dt)
-dm = 0.1
+dm = 0.5
 m = np.arange(-50, 5+dm, dm)
 dgm = 100
-ddelta = 5
+ddelta = 10
 delta_list = np.linspace(0,1,ddelta)
 for S in S_list:
     gms_2 = []
