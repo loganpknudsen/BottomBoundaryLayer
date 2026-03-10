@@ -45,7 +45,7 @@ for S in S_list:
         beta = (1+S2)**(0.5)
         fstar = f*beta
         gml = (1+(1+S2)*0.35)/((1-0.35)*(1+S2))
-        gmu = (1+(1+S2)*0.3)/((1-0.3)*(1+S2))
+        gmu = (1+(1+S2)*0.3)/((1 -0.3)*(1+S2))
         gm_list = np.linspace(gml,gmu,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
