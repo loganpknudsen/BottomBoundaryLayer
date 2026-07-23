@@ -141,8 +141,8 @@ buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top,
 
 ### Drag Boundary Conditions
 
-drag_u(x, z, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, z, t, p))^2 + (v + v_adjustment(x, z, t, p))^2) * (u+u_adjustment(x, z, t, p))
-drag_v(x, z, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, z, t, p))^2 + (v + v_adjustment(x, z, t, p))^2) * (v + v_adjustment(x, z, t, p))
+drag_u(x, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, 0, t, p))^2 + (v + v_adjustment(x, 0, t, p))^2) * (u+u_adjustment(x, 0, t, p))
+drag_v(x, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, 0, t, p))^2 + (v + v_adjustment(x, 0, t, p))^2) * (v + v_adjustment(x, 0, t, p))
 
 drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=p)
 drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=p)
