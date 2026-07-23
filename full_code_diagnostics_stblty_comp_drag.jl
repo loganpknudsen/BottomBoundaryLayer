@@ -141,10 +141,14 @@ buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top,
 z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
 cᴰ = (ϰ / log(z₁ / ℓ))^2 # Drag coefficient
 
-drag_bc = BulkDrag(coefficient=cᴰ, background_velocities=(u_adjustment, v_adjustment, 0))
+@inline drag_u(x, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, z, t, p))^2 + (v + v_adjustment(x, z, t, p))^2) * (u+u_adjustment(x, z, t, p))
+@inline drag_v(x, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, z, t, p))^2 + (v + v_adjustment(x, z, t, p))^2) * (v + v_adjustment(x, z, t, p))
 
-u_bcs = FieldBoundaryConditions(bottom=drag_bc)
-v_bcs = FieldBoundaryConditions(bottom=drag_bc)
+drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=(; cᴰ, V∞))
+drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=(; cᴰ, V∞))
+
+u_bcs = FieldBoundaryConditions(bottom=drag_bc_u)
+v_bcs = FieldBoundaryConditions(bottom=drag_bc_v)
 
 ### diffusitivity and viscosity values for closure
 
