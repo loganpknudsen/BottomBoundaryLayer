@@ -141,11 +141,11 @@ buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top,
 z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
 cᴰ = (ϰ / log(z₁ / ℓ))^2 # Drag coefficient
 
-@inline drag_u(x, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, z, t, p))^2 + (v + v_adjustment(x, z, t, p))^2) * (u+u_adjustment(x, z, t, p))
-@inline drag_v(x, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, z, t, p))^2 + (v + v_adjustment(x, z, t, p))^2) * (v + v_adjustment(x, z, t, p))
+@inline drag_u(x, z, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, z, t, p))^2 + (v + v_adjustment(x, z, t, p))^2) * (u+u_adjustment(x, z, t, p))
+@inline drag_v(x, z, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, z, t, p))^2 + (v + v_adjustment(x, z, t, p))^2) * (v + v_adjustment(x, z, t, p))
 
-drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=(; cᴰ, V∞))
-drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=(; cᴰ, V∞))
+drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=(; cᴰ))
+drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=(; cᴰ))
 
 u_bcs = FieldBoundaryConditions(bottom=drag_bc_u)
 v_bcs = FieldBoundaryConditions(bottom=drag_bc_v)
