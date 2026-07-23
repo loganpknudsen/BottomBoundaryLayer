@@ -99,7 +99,7 @@ const H = V∞/Λ # Height of Boundary Layer
 const uₒ = δ*Λ  # Initial shear perturbation
 const ϕ = params.ϕ
 
-ℓ = 0.1 # m (roughness length)
+ℓ = 0.0003 # m (roughness length)
 ϰ = 0.4  # von Karman constant
 
 z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
