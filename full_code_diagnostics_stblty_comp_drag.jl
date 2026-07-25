@@ -94,7 +94,7 @@ const S∞ = params.S # slope burger number
 const fˢ = f*cos(θ)*(1+S∞^2)^(0.5) # modified oscillation
 const δ = params.δ # geostrophic scaling factor
 const γ = params.γ  # stratification parameter
-const Λ = 0.9*N²*γ*tan(θ)/(f*cos(θ))
+const Λ = N²*γ*tan(θ)/(f*cos(θ))
 const H = V∞/Λ # Height of Boundary Layer
 const uₒ = δ*Λ  # Initial shear perturbation
 const ϕ = params.ϕ
@@ -141,8 +141,8 @@ buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top,
 
 ### Drag Boundary Conditions
 
-drag_u(x, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (u+u_adjustment(x, p.z₁, t, p))
-drag_v(x, t, u, v, p) = - p.cᴰ * √((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (v +  v_adjustment(x, p.z₁, t, p))
+drag_u(x, t, u, v, p) = - p.cᴰ * (u+u_adjustment(x, p.z₁, t, p)) # √((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (u+u_adjustment(x, p.z₁, t, p))
+drag_v(x, t, u, v, p) = - p.cᴰ * (v +  v_adjustment(x, p.z₁, t, p)) # √((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (v +  v_adjustment(x, p.z₁, t, p))
 
 drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=p)
 drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=p)
