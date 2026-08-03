@@ -102,7 +102,7 @@ const ϕ = params.ϕ
 ℓ = 0.0003 # m (roughness length)
 ϰ = 0.4  # von Karman constant
 
-z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
+z₁ = 2.5*first(znodes(grid, Center())) # Closest grid center to the bottom
 cᴰ = (ϰ / log(z₁ / ℓ))^2 # Drag coefficient
 
 # array of paramerers for background function
