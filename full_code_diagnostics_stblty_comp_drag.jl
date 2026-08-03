@@ -102,8 +102,8 @@ const ϕ = params.ϕ
 ℓ = 0.0003 # m (roughness length)
 ϰ = 0.4  # von Karman constant
 
-z₁ = 2.5*first(znodes(grid, Center())) # Closest grid center to the bottom
-cᴰ = (ϰ / log(z₁ / ℓ))^2 # Drag coefficient
+z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
+cᴰ = 0.0001 #(ϰ / log(z₁ / ℓ))^2 # Drag coefficient
 
 # array of paramerers for background function
 
@@ -141,8 +141,8 @@ buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top,
 
 ### Drag Boundary Conditions
 
-drag_u(x, t, u, v, p) = - p.cᴰ * (u+u_adjustment(x, p.z₁, t, p)) # √((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (u+u_adjustment(x, p.z₁, t, p))
-drag_v(x, t, u, v, p) = - p.cᴰ * (v +  v_adjustment(x, p.z₁, t, p)) # √((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (v +  v_adjustment(x, p.z₁, t, p))
+drag_u(x, t, u, v, p) = - p.cᴰ*√((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (u+u_adjustment(x, p.z₁, t, p))
+drag_v(x, t, u, v, p) = - p.cᴰ *√((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (v +  v_adjustment(x, p.z₁, t, p))
 
 drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=p)
 drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=p)
