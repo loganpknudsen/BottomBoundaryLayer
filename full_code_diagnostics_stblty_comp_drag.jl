@@ -152,7 +152,7 @@ v_bcs = FieldBoundaryConditions(bottom=drag_bc_v)
 
 ### diffusitivity and viscosity values for closure
 
-const ν1 = 1e-5
+const ν1 = 1e-6
 closure = ScalarDiffusivity(ν=ν1, κ=ν1)
 
 start_time = time_ns()
