@@ -272,12 +272,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag.nc",
+                                                          filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_inc_res_drag.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag.nc",
+                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_inc_res_drag.nc",
                                                           overwrite_existing = true)
 
 ### Run Simulation
