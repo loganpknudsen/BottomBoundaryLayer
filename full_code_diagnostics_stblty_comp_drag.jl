@@ -263,21 +263,36 @@ GSP = Field(Average(GSP_c))
 BFLUX_c = Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
 BFLUX =  Field(Average(BFLUX_c))
 
+### Drag Flux
+
+### Bottom drag work on the perturbation velocity (exact TKE boundary flux)
+
+u_bot  = Field(Average(interior(u,  :, :, 1:1), dims=(1,)))  # perturbation u at bottom cell
+v_bot  = Field(Average(interior(v,  :, :, 1:1), dims=(1,)))
+ua_bot = Field(Average(interior(ua, :, :, 1:1), dims=(1,)))  # total u at bottom cell
+va_bot = Field(Average(interior(va, :, :, 1:1), dims=(1,)))
+
+speed_bot = sqrt(ua_bot^2 + va_bot^2)
+τx_bot = -cᴰ * speed_bot * ua_bot
+τy_bot = -cᴰ * speed_bot * va_bot
+
+DFLUX = Field(τx_bot*u_bot + τy_bot*v_bot)   # negative = drag draining TKE, as expected
+
 ### Output Writers array
 
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations 
+output2 = (; k, E, GSP, WSP, AGSP, BFLUX, DFLUX) # TKE Diagnostic Calculations 
 
 ### Output Writers
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_inc_res_drag.nc",
+                                                          filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag_w_DFLUX.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_inc_res_drag.nc",
+                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag_w_DFLUX.nc",
                                                           overwrite_existing = true)
 
 ### Run Simulation
