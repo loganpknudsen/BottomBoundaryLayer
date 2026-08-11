@@ -267,10 +267,10 @@ BFLUX =  Field(Average(BFLUX_c))
 
 ### Bottom drag work on the perturbation velocity (exact TKE boundary flux)
 
-u_bot  = Field(Average(interior(u,  :, :, 1:1), dims=(1,)))  # perturbation u at bottom cell
-v_bot  = Field(Average(interior(v,  :, :, 1:1), dims=(1,)))
-ua_bot = Field(Average(interior(ua, :, :, 1:1), dims=(1,)))  # total u at bottom cell
-va_bot = Field(Average(interior(va, :, :, 1:1), dims=(1,)))
+u_bot  = Field(Average(Field(u,  indices=(:, :, 1:1)), dims=(1,)))  # perturbation u at bottom cell
+v_bot  = Field(Average(Field(v,  indices=(:, :, 1:1)), dims=(1,)))
+ua_bot = Field(Average(Field(ua, indices=(:, :, 1:1)), dims=(1,)))  # total u at bottom cell
+va_bot = Field(Average(Field(va, indices=(:, :, 1:1)), dims=(1,)))
 
 speed_bot = sqrt(ua_bot^2 + va_bot^2)
 τx_bot = -cᴰ * speed_bot * ua_bot
