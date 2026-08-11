@@ -274,7 +274,7 @@ BFLUX =  Field(Average(BFLUX_c))
 end
 
 DFLUX_c = KernelFunctionOperation{Center, Center, Center}(drag_work_kernel, grid, u, v, ua, va, cᴰ)
-DFLUX = Field(Average(DFLUX_c, dims=(1,)))
+DFLUX = Field(Average(DFLUX_c)) #  dims=(1,)
 
 ### Output Writers array
 
