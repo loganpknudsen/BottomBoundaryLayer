@@ -265,18 +265,16 @@ BFLUX =  Field(Average(BFLUX_c))
 
 ### Drag Flux
 
-### Bottom drag work on the perturbation velocity (exact TKE boundary flux)
 
-u_bot  = Field(Average(Field(u,  indices=(:, :, 1:1)), dims=(1,)))  # perturbation u at bottom cell
-v_bot  = Field(Average(Field(v,  indices=(:, :, 1:1)), dims=(1,)))
-ua_bot = Field(Average(Field(ua, indices=(:, :, 1:1)), dims=(1,)))  # total u at bottom cell
-va_bot = Field(Average(Field(va, indices=(:, :, 1:1)), dims=(1,)))
+@inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, cᴰ)
+    speed = sqrt(ua[i, j, 1]^2 + va[i, j, 1]^2)  # always read from bottom cell (k=1)
+    τx = -cᴰ * speed * ua[i, j, 1]
+    τy = -cᴰ * speed * va[i, j, 1]
+    return τx*u[i, j, 1] + τy*v[i, j, 1]
+end
 
-speed_bot = sqrt(ua_bot^2 + va_bot^2)
-τx_bot = -cᴰ * speed_bot * ua_bot
-τy_bot = -cᴰ * speed_bot * va_bot
-
-DFLUX = Field(τx_bot*u_bot + τy_bot*v_bot; indices=(:, :, 1:1))  # negative = drag draining TKE, as expected
+DFLUX_c = KernelFunctionOperation{Center, Center, Center}(drag_work_kernel, grid, u, v, ua, va, cᴰ)
+DFLUX = Field(Average(DFLUX_c, dims=(1,)))
 
 ### Output Writers array
 
