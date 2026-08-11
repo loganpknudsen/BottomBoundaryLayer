@@ -276,7 +276,7 @@ speed_bot = sqrt(ua_bot^2 + va_bot^2)
 τx_bot = -cᴰ * speed_bot * ua_bot
 τy_bot = -cᴰ * speed_bot * va_bot
 
-DFLUX = Field(τx_bot*u_bot + τy_bot*v_bot)   # negative = drag draining TKE, as expected
+DFLUX = Field(τx_bot*u_bot + τy_bot*v_bot; indices=(:, :, 1:1))  # negative = drag draining TKE, as expected
 
 ### Output Writers array
 
