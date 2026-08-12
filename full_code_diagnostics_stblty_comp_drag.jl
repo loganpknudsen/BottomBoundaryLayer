@@ -269,9 +269,13 @@ VB = Oceananigans.Fields.FunctionField{Center, Center, Center}(v_adjustment, gri
 
 @inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, UPERT, VB, cᴰ)
     speed = sqrt((ua[i, j, 1] + UPERT[i,j,1])^2 + (va[i, j, 1] + VB[i,j,1])^2)  # always read from bottom cell (k=1)
-    τx = -cᴰ * speed * (ua[i, j, 1] + UPERT[i,j,1])
-    τy = -cᴰ * speed * (va[i, j, 1]+ VB[i,j,1])
-    return τx*u[i, j, 1] + τy*v[i, j, 1]
+    τxa = -cᴰ * speed * (ua[i, j, 1] + UPERT[i,j,1])
+    τxm = Field(Average(τxa, dims=(1)))
+    τx =  Field(τxa-τxm)
+    τya = -cᴰ * speed * (va[i, j, 1]+ VB[i,j,1])
+    τym = Field(Average(τya, dims=(1)))
+    τy =  Field(τya-τym)
+    return 2*ν1*(τx*u[i, j, 1] + τy*v[i, j, 1])
 end
 
 DFLUX_c = KernelFunctionOperation{Center, Center, Center}(drag_work_kernel, grid, u, v, ua, va, UPERT, VB, cᴰ)
