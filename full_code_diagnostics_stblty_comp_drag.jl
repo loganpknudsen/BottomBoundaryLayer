@@ -267,7 +267,7 @@ BFLUX =  Field(Average(BFLUX_c))
 
 VB = Oceananigans.Fields.FunctionField{Center, Center, Center}(v_adjustment, grid, clock= model.clock, parameters = p)
 
-@inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, UPERT, VB, cᴰ)
+@inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, UPERT, VB, cᴰ,ν1)
     speed = sqrt((ua[i, j, 1] + UPERT[i,j,1])^2 + (va[i, j, 1] + VB[i,j,1])^2)  # always read from bottom cell (k=1)
     τxa = -cᴰ * speed * (ua[i, j, 1] + UPERT[i,j,1])
     τxm = Field(Average(τxa, dims=(1)))
