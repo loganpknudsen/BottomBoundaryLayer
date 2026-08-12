@@ -265,15 +265,16 @@ BFLUX =  Field(Average(BFLUX_c))
 
 ### Drag Flux
 
+VB = Oceananigans.Fields.FunctionField{Center, Center, Center}(v_adjustment, grid, clock= model.clock, parameters = p)
 
-@inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, cᴰ)
-    speed = sqrt(ua[i, j, 1]^2 + va[i, j, 1]^2)  # always read from bottom cell (k=1)
-    τx = -cᴰ * speed * ua[i, j, 1]
-    τy = -cᴰ * speed * va[i, j, 1]
+@inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, UPERT, VB, cᴰ)
+    speed = sqrt((ua[i, j, 1] + UPERT[i,j,1])^2 + (va[i, j, 1] + VB[i,j,1])^2)  # always read from bottom cell (k=1)
+    τx = -cᴰ * speed * (ua[i, j, 1] + UPERT[i,j,1])
+    τy = -cᴰ * speed * (va[i, j, 1]+ VB[i,j,1])
     return τx*u[i, j, 1] + τy*v[i, j, 1]
 end
 
-DFLUX_c = KernelFunctionOperation{Center, Center, Center}(drag_work_kernel, grid, u, v, ua, va, cᴰ)
+DFLUX_c = KernelFunctionOperation{Center, Center, Center}(drag_work_kernel, grid, u, v, ua, va, UPERT, VB, cᴰ)
 DFLUX = Field(Average(DFLUX_c)) #  dims=(1,)
 
 ### Output Writers array
