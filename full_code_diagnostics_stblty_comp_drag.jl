@@ -224,67 +224,67 @@ PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B+ba, coriolis)
 
 ### Dissaption calcuation
 
-eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
-E = Field(Average(eps)) # kinetic energy dissaption calcualtion
+# eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
+# E = Field(Average(eps)) # kinetic energy dissaption calcualtion
 
-### TKE caluclation
+# ### TKE caluclation
 
-k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
-k = Field(Average(k_c)) # TKE calculation
+# k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
+# k = Field(Average(k_c)) # TKE calculation
 
-### AGSP calculation
+# ### AGSP calculation
 
-AGSP_c =Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, 0)
-AGSP = Field(Average(AGSP_c))
+# AGSP_c =Oceanostics.ZShearProductionRate(model, u, v, w, um, vm, 0)
+# AGSP = Field(Average(AGSP_c))
 
-### WSP calculation
+# ### WSP calculation
 
-@inline sn_fn(x,z,t,p) = sin(p.fˢ*t+p.ϕ)
-@inline cs_fn(x,z,t,p) = cos(p.fˢ*t+p.ϕ)
+# @inline sn_fn(x,z,t,p) = sin(p.fˢ*t+p.ϕ)
+# @inline cs_fn(x,z,t,p) = cos(p.fˢ*t+p.ϕ)
 
-upert(x,z,t,p) =  p.uₒ*cs_fn(x,z,t,p) *(p.H-z)*heaviside(x,p.H-z)# shear
-vpert(x,z,t,p) = -f*cos(p.θ)*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
+# upert(x,z,t,p) =  p.uₒ*cs_fn(x,z,t,p) *(p.H-z)*heaviside(x,p.H-z)# shear
+# vpert(x,z,t,p) = -f*cos(p.θ)*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
 
-UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
-VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
+# UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
+# VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
 
-WSP_c = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
-WSP = Field(Average(WSP_c))
+# WSP_c = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
+# WSP = Field(Average(WSP_c))
 
-### GSP calcualtion
+# ### GSP calcualtion
 
-gshear(x,z,t,p) = p.V∞-p.Λ*(p.H-z)*heaviside(x,p.H-z)
-GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid, clock= model.clock, parameters = p)
-GSP_c = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
-GSP = Field(Average(GSP_c))
+# gshear(x,z,t,p) = p.V∞-p.Λ*(p.H-z)*heaviside(x,p.H-z)
+# GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid, clock= model.clock, parameters = p)
+# GSP_c = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
+# GSP = Field(Average(GSP_c))
 
-### BP calcuation
+# ### BP calcuation
 
-BFLUX_c = Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
-BFLUX =  Field(Average(BFLUX_c))
+# BFLUX_c = Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
+# BFLUX =  Field(Average(BFLUX_c))
 
-### Drag Flux
+# ### Drag Flux
 
-VB = Oceananigans.Fields.FunctionField{Center, Center, Center}(v_adjustment, grid, clock= model.clock, parameters = p)
+# VB = Oceananigans.Fields.FunctionField{Center, Center, Center}(v_adjustment, grid, clock= model.clock, parameters = p)
 
-@inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, UPERT, VB, cᴰ,ν1)
-    speed = sqrt((ua[i, j, 1] + UPERT[i,j,1])^2 + (va[i, j, 1] + VB[i,j,1])^2)  # always read from bottom cell (k=1)
-    τxa = -cᴰ * speed * (ua[i, j, 1] + UPERT[i,j,1])
-    τxm = Field(Average(τxa, dims=(1)))
-    τx =  Field(τxa-τxm)
-    τya = -cᴰ * speed * (va[i, j, 1]+ VB[i,j,1])
-    τym = Field(Average(τya, dims=(1)))
-    τy =  Field(τya-τym)
-    return 2*ν1*(τx*u[i, j, 1] + τy*v[i, j, 1])
-end
+# @inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, UPERT, VB, cᴰ,ν1)
+#     speed = sqrt((ua[i, j, 1] + UPERT[i,j,1])^2 + (va[i, j, 1] + VB[i,j,1])^2)  # always read from bottom cell (k=1)
+#     τxa = -cᴰ * speed * (ua[i, j, 1] + UPERT[i,j,1])
+#     τxm = Field(Average(τxa, dims=(1)))
+#     τx =  Field(τxa-τxm)
+#     τya = -cᴰ * speed * (va[i, j, 1]+ VB[i,j,1])
+#     τym = Field(Average(τya, dims=(1)))
+#     τy =  Field(τya-τym)
+#     return 2*ν1*(τx*u[i, j, 1] + τy*v[i, j, 1])
+# end
 
-DFLUX_c = KernelFunctionOperation{Center, Center, Center}(drag_work_kernel, grid, u, v, ua, va, UPERT, VB, cᴰ)
-DFLUX = Field(Average(DFLUX_c)) #  dims=(1,)
+# DFLUX_c = KernelFunctionOperation{Center, Center, Center}(drag_work_kernel, grid, u, v, ua, va, UPERT, VB, cᴰ)
+# DFLUX = Field(Average(DFLUX_c)) #  dims=(1,)
 
 ### Output Writers array
 
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
-output2 = (; k, E, GSP, WSP, AGSP, BFLUX, DFLUX) # TKE Diagnostic Calculations 
+# output2 = (; k, E, GSP, WSP, AGSP, BFLUX, DFLUX) # TKE Diagnostic Calculations 
 
 ### Output Writers
 
@@ -293,10 +293,10 @@ simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag_w_DFLUX.nc",
                                                           overwrite_existing = true)
 
-simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
-                                                          schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag_w_DFLUX.nc",
-                                                          overwrite_existing = true)
+# simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
+#                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
+#                                                           filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag_w_DFLUX.nc",
+#                                                           overwrite_existing = true)
 
 ### Run Simulation
 
