@@ -224,8 +224,8 @@ PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B+ba, coriolis)
 
 ### Dissaption calcuation
 
-# eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
-# E = Field(Average(eps)) # kinetic energy dissaption calcualtion
+eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
+E = Field(Average(eps)) # kinetic energy dissaption calcualtion
 
 # ### TKE caluclation
 
