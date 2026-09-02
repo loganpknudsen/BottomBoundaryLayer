@@ -452,7 +452,7 @@ using Parameters
         Ri_inv = 0.95,
         ϕ = pi/2,
         δ = 0.8,
-        T = 30,
+        T = 60,
         Nz = 256,
         Lz = 200,
         V∞ = 0.05,

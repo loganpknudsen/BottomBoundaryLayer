@@ -99,9 +99,15 @@ const H = V∞/Λ # Height of Boundary Layer
 const uₒ = δ*Λ  # Initial shear perturbation
 const ϕ = params.ϕ
 
+ℓ = 0.0003 # m (roughness length)
+ϰ = 0.4  # von Karman constant
+
+z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
+cᴰ = (ϰ / log(z₁ / ℓ))^2 # Drag coefficient
+
 # array of paramerers for background function
 
-p =(; N², θ, f, V∞, H, γ, uₒ, fˢ, Λ, ϕ)
+p =(; N², θ, f, V∞, H, γ, uₒ, fˢ, Λ, ϕ, cᴰ, z₁)
 
 # heaviside function for boundary layer
 
@@ -133,6 +139,17 @@ b_bc_bottom= ValueBoundaryCondition(0)
 
 buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top, 
 
+### Drag Boundary Conditions
+
+drag_u(x, t, u, v, p) = - p.cᴰ*√((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (u)
+drag_v(x, t, u, v, p) = - p.cᴰ *√((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (v )
+
+drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=p)
+drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=p)
+
+u_bcs = FieldBoundaryConditions(bottom=drag_bc_u)
+v_bcs = FieldBoundaryConditions(bottom=drag_bc_v)
+
 ### diffusitivity and viscosity values for closure
 
 const ν1 = 1e-5
@@ -146,7 +163,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
                             advection =  Centered(order=2), # Advection 
                             tracers = :b,
-                            boundary_conditions = (; b=buoyancy_grad),
+                            boundary_conditions = (;u=u_bcs, v=v_bcs, b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
 ### initial conditions to start instability
@@ -210,7 +227,7 @@ PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B+ba, coriolis)
 eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
 
-### TKE caluclation
+# ### TKE caluclation
 
 k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
 k = Field(Average(k_c)) # TKE calculation
@@ -246,6 +263,24 @@ GSP = Field(Average(GSP_c))
 BFLUX_c = Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
 BFLUX =  Field(Average(BFLUX_c))
 
+# ### Drag Flux
+
+# VB = Oceananigans.Fields.FunctionField{Center, Center, Center}(v_adjustment, grid, clock= model.clock, parameters = p)
+
+# @inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, UPERT, VB, cᴰ,ν1)
+#     speed = sqrt((ua[i, j, 1] + UPERT[i,j,1])^2 + (va[i, j, 1] + VB[i,j,1])^2)  # always read from bottom cell (k=1)
+#     τxa = -cᴰ * speed * (ua[i, j, 1] + UPERT[i,j,1])
+#     τxm = Field(Average(τxa, dims=(1)))
+#     τx =  Field(τxa-τxm)
+#     τya = -cᴰ * speed * (va[i, j, 1]+ VB[i,j,1])
+#     τym = Field(Average(τya, dims=(1)))
+#     τy =  Field(τya-τym)
+#     return 2*ν1*(τx*u[i, j, 1] + τy*v[i, j, 1])
+# end
+
+# DFLUX_c = KernelFunctionOperation{Center, Center, Center}(drag_work_kernel, grid, u, v, ua, va, UPERT, VB, cᴰ)
+# DFLUX = Field(Average(DFLUX_c)) #  dims=(1,)
+
 ### Output Writers array
 
 output = (; u, ua, ub, v, va, vb, w, b, ba, B, PV) # pertubation fields and PV
@@ -255,12 +290,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*".nc",
+                                                          filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*".nc",
+                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag.nc",
                                                           overwrite_existing = true)
 
 ### Run Simulation
