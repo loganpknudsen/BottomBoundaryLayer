@@ -84,7 +84,7 @@ f = 1e-4
     
 verbose = 2
 aux_filename = "aux_pbs_psi.sh"
-julia_file = "full_code_diagnostics_stblty_comp_drag.jl"
+julia_file = "full_code_diagnostics_stblty_comp.jl"
 savepath = "/glade/derecho/scratch/knudsenl/data/new_data/"
 
 
