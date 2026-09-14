@@ -135,14 +135,15 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 ### Boundary Conditions for Buoyancy
 
 # b_bc_top= GradientBoundaryCondition(-1*N²)
-b_bc_bottom= ValueBoundaryCondition(0) 
+constant_stratification_b(x, t, p) =-1* (p.N²*(1-p.γ/cos(p.θ)) + b_pert(x,0,t,p))
+b_bc_bottom=FluxBoundaryCondition(constant_stratification_b,parameters=p) 
 
 buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top, 
 
 ### Drag Boundary Conditions
 
 drag_u(x, t, u, v, p) = - p.cᴰ*√((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (u)
-drag_v(x, t, u, v, p) = - p.cᴰ *√((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (v )
+drag_v(x, t, u, v, p) = - p.cᴰ *√((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (v)
 
 drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=p)
 drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=p)
