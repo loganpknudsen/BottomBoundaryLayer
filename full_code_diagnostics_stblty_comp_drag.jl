@@ -136,7 +136,7 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 
 # b_bc_top= GradientBoundaryCondition(-1*N²)
 constant_stratification_b(x, t, p) =-1* (p.N²*(cos(p.θ)-p.γ/cos(p.θ)) - b_pert(x,0,t,p))
-b_bc_bottom=FluxBoundaryCondition(constant_stratification_b,parameters=p) 
+b_bc_bottom=GradientBoundaryCondition(constant_stratification_b,parameters=p) 
 
 buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top, 
 
