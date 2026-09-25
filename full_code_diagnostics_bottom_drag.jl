@@ -146,6 +146,20 @@ b_bc_bottom= ValueBoundaryCondition(0)
 
 buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) # , bottom=b_bc_bottom
 
+
+### Drag Boundary Conditions
+
+ℓ = 0.1 # m (roughness length)
+ϰ = 0.4  # von Karman constant
+
+z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
+cᴰ = (ϰ / log(z₁ / ℓ))^2 # Drag coefficient
+
+drag_bc = BulkDrag(coefficient=cᴰ, background_velocities=(u_adjustment, v_adjustment, 0))
+
+u_bcs = FieldBoundaryConditions(bottom=drag_bc)
+v_bcs = FieldBoundaryConditions(bottom=drag_bc)
+
 ### diffusitivity and viscosity values for closure
 
 const ν1 = 1e-5
@@ -159,7 +173,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
                             advection =  Centered(order=2), # Advection 
                             tracers = :b,
-                            boundary_conditions = (; b=buoyancy_grad),
+                            boundary_conditions = (;u=u_bcs, v=v_bcs, b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
 ### initial conditions to start instability
@@ -273,12 +287,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
+                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*"_free_slip_b.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
+                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*"_free_slip_b.nc",
                                                           overwrite_existing = true)
 
 ### Run Simulation

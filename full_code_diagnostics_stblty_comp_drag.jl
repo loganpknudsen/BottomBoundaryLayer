@@ -29,22 +29,13 @@ function parse_commandline()
                 default = 30.0
             "--path"
                 help = "pathname to save data under"
-                default = "/glade/derecho/scratch/knudsenl/data/new_data/"
-            "--strat"
-                help = "Stratification"
-                default = 1.0e-5
-            "--theta"
-                help = "angle"
-                default = 0.29
-            "--delta"
-                help = "geostrophic scaling factor"
-                default = 0.5
-            "--gamma"
+                default = "/glade/derecho/scratch/knudsenl/data/new_data/final_draft/"
+            "--Sinf"
+                help = "Sinf"
+                default = 1.0
+            "--PVprm"
                 help = "PV parameter"
-                default = 0.8679318911470805
-            "--freqf"
-                help = "coriolis parameter"
-                default = 1e-4
+                default = 0.5
             "--suffix"
                 help = "parameter set name"
                 default = "f1e4theta029N21e5delta05Vinf005gammau"
@@ -61,13 +52,13 @@ end
 
 ### Path Saved To
 
-path_name = "/glade/derecho/scratch/knudsenl/data/new_data/final_paper/" # args["path"]
+path_name = "/glade/derecho/scratch/knudsenl/data/new_data/final_draft/" # args["path"]
 setname = args["suffix"]
 
 ### Load in Parameters
 
 @info "Loading parameters..."
-include("parameters.jl")
+include("parameters_stblty.jl")
 params = getproperty(DenseParams(), Symbol(setname))
 
 print(params)
@@ -88,9 +79,9 @@ grid = RectilinearGrid(arch; topology = (Periodic, Flat, Bounded),
 
 
 ### tilted domain parameters
-const θ = params.θ 
-const f = params.f
-ĝ = [sind(θ), 0, cosd(θ)] # gravity vector
+const θ = 0.1 # params.θ 
+const f = 1e-4 # params.f
+ĝ = [sin(θ), 0, cos(θ)] # gravity vector
 
 ### realistic mid latitude for now
 buoyancy = Buoyancy(model = BuoyancyTracer(), gravity_unit_vector = -ĝ)
@@ -99,22 +90,24 @@ coriolis = ConstantCartesianCoriolis(f = f, rotation_axis = ĝ)
 ### parameters for simulation
 const V∞ = params.V∞ # m s⁻¹ interior velocity
 const N² = params.N² # interior stratification
-const S∞ = ((N²*tand(θ)^2)/(f^2))^(0.5) # slope burger number
-const fˢ = cosd(θ)*(f^2+tand(θ)^2*N²)^(0.5) # modified oscillation
+const S∞ = params.S # slope burger number
+const fˢ = f*cos(θ)*(1+S∞^2)^(0.5) # modified oscillation
 const δ = params.δ # geostrophic scaling factor
 const γ = params.γ  # stratification parameter
-const hu = (f*V∞)/(γ*N²*tand(θ)) # Height of Boundary Layer
-const uₒ = 0 # Initial u shear perturbation
-const vₒ = δ*γ*(N²*tand(θ))/(f) # Initial v shear perturbation
-const bₒ = 0 # initial stratification perturbation
-# a1-c1 are constants for the following oscillations, calculated here for efficiency
-const a1 = (f*cosd(θ)*vₒ)/(fˢ) 
-const b1 = (f^2*cosd(θ)^2*vₒ)/(fˢ)^2
-const c1 = N²*sind(θ)*f*cosd(θ)*vₒ/(fˢ)^2
+const Λ = N²*γ*tan(θ)/(f*cos(θ))
+const H = V∞/Λ # Height of Boundary Layer
+const uₒ = δ*Λ  # Initial shear perturbation
+const ϕ = params.ϕ
+
+ℓ = 0.0003 # m (roughness length)
+ϰ = 0.4  # von Karman constant
+
+z₁ = first(znodes(grid, Center())) # Closest grid center to the bottom
+cᴰ = (ϰ / log(z₁ / ℓ))^2 # Drag coefficient
 
 # array of paramerers for background function
 
-p =(; N², θ, f, V∞, hu, γ, uₒ, vₒ, bₒ, fˢ, a1, b1, c1)
+p =(; N², θ, f, V∞, H, γ, uₒ, fˢ, Λ, ϕ, cᴰ, z₁)
 
 # heaviside function for boundary layer
 
@@ -122,18 +115,18 @@ heaviside(x,z) = 0.5*(1+tanh(10000*z))
 
 # oscillation functions for background
 
-@inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
-@inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
+@inline sn_fn(x,z,t,p) = sin(p.fˢ*t+p.ϕ)
+@inline cs_fn(x,z,t,p) = cos(p.fˢ*t+p.ϕ)
 
-u_pert(x,z,t,p) = p.a1*sn_fn(x,z,t,p) 
-v_pert(x,z,t,p) = p.vₒ+p.b1*(cs_fn(x,z,t,p)-1)
-b_pert(x,z,t,p) = p.c1*(cs_fn(x,z,t,p) - 1)
+u_pert(x,z,t,p) = p.uₒ*cs_fn(x,z,t,p) 
+v_pert(x,z,t,p) = -f*cos(p.θ)*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)
+b_pert(x,z,t,p) = -p.N²*sin(p.θ)*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)
 
 ### Total Background Velocity and Buoyancy
 
-u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-v_adjustment(x, z, t, p) = p.V∞ - p.γ*(tand(p.θ) * p.N²)/(p.f)*(p.hu-z)*heaviside(x,p.hu-z) + v_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
-constant_stratification(x, z, t, p) = p.N²*x*sind(p.θ) + p.N²*z*cosd(p.θ) + p.N²*p.γ*(p.hu-z)*heaviside(x,p.hu-z) + b_pert(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)
+u_adjustment(x, z, t, p) = u_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
+v_adjustment(x, z, t, p) = p.V∞ - p.Λ*(p.H-z)*heaviside(x,p.H-z) + v_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
+constant_stratification(x, z, t, p) = p.N²*(x*sin(p.θ) + cos(p.θ)*z) + p.N²*p.γ/cos(p.θ)*(p.H-z)*heaviside(x,p.H-z) + b_pert(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
 
 U_field = BackgroundField(u_adjustment, parameters=p)
 V_field = BackgroundField(v_adjustment, parameters=p)
@@ -141,10 +134,22 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 
 ### Boundary Conditions for Buoyancy
 
-# b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
-b_bc_bottom= ValueBoundaryCondition(0) 
+# b_bc_top= GradientBoundaryCondition(-1*N²)
+constant_stratification_b(x, t, p) =-1* (p.N²*(cos(p.θ)-p.γ/cos(p.θ)) - b_pert(x,0,t,p))
+b_bc_bottom=GradientBoundaryCondition(constant_stratification_b,parameters=p) 
 
-buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) # , bottom=b_bc_bottom
+buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top, 
+
+### Drag Boundary Conditions
+
+drag_u(x, t, u, v, p) = - p.cᴰ*√((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (u+u_adjustment(x, p.z₁, t, p))
+drag_v(x, t, u, v, p) = - p.cᴰ *√((u+u_adjustment(x, p.z₁, t, p))^2 + (v + v_adjustment(x, p.z₁, t, p))^2) * (v+ v_adjustment(x, p.z₁, t, p))
+
+drag_bc_u = FluxBoundaryCondition(drag_u, field_dependencies=(:u, :v), parameters=p)
+drag_bc_v = FluxBoundaryCondition(drag_v, field_dependencies=(:u, :v), parameters=p)
+
+u_bcs = FieldBoundaryConditions(bottom=drag_bc_u)
+v_bcs = FieldBoundaryConditions(bottom=drag_bc_v)
 
 ### diffusitivity and viscosity values for closure
 
@@ -159,7 +164,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
                             advection =  Centered(order=2), # Advection 
                             tracers = :b,
-                            boundary_conditions = (; b=buoyancy_grad),
+                            boundary_conditions = (;u=u_bcs, v=v_bcs, b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
 ### initial conditions to start instability
@@ -223,7 +228,7 @@ PV = ErtelPotentialVorticity(model, ub+ua, vb+va, w, B+ba, coriolis)
 eps = KineticEnergyDissipationRate(model; U = um, V = vm, W = 0)
 E = Field(Average(eps)) # kinetic energy dissaption calcualtion
 
-### TKE caluclation
+# ### TKE caluclation
 
 k_c = Oceanostics.TurbulentKineticEnergy(model, u, v, w)
 k = Field(Average(k_c)) # TKE calculation
@@ -235,12 +240,11 @@ AGSP = Field(Average(AGSP_c))
 
 ### WSP calculation
 
-@inline sn_fn(x,z,t,p) = sin(p.fˢ*t)
-@inline cs_fn(x,z,t,p) = cos(p.fˢ*t)
+@inline sn_fn(x,z,t,p) = sin(p.fˢ*t+p.ϕ)
+@inline cs_fn(x,z,t,p) = cos(p.fˢ*t+p.ϕ)
 
-upert(x,z,t,p) = p.a1*sn_fn(x,z,t,p)*(p.hu-z)*heaviside(x,p.hu-z)# shear
-vpert(x,z,t,p) = (p.vₒ+p.b1*(cs_fn(x,z,t,p)-1))*(p.hu-z)*heaviside(x,p.hu-z)
-bpert(x,z,t,p) = p.c1*(cs_fn(x,z,t,p) - 1)*(p.hu-z)*heaviside(x,p.hu-z)
+upert(x,z,t,p) =  p.uₒ*cs_fn(x,z,t,p) *(p.H-z)*heaviside(x,p.H-z)# shear
+vpert(x,z,t,p) = -f*cos(p.θ)*p.uₒ/(p.fˢ)*sn_fn(x,z,t,p)*(p.H-z)*heaviside(x,p.H-z)
 
 UPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(upert, grid, clock= model.clock, parameters = p)
 VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, clock= model.clock, parameters = p)
@@ -248,13 +252,9 @@ VPERT = Oceananigans.Fields.FunctionField{Center, Center, Center}(vpert, grid, c
 WSP_c = Oceanostics.ZShearProductionRate(model, u, v, w, UPERT, VPERT, 0)
 WSP = Field(Average(WSP_c))
 
-### Tangent calculation
-
-@inline tnd_fn(x,z,t,p) = tand(p.θ)
-
 ### GSP calcualtion
 
-gshear(x,z,t,p) = p.V∞-((p.γ * tnd_fn(x,z,t,p) * p.N²)/(p.f))*(p.hu-z)*heaviside(x,p.hu-z)
+gshear(x,z,t,p) = p.V∞-p.Λ*(p.H-z)*heaviside(x,p.H-z)
 GSHEAR = Oceananigans.Fields.FunctionField{Center, Center, Center}(gshear, grid, clock= model.clock, parameters = p)
 GSP_c = Oceanostics.ZShearProductionRate(model, u, v, w, 0, GSHEAR, 0)
 GSP = Field(Average(GSP_c))
@@ -263,6 +263,24 @@ GSP = Field(Average(GSP_c))
 
 BFLUX_c = Oceanostics.BuoyancyProductionTerm(model; velocities=(u=u, v=v, w=w), tracers=(b=b,))
 BFLUX =  Field(Average(BFLUX_c))
+
+# ### Drag Flux
+
+# VB = Oceananigans.Fields.FunctionField{Center, Center, Center}(v_adjustment, grid, clock= model.clock, parameters = p)
+
+# @inline function drag_work_kernel(i, j, k, grid, u, v, ua, va, UPERT, VB, cᴰ,ν1)
+#     speed = sqrt((ua[i, j, 1] + UPERT[i,j,1])^2 + (va[i, j, 1] + VB[i,j,1])^2)  # always read from bottom cell (k=1)
+#     τxa = -cᴰ * speed * (ua[i, j, 1] + UPERT[i,j,1])
+#     τxm = Field(Average(τxa, dims=(1)))
+#     τx =  Field(τxa-τxm)
+#     τya = -cᴰ * speed * (va[i, j, 1]+ VB[i,j,1])
+#     τym = Field(Average(τya, dims=(1)))
+#     τy =  Field(τya-τym)
+#     return 2*ν1*(τx*u[i, j, 1] + τy*v[i, j, 1])
+# end
+
+# DFLUX_c = KernelFunctionOperation{Center, Center, Center}(drag_work_kernel, grid, u, v, ua, va, UPERT, VB, cᴰ)
+# DFLUX = Field(Average(DFLUX_c)) #  dims=(1,)
 
 ### Output Writers array
 
@@ -273,12 +291,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
+                                                          filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_height_"*string(hu)*"_interior_velocity_"*string(V∞)*"_visc_"*string(ν1)*"_Sinf_"*string(S∞)*"_gamma_"*string(γ)*"_theta_"*string(θ)*"_f_"*string(f)*"_N2_"*string(N²)*".nc",
+                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_drag.nc",
                                                           overwrite_existing = true)
 
 ### Run Simulation
