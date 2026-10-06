@@ -129,9 +129,9 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 ### Boundary Conditions for Buoyancy
 
 # b_bc_top= GradientBoundaryCondition(-1*N²)
-b_bc_bottom= ValueBoundaryCondition(0) 
+# b_bc_bottom= ValueBoundaryCondition(0) 
 
-buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top, 
+# buoyancy_grad = FieldBoundaryConditions(bottom=b_bc_bottom) # top = b_bc_top, 
 
 ### diffusitivity and viscosity values for closure
 
@@ -146,7 +146,7 @@ model = NonhydrostaticModel(; grid, buoyancy, coriolis, closure,
                             timestepper = :RungeKutta3,
                             advection =  Centered(order=2), # Advection 
                             tracers = :b,
-                            boundary_conditions = (; b=buoyancy_grad),
+                            # boundary_conditions = (; b=buoyancy_grad),
                             background_fields = (; u=U_field, v=V_field, b=B_field))
 
 ### initial conditions to start instability
@@ -255,12 +255,12 @@ output2 = (; k, E, GSP, WSP, AGSP, BFLUX) # TKE Diagnostic Calculations
 
 simulation.output_writers[:fields] = NetCDFOutputWriter(model, output;
                                                           schedule = TimeInterval(0.05*(2*pi)/fˢ),
-                                                          filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"free_slip.nc",
+                                                          filename = path_name*"flow_fields_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_free_slip.nc",
                                                           overwrite_existing = true)
 
 simulation.output_writers[:diagnostics] = NetCDFOutputWriter(model, output2;
                                                           schedule = TimeInterval(0.005*(2*pi)/fˢ),
-                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"free_slip.nc",
+                                                          filename = path_name*"TKE_terms_Sinf_"*string(S∞)*"_Ri_inv_"*string(params.Ri_inv)*"_delta_"*string(δ)*"_free_slip.nc",
                                                           overwrite_existing = true)
 
 ### Run Simulation
