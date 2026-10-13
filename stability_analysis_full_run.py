@@ -6,9 +6,8 @@ def m_t(t,m,fstar,delta,lmbd):
     phi = np.pi/2 
     return m+delta*lmbd/(fstar)*np.sin(t+phi)
 
-def PSI_system(v,t,m,theta,gm,S2,delta,lmbd):
+def PSI_system(v,t,m,theta,gm,S2,delta,lmbd,fstar):
     psi, D = v
-    fstar = f*np.cos(theta)*(1+S2)**(0.5)
     A0 = (np.tan(theta)**2-S2)/(np.tan(theta)*(1+S2))*(m-np.tan(theta)*(np.tan(theta)**2-S2)**(-1)*((S2/(np.tan(theta)**2))*(1-gm*np.cos(theta)**(-4))+np.tan(theta)**2))
     A1 = m+(S2-np.tan(theta)**2)*(np.tan(theta)*(1+S2))**(-1)
     dpsidt = (A0-A1*m_t(t,m,fstar,delta,lmbd))*D
@@ -19,21 +18,21 @@ max_grs = []
 max_ms = []
 max_frs = []
 gms = []
-
 N2 = 1e-5
 dtheta = 0.5 #0.01
-theta_list = [1.8113*np.pi/180] #*np.arange(dtheta,2+dtheta,dtheta) #*np.array([0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2])
+theta = 0.01
+S_list = np.arange(0.1,2.1,0.1)
 f = 1e-4
 
 tau = 2*np.pi
-dt = 200
+dt = 500
 t = np.linspace(0, tau+1/dt, dt)
-dm = 0.1
+dm = 0.5
 m = np.arange(-40, 40+dm, dm)
-dgm = 100
-ddelta = 100
-delta_list = np.linspace(1/ddelta,1+1/ddelta,ddelta)
-for theta in theta_list:
+dgm = 400
+ddelta = 200
+delta_list = np.linspace(0,1+1/ddelta,ddelta)
+for S in S_list:
     gms_2 = []
     max_grs_sub2 = []
     max_ms_sub2 = []
@@ -42,23 +41,21 @@ for theta in theta_list:
         max_grs_sub = []
         max_ms_sub = []
         max_frs_sub = []
-        S2 = N2*np.tan(theta)**2/f**2
+        S2 = S**2
+        theta = S*f/np.tan(0.01)
         beta = (1+S2)**(0.5)
         fstar = f*np.cos(theta)*beta
-        gml = (1+(1-5/6)*S2)/(1+S2) #max(0.01,(3-S2)*(np.cos(theta)*(3*(1+S2)))**(-1))
-        gmu = (1+(1-10/9)*S2)/(1+S2)-0.1*S2/(1+S2) #(np.cos(theta)*(1+S2))**(-1)
+        gml = (1+(1-4/3)*S2)/(1+S2) 
+        gmu = (1+(1-1)*S2)/(1+S2)
         gm_list = np.linspace(gml,gmu+1/dgm,dgm)
         gms_2.append(gm_list)
         for gm in gm_list:
             lmbd = N2*np.tan(theta)*gm/f
-            n = f/lmbd
-            Ri = N2*(np.cos(theta)-gm)/lmbd**2
-            alpha = N2*(np.cos(theta)-gm)*np.tan(theta)/(f*lmbd)
             frequencies = []
             growth_rates = []
             for q in m:
-                sol1 = sc.odeint(PSI_system, [1, 0], t, args=(q, theta, gm, S2, i, lmbd))
-                sol2 = sc.odeint(PSI_system, [0, 1], t, args=(q, theta, gm, S2, i,lmbd)) 
+                sol1 = sc.odeint(PSI_system, [1, 0], t, args=(q, theta, gm, S2, i, lmbd,fstar))
+                sol2 = sc.odeint(PSI_system, [0, 1], t, args=(q, theta, gm, S2, i,lmbd,fstar)) 
                 M = np.array([[sol1[-1, 0], sol1[-1, 1]], [sol2[-1, 0], sol2[-1, 1]]])
                 eigs = np.log(np.linalg.eig(M)[0]+0*1j)/(tau)
                 growth_rates.append(eigs.real)
@@ -89,4 +86,4 @@ output_file = xr.Dataset({"growth_rate":(["theta","delta","strat_index",],np.abs
            "strat_values":(["theta","delta","strat_index"],gms)},
            coords = {"theta":theta_list,"delta":delta_list,"strat_index":np.linspace(0,1+1/dgm,dgm)})
 
-output_file.to_netcdf("stability_analysis_output_10.nc")
+output_file.to_netcdf("stability_analysis_output_third_third.nc")
