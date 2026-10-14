@@ -43,9 +43,10 @@ def nice_limit(x):
     return next(float(m * 10**e) for m in (1, 2, 5, 10) if m * 10**e >= x)
 
 
-fig = plt.figure(figsize=(10, 6.5), layout="constrained")
-top, bottom = fig.subfigures(2, 1, height_ratios=[1, 0.9])
-snap_axes = top.subplots(1, 2)
+# Snapshots stacked as wide panels (the domain is 2000 m x 200 m), sharing the x axis
+fig = plt.figure(figsize=(7.5, 8), layout="constrained")
+top, bottom = fig.subfigures(2, 1, height_ratios=[2, 1.1])
+snap_axes = top.subplots(2, 1, sharex=True)
 axs = {"s0": snap_axes[0], "s1": snap_axes[1], "psd": bottom.subplots()}
 
 for key, ti in zip(("s0", "s1"), SNAPSHOTS):
@@ -56,8 +57,10 @@ for key, ti in zip(("s0", "s1"), SNAPSHOTS):
     im = u.plot(ax=ax, cmap="RdBu_r", vmin=-vmax, vmax=vmax, add_colorbar=False, rasterized=True)
     (ds.B + ds.ba).isel(time=ti).squeeze(drop=True).plot.contour(
         ax=ax, colors="k", levels=N_ISOPYCNALS, linewidths=0.6, linestyles="solid", alpha=0.7)
-    top.colorbar(im, ax=ax, label=r"$u$ [m s$^{-1}$]", extend="both", shrink=0.9)
-    ax.set(title=f"T = {T[ti]:.1f}", xlabel="x [m]", ylabel="z [m]" if key == "s0" else "")
+    top.colorbar(im, ax=ax, label=r"$u$ [m s$^{-1}$]", extend="both", aspect=12, pad=0.02)
+    ax.set(title="", xlabel="x [m]" if key == "s1" else "", ylabel="z [m]")
+    ax.text(0.01, 0.95, f"T = {T[ti]:.0f}", transform=ax.transAxes, ha="left", va="top",
+            bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=0.8))
 
 u_ql = ql.quasi_lagrangian(ds, "u", ZI, *SPECTRUM, P)
 omega, psd = ql.spectrum(u_ql)
@@ -76,6 +79,6 @@ ax.set_title(f"Quasi-Lagrangian $u$, z = {float(ds.zC[ZI]):.1f} m, T = {T[SPECTR
 ax.legend(frameon=False)
 
 for key, label in (("s0", "(a.)"), ("psd", "(b.)")):
-    axs[key].text(-0.08, 1.04, label, transform=axs[key].transAxes, fontsize="medium")
+    axs[key].text(-0.1, 1.04, label, transform=axs[key].transAxes, fontsize="medium")
 
 save(fig, __file__)
