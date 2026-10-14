@@ -10,6 +10,10 @@ Usage: python submit_noflux.py [--dry-run] [SIM ...]
 
 Progress is written live to logs/noflux/SIM.log (tail -f it); the PBS .out/.err files
 only appear when the job ends.
+
+Precompile the Julia packages once before submitting, so the jobs do not all compile
+into the shared depot at the same time:
+  julia --pkgimages=no --project=. -e 'using Pkg; Pkg.precompile()'
 """
 import subprocess
 import sys
@@ -43,8 +47,10 @@ module --ignore-cache load cuda
 module --ignore-cache load julia/1.10.2
 
 cd {repo}
-# Write Julia's output straight to glade: PBS only copies the -o/-e files at job end.
-julia --pkgimages=no --project=. {julia_file} --path {output_dir} --suffix {name} > {log_dir}/{name}.log 2>&1
+# Log straight to glade (PBS only copies the -o/-e files at job end). `script` runs julia
+# on a pseudo-terminal so its output is line-buffered; -f flushes each write, -e keeps
+# julia's exit status.
+script -qfec "julia --pkgimages=no --project=. {julia_file} --path {output_dir} --suffix {name}" {log_dir}/{name}.log
 """
 
 
