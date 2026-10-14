@@ -53,7 +53,8 @@ for ax, ti, xlab, ylab in panels:
     (ocean_data.B + ocean_data.ba).isel(time=ti, yC=0, zC=slice(0, upper_limit)).plot.contour(
         ax=ax, colors="k", levels=isopycnal_numbers, alpha=0.75)
     ax.set(title=r"T=" + str(round(ocean_data.time[ti].values * fstar / (2 * np.pi), 2)), xlabel=xlab, ylabel=ylab)
-fig.colorbar(im, ax=axs, label="u-velocity [$m\\,s^{-1}$]",
-             ticks=[1e-3, -1e-3, 1e-4, -1e-4, 1e-5, -1e-5, 0])
+cbar = fig.colorbar(im, ax=axs, label="u-velocity [$m\\,s^{-1}$]",
+                    ticks=[1e-3, -1e-3, 1e-4, -1e-4, 1e-5, -1e-5, 0])
+cbar.minorticks_off()   # symlog minor ticks crowd around zero
 
 save(fig, __file__)
