@@ -3,7 +3,9 @@
 with Ri <= 0.25 against time.
 
 Source: Result_Calculations/velocity_visualization.ipynb (origin/Base_Case), cells 1, 5, 6, 8, 10,
-14 and 28. Ri is computed exactly as in the notebook (N^2 / V_z^2 from b + B and v + vb).
+14 and 28. Ri is computed from the total fields, Ri = d_z(B + ba) / [d_z(ub + ua)^2 + d_z(vb + va)^2],
+correcting the notebook, which omitted the u-shear and used the x-mean-removed perturbations b, v
+(dropping the mean-flow modification that develops at finite amplitude).
 Run: Sim9 (S = 1, Ri_inv = 0.95, delta = 0.8), March output flow_fields_..._Ri_inv_0.95_delta_0.8.nc.
 """
 import pathlib
@@ -36,15 +38,24 @@ ocean_data = xr.open_dataset(SIM_DIR / file).chunk(time=1)
 seconds = ocean_data.time / pd.Timedelta("1s")
 ocean_data = ocean_data.assign_coords(time=('time', seconds.data))
 
-# Richardson number (cells 6 and 8)
-B_BG = ocean_data.B.isel(yC=0)
-B = ocean_data.b.isel(yC=0) + B_BG
-N2 = B.differentiate("zC", edge_order=2)
-V_BG = ocean_data.vb.isel(yF=0)
-V = ocean_data.v.isel(yF=0) + V_BG
-VZ = V.differentiate("zC", edge_order=2)
-Ri = N2 / VZ**2
-Ri = Ri.sel(zC=slice(0, h))
+# Richardson number of the total flow (background + full perturbation), at cell centres.
+def drop_y(da):
+    return da.isel({d: 0 for d in ("yC", "yF") if d in da.dims}, drop=True)
+
+
+def faces_to_centres_x(da):
+    """Average a field on x faces to x centres (periodic in x): centre i lies between faces i, i+1."""
+    da = drop_y(da)
+    avg = 0.5 * (da + da.roll(xF=-1, roll_coords=False))
+    return avg.rename(xF="xC").assign_coords(xC=ocean_data.xC.values)
+
+
+B_tot = drop_y(ocean_data.B) + drop_y(ocean_data.ba)
+U_tot = faces_to_centres_x(ocean_data.ub + ocean_data.ua)
+V_tot = drop_y(ocean_data.vb) + drop_y(ocean_data.va)
+N2 = B_tot.differentiate("zC", edge_order=2)
+shear2 = U_tot.differentiate("zC", edge_order=2) ** 2 + V_tot.differentiate("zC", edge_order=2) ** 2
+Ri = (N2 / shear2).sel(zC=slice(0, h))
 
 # Fraction of BBL points with Ri <= 0.25 for the first 501 outputs (cells 10 and 14). The notebook
 # counts these with a Python loop over Ri.where(Ri <= 0.25, other="nan"); summing the boolean mask
