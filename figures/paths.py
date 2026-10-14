@@ -16,9 +16,6 @@ SIM_DIR = Path(os.environ.get("BBL_SIM_DIR", "/glade/derecho/scratch/knudsenl/da
 # Linear-theory grids from linear_theory/stability_grid.py (sgamma.nc, freq.nc), with the fine m scan.
 LT_DIR = Path(os.environ.get("BBL_LT_DIR", f"/glade/derecho/scratch/{USER}/BottomBoundaryLayer/output/linear_theory_dm0.01"))
 
-# Growth-rate fits from Result_Calculations/growth_pipeline/fit_growth.py.
-FITS_CSV = Path(os.environ.get("BBL_FITS_CSV", REPO / "Result_Calculations/growth_pipeline/growth_fits.csv"))
-
 OUT_DIR = Path(os.environ.get("BBL_FIG_OUT", FIG_DIR / "output"))
 
 
