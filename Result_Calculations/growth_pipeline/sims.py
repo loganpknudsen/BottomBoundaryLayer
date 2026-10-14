@@ -27,3 +27,8 @@ SIMS = {
 def tke_filename(s):
     S = "1" if (s["Ri_inv"] == 0.8) else str(s["S"])
     return f"TKE_terms_Sinf_{S}_Ri_inv_{s['Ri_inv']}_delta_{s['delta']}.nc"
+
+
+# Runs whose fastest Floquet mode is not PSI (Im sigma != f*/2), from theory_growth.py:
+# the three SI-unstable runs (Im sigma = 0) and Sim6 (omega_min^2/(f*)^2 = 0.35, Im sigma = 0).
+NOT_PSI = {"Sim5", "Sim6", "Sim10", "Sim14"}
