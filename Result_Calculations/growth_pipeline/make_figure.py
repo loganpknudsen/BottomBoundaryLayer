@@ -3,7 +3,7 @@
 Choices (agreed 2026-10-14):
   * window tolerance p = 10%;
   * SI-unstable runs (Sim5, Sim10, Sim14) are dropped;
-  * Sim6 is kept although its fastest Floquet mode is not PSI (shown in blue);
+  * Sim6 is kept although its fastest Floquet mode is not PSI;
   * runs with no exponential phase (Sim6, Sim18) are plotted at sigma = 0 with an open marker.
 
 With --all, the SI-unstable runs are added back for testing (in red), and r^2 is reported
@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 import scipy.stats
 
-from sims import NOT_PSI, SIMS
+from sims import SIMS
 
 P = 0.10
 MARKERS = {0.5: "x", 1.0: "+", 1.5: "*"}
@@ -31,7 +31,7 @@ def main(fits_csv, prefix="simulation_vs_stability", include_all=False):
     df = df[np.isclose(df.p, P)].copy()
     if not include_all:
         df = df[~df.si_unstable]
-    df["color"] = np.where(df.si_unstable, "tab:red", np.where(df.sim.isin(NOT_PSI), "tab:blue", "k"))
+    df["color"] = np.where(df.si_unstable, "tab:red", "k")
     df["no_growth"] = df.status != "ok"
     df.loc[df.no_growth, "sigma"] = 0.0
     df[["sim", "S", "Ri_inv", "delta", "theory", "sigma", "r2", "T_start", "T_end", "no_growth"]] \
@@ -47,7 +47,7 @@ def main(fits_csv, prefix="simulation_vs_stability", include_all=False):
     ng = df[df.no_growth]
     ax.scatter(ng.sigma, ng.theory, marker="o", facecolors="none", edgecolors=ng.color,
                label="no exponential phase")
-    for _, r in df[df.sim.isin(NOT_PSI)].iterrows():
+    for _, r in df[df.si_unstable].iterrows():
         ax.annotate(r.sim, (r.sigma, r.theory), xytext=(4, -8), textcoords="offset points",
                     fontsize=7, color=r.color)
     lim = 1.1 * max(df.sigma.max(), df.theory.max())
