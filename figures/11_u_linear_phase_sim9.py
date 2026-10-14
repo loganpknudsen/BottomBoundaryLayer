@@ -15,6 +15,7 @@ import xarray as xr
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from paths import SIM_DIR, save  # noqa: E402
+from colour_scales import symlog_limits  # noqa: E402
 
 # Run parameters (Sim9)
 theta = 0.1
@@ -35,18 +36,21 @@ t1 = 200
 t2 = 210
 t3 = 300
 t4 = 310
-v_max = 2e-3       # just above the largest |u| plotted (1.8e-3 at T = 15.5)
-lin_thresh = 1e-5  # |u| at T = 10
 # Colormap: "bwr" (Base_Case notebook; the preprint used RdYlBu). Chosen 2026-10-14.
 c_map = "bwr"
 
 fig, axs = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(8, 4), layout="constrained")
 panels = [(axs[0, 0], t1, " ", "z [$m$]"), (axs[0, 1], t2, " ", " "),
           (axs[1, 0], t3, "x [$m$]", "z [$m$]"), (axs[1, 1], t4, "x [$m$]", " ")]
-for ax, ti, xlab, ylab in panels:
-    u_panel = ocean_data.u.isel(time=ti, zC=slice(0, upper_limit))
+u_panels = [ocean_data.u.isel(time=ti, zC=slice(0, upper_limit)).compute() for _, ti, _, _ in panels]
+for (_, ti, _, _), u_panel in zip(panels, u_panels):
     T_panel = float(ocean_data.time[ti].values * fstar / (2 * np.pi))
     print(f"T = {T_panel:6.2f}: u min = {float(u_panel.min()):+.3e} m/s, max = {float(u_panel.max()):+.3e} m/s")
+# Colour limits from the plotted data (colour_scales.symlog_limits): range = largest |u| rounded up
+# to 1, 2 or 5 x 10^n; linear region = weakest panel's max |u| rounded down to a power of ten.
+v_max, lin_thresh, ticks = symlog_limits(u_panels)
+print(f"colour range +/-{v_max:.0e} m/s, linear region +/-{lin_thresh:.0e} m/s")
+for (ax, ti, xlab, ylab), u_panel in zip(panels, u_panels):
     im = u_panel.plot(
         ax=ax, label=" ", add_colorbar=False, cmap=c_map,
         norm=colors.SymLogNorm(linthresh=lin_thresh, vmin=-v_max, vmax=v_max))
@@ -54,7 +58,7 @@ for ax, ti, xlab, ylab in panels:
         ax=ax, colors="k", levels=isopycnal_numbers, alpha=0.75)
     ax.set(title=r"T=" + str(round(ocean_data.time[ti].values * fstar / (2 * np.pi), 2)), xlabel=xlab, ylabel=ylab)
 cbar = fig.colorbar(im, ax=axs, label="u-velocity [$m\\,s^{-1}$]",
-                    ticks=[1e-3, -1e-3, 1e-4, -1e-4, 1e-5, -1e-5, 0])
+                    ticks=ticks)
 cbar.minorticks_off()   # symlog minor ticks crowd around zero
 
 save(fig, __file__)
