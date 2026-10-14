@@ -15,4 +15,5 @@
 *.pdf
 *.png
 *.jpeg
-*.err
+*.errjobs_noflux/
+logs/noflux/
