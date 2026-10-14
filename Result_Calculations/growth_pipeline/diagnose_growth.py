@@ -75,7 +75,7 @@ def main(data_dir, prefix="growth_diagnostics"):
         axs[r + 1, c].set_ylabel(r"$\sigma_{1P}/f^*$")
         axs[r + 1, c].set_xlabel(r"$T = f^* t / 2\pi$")
         for ax in axs[r:r + 2, c]:
-            ax.set_xlim(0, min(T[-1], 40))
+            ax.set_xlim(0, T[-1])
     for j in range(len(names), nrow * ncol):
         for ax in axs[2 * (j // ncol):2 * (j // ncol) + 2, j % ncol]:
             ax.set_visible(False)
