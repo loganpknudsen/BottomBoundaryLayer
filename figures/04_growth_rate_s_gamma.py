@@ -1,7 +1,8 @@
 """Figure 4: growth rate over S_inf-gamma for (a) delta = 0.5 and (b) delta = 1.0.
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 27. Data: sgamma.nc.
-Masked with stability_common.mask (currently: points above the convective limit).
+Masked with stability_common.mask (currently: above the convective limit, or
+sigma/f below the growth cutoff).
 Growth rate is plotted as sigma/f = (sigma/f*) sqrt(1 + S^2), as in the notebook.
 """
 import matplotlib.pyplot as plt
@@ -18,7 +19,7 @@ levels = np.linspace(0, vmax + 1 / 20, 100)
 fig, axs = plt.subplots(1, 2, figsize=(8, 3), sharey=True, layout="constrained")
 for ax, delta, label in zip(axs, (0.5, 1.0), ("(a.)", "(b.)")):
     Sm, g, d = sc.sgamma_mesh(data, delta)
-    cf = ax.contourf(Sm, g, sc.mask(d.growth_rate.values * np.sqrt(1 + Sm**2), g, Sm, delta), levels=levels, extend="both",
+    cf = ax.contourf(Sm, g, sc.mask(d.growth_rate.values * np.sqrt(1 + Sm**2), g, Sm, delta, d.growth_rate.values), levels=levels, extend="both",
                      vmax=vmax, cmap="RdYlBu_r")
     ax.contour(Sm, g, sc.sgamma_boundary(d), levels=[sc.BOUNDARY_LEVEL], colors="k", linestyles="--", linewidths=1.4)
     sc.analytic_lines(ax, S, delta)

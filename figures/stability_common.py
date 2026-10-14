@@ -2,10 +2,12 @@
 
 Reads the grids written by linear_theory/stability_grid.py. Plotted fields pass through mask(),
 which holds the masking criteria agreed so far:
-  1. points above the convective limit (convectively unstable at some wave phase) are removed.
+  1. points above the convective limit (convectively unstable at some wave phase) are removed;
+  2. points with growth rate sigma/f below GROWTH_CUTOFF_F are removed.
 The analytic curves (gamma_l, gamma_u, convective limit) are drawn as lines. The PSI boundary
-line is the 0.5 contour of an unsmoothed indicator: 1 where the fastest mode is PSI and growing,
-0 elsewhere; its accuracy is set by the grid spacing (see linear_theory REFINE). The TKE-budget
+line is the 0.5 contour of an unsmoothed indicator: 1 where the fastest mode is PSI and grows at
+sigma/f >= GROWTH_CUTOFF_F, 0 elsewhere; its accuracy is set by the grid spacing (see
+linear_theory REFINE). The TKE-budget
 variant for Figs 8-9 (BUDGET_IC) is still a placeholder kept from the preprint.
 """
 import sys
@@ -21,11 +23,12 @@ from paths import LT_DIR  # noqa: E402
 # growing Floquet mode. Placeholder: not yet decided.
 BUDGET_IC = "ic01"
 
-# PSI-unstable: |Im sigma| = f*/2 (tested as >= PSI_FREQ) and growth above GROWTH_FLOOR. Stable
-# points have |growth| < 4e-11 (round-off) on the grids checked; the weakest real growth found was
-# 2e-6, so the floor sits in the gap between them.
+# PSI: |Im sigma| = f*/2, tested as >= PSI_FREQ.
 PSI_FREQ = 0.4999
-GROWTH_FLOOR = 1e-8
+# Growth-rate cutoff in units of f (sigma/f = (sigma/f*) sqrt(1 + S^2), as plotted). Removes the
+# weak, m-resolution-dependent modes below gamma_l (artefacts of the 0.1 m scan reach ~0.02-0.03 f);
+# the PSI boundary therefore marks sigma = GROWTH_CUTOFF_F * f, not marginal stability.
+GROWTH_CUTOFF_F = 0.025
 BOUNDARY_LEVEL = 0.5
 
 
@@ -46,18 +49,25 @@ def convective_limit(S, d):
     return np.sqrt(1 + S**2) / (np.sqrt(1 + S**2) + d * S**2)
 
 
-def mask(field, strat, S, delta):
-    """Return `field` with masked points set to NaN. strat (gamma), S and delta must broadcast to
-    field's shape. Criteria:
-      1. gamma above the convective limit for this delta.
+def growth_over_f(growth, S):
+    """Growth rate in units of f from the stored sigma/f*."""
+    return growth * np.sqrt(1 + S**2)
+
+
+def mask(field, strat, S, delta, growth):
+    """Return `field` with masked points set to NaN. strat (gamma), S, delta and growth (sigma/f*)
+    must broadcast to field's shape. Criteria:
+      1. gamma above the convective limit for this delta;
+      2. sigma/f below GROWTH_CUTOFF_F.
     """
-    keep = strat <= convective_limit(S, delta)
+    keep = (strat <= convective_limit(S, delta)) & (growth_over_f(growth, S) >= GROWTH_CUTOFF_F)
     return np.where(keep, field, np.nan)
 
 
-def psi_unstable(freq, growth):
-    """1.0 where the fastest mode is PSI and growing, else 0.0; contour at BOUNDARY_LEVEL."""
-    return ((np.abs(freq) >= PSI_FREQ) & (growth > GROWTH_FLOOR)).astype(float)
+def psi_unstable(freq, growth, S):
+    """1.0 where the fastest mode is PSI with sigma/f >= GROWTH_CUTOFF_F, else 0.0; contour at
+    BOUNDARY_LEVEL. growth is sigma/f*."""
+    return ((np.abs(freq) >= PSI_FREQ) & (growth_over_f(growth, S) >= GROWTH_CUTOFF_F)).astype(float)
 
 
 def sgamma_mesh(data, delta):
@@ -70,7 +80,7 @@ def sgamma_mesh(data, delta):
 
 def sgamma_boundary(d):
     """PSI-unstable indicator for an S-gamma slice from sgamma_mesh."""
-    return psi_unstable(d.frequency.values, d.growth_rate.values)
+    return psi_unstable(d.frequency.values, d.growth_rate.values, d.slope_burger_number.values[:, None])
 
 
 def budget(d, term):
