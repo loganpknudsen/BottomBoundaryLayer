@@ -2,11 +2,11 @@
 
 Same runs, parameters and resources as the March set (run_all.py), but using
 full_code_diagnostics_noflux.jl and writing to OUTPUT_DIR. The SI-unstable runs
-(Ri_inv = 1.05) are not included because they are not in the figure.
+(Ri_inv = 1.05, SI_SIMS) are not in the figure and are submitted only when named.
 
 Usage: python submit_noflux.py [--dry-run] [SIM ...]
   --dry-run   write and print the job scripts but do not qsub them
-  SIM ...     submit only these parameter sets (default: all of ALL_SIMS)
+  SIM ...     submit only these parameter sets (default: all of ALL_SIMS; SI_SIMS by name)
 
 Progress is written live to logs/noflux/SIM.log (tail -f it); the PBS .out/.err files
 only appear when the job ends.
@@ -25,6 +25,7 @@ ALL_SIMS = [
     "S15R075delta08", "S15R085delta08", "S15R095delta08",                     # Sim11-13
     "S10R080delta08", "S10R080delta06", "S10R080delta04", "S10R080delta02",   # Sim15-18
 ]
+SI_SIMS = ["S05R105delta08", "S10R105delta08", "S15R105delta08"]               # Sim5, 10, 14
 
 OUTPUT_DIR = "/glade/derecho/scratch/wenegrat/BottomBoundaryLayer/output/"
 JULIA_FILE = "full_code_diagnostics_noflux.jl"
@@ -57,9 +58,9 @@ script -qfec "julia --pkgimages=no --project=. {julia_file} --path {output_dir} 
 def main(argv):
     dry_run = "--dry-run" in argv
     sims = [a for a in argv if a != "--dry-run"] or ALL_SIMS
-    unknown = set(sims) - set(ALL_SIMS)
+    unknown = set(sims) - set(ALL_SIMS) - set(SI_SIMS)
     if unknown:
-        sys.exit(f"not in ALL_SIMS: {sorted(unknown)}")
+        sys.exit(f"not in ALL_SIMS or SI_SIMS: {sorted(unknown)}")
 
     repo = Path(__file__).resolve().parent
     for d in (repo / JOB_DIR, repo / LOG_DIR, Path(OUTPUT_DIR)):
