@@ -46,10 +46,11 @@ def nice_limit(x):
 # Snapshots stacked as wide panels (the domain is 2000 m x 200 m), sharing the x axis. One grid
 # with a narrow colourbar column, so the spectrum below has the same width as the snapshots.
 fig = plt.figure(figsize=(7.5, 8), layout="constrained")
-gs = fig.add_gridspec(3, 2, height_ratios=[1, 1, 1.1], width_ratios=[1, 0.025])
+fig.get_layout_engine().set(h_pad=0.01, hspace=0)   # tighter between (a) and (b)
+gs = fig.add_gridspec(4, 2, height_ratios=[1, 1, 0.1, 1.1], width_ratios=[1, 0.025])  # row 2: spacer
 axs = {"s0": fig.add_subplot(gs[0, 0])}
 axs["s1"] = fig.add_subplot(gs[1, 0], sharex=axs["s0"])
-axs["psd"] = fig.add_subplot(gs[2, 0])
+axs["psd"] = fig.add_subplot(gs[3, 0])
 caxs = {"s0": fig.add_subplot(gs[0, 1]), "s1": fig.add_subplot(gs[1, 1])}
 
 for key, ti in zip(("s0", "s1"), SNAPSHOTS):
