@@ -58,7 +58,9 @@ def main(fits_csv, prefix="simulation_vs_stability", include_all=False):
     ax.set_xlabel(r"Growth rate from simulations, $\sigma/f^*$")
     ax.set_ylabel(r"Growth rate from stability analysis, $\sigma/f^*$")
     ax.set_title(rf"$r^2={r2:.2f}$" + (rf" (excl. SI: {r2_no_si:.2f})" if include_all else ""))
-    ax.legend(fontsize=8)
+    leg = ax.legend(fontsize=8)
+    for h in leg.legend_handles:
+        h.set_edgecolor("k")
     fig.tight_layout()
     fig.savefig(f"{prefix}.pdf")
     fig.savefig(f"{prefix}.png", dpi=200)
