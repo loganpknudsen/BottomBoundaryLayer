@@ -3,8 +3,10 @@
 
 Source: Floquet_Analysis_Basis_Diagram_Hilditch.ipynb (origin/Base_Case), cells 3-7 and 36.
 No data needed. The equations are kept exactly as in the notebook (small-angle Eq 2.28 system,
-the optimal slope found by scanning m in [-200, 200]); this is a faithful extraction, not the
-corrected Eq 2.27 system used in linear_theory/.
+the optimal slope found by scanning m in [-200, 200]); this is a faithful extraction.
+
+With --residual, also plots the budget residual in grey (panel a: (dk/dt - GSP - ASP - BP)/k;
+panel b: k(t) - k(0) - integral of GSP + ASP + BP) and saves as 07_tke_budget_linear_residual.
 """
 import pathlib
 import sys
@@ -89,6 +91,8 @@ def TKE_and_velocities(S, gamma_set, m_max, tf):
     return t, [dkdt, GSP, WSP, BFLUX], [ke, intGSP, intWSP, intBFLUX]
 
 
+SHOW_RESIDUAL = "--residual" in sys.argv[1:]
+
 m_max_S1_u = floquet_m_max(1, "gamma_u")
 time_S1_u, TKE_tends_S1_u, TKE_int_S1_u = TKE_and_velocities(1, "gamma_u", m_max_S1_u, 6)
 
@@ -104,6 +108,9 @@ axes[0].plot(T, TKE_tends_S1_u[2][ti:tf] / k, color="r", label=r"$ASP/\hat{k}$")
 # TODO(decision): the preprint Fig 7 labels this term BFLUX; the Base_Case notebook (used here)
 # renamed it BP, matching the text's Eq 2.31. Same data either way.
 axes[0].plot(T, TKE_tends_S1_u[3][ti:tf] / k, color="blue", linestyle="-", label=r"$BP/\hat{k}$")
+if SHOW_RESIDUAL:
+    resid = TKE_tends_S1_u[0] - TKE_tends_S1_u[1] - TKE_tends_S1_u[2] - TKE_tends_S1_u[3]
+    axes[0].plot(T, resid[ti:tf] / k, color="grey", label=r"Residual$/\hat{k}$")
 axes[0].hlines(0, 4, 0, color="k", linestyle="--")
 axes[0].set_ylabel(r"TKE Tendency Term", fontsize=12)
 axes[0].legend(loc="lower left", ncol=4)
@@ -115,6 +122,13 @@ axes[1].plot((time_S1_u) / (2 * np.pi), TKE_int_S1_u[0], color="k", label=r"$\ha
 axes[1].plot((time_S1_u[:-1]) / (2 * np.pi), TKE_int_S1_u[1], color="g", label=r"$\int_0^{\hat{t}}GSP\,d\hat{t}$", alpha=0.9)
 axes[1].plot((time_S1_u[:-1]) / (2 * np.pi), TKE_int_S1_u[2], color="r", label=r"$\int_0^{\hat{t}}ASP\,d\hat{t}$")
 axes[1].plot((time_S1_u[:-1]) / (2 * np.pi), TKE_int_S1_u[3], color="blue", linestyle="-", label=r"$\int_0^{\hat{t}}BP\,d\hat{t}$")
+if SHOW_RESIDUAL:
+    k_all = TKE_int_S1_u[0]
+    resid_int = (k_all[1:] - k_all[0]) - (TKE_int_S1_u[1] + TKE_int_S1_u[2] + TKE_int_S1_u[3])
+    axes[1].plot((time_S1_u[:-1]) / (2 * np.pi), resid_int, color="grey", label="Residual")
+    print(f"max |residual| / max |dk/dt| (panel a range): "
+          f"{np.max(np.abs(resid[ti:tf])) / np.max(np.abs(TKE_tends_S1_u[0][ti:tf])):.3f}")
+    print(f"integrated residual / (k(T) - k(0)) at T = 6: {resid_int[-1] / (k_all[-1] - k_all[0]):.4f}")
 axes[1].set_xlabel(r"Modified Inertial Period", fontsize=12)
 axes[1].set_ylabel(r"$\hat{k}$", fontsize=14)
 axes[1].legend(loc="lower left", ncol=4)
@@ -122,4 +136,4 @@ axes[1].text(-0.59, 0.5e5, "(b.)", fontsize=11)
 axes[1].set_xlim([0, 6])
 axes[1].set_yscale("symlog", linthresh=1)
 
-save(fig, __file__)
+save(fig, __file__ if not SHOW_RESIDUAL else str(pathlib.Path(__file__).with_name("07_tke_budget_linear_residual.py")))
