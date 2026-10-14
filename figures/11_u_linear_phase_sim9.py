@@ -35,7 +35,7 @@ t1 = 200
 t2 = 210
 t3 = 300
 t4 = 310
-v_max = 1e-4
+v_max = 1e-3
 lin_thresh = 1e-6
 # Colormap: "bwr" (Base_Case notebook; the preprint used RdYlBu). Chosen 2026-10-14.
 c_map = "bwr"
