@@ -115,7 +115,7 @@ axes[1].plot((time_S1_u) / (2 * np.pi), TKE_int_S1_u[0], color="k", label=r"$\ha
 axes[1].plot((time_S1_u[:-1]) / (2 * np.pi), TKE_int_S1_u[1], color="g", label=r"$\int_0^{\hat{t}}GSP\,d\hat{t}$", alpha=0.9)
 axes[1].plot((time_S1_u[:-1]) / (2 * np.pi), TKE_int_S1_u[2], color="r", label=r"$\int_0^{\hat{t}}ASP\,d\hat{t}$")
 axes[1].plot((time_S1_u[:-1]) / (2 * np.pi), TKE_int_S1_u[3], color="blue", linestyle="-", label=r"$\int_0^{\hat{t}}BP\,d\hat{t}$")
-axes[1].set_xlabel(r"Modified Intertial Period", fontsize=12)
+axes[1].set_xlabel(r"Modified Inertial Period", fontsize=12)
 axes[1].set_ylabel(r"$\hat{k}$", fontsize=14)
 axes[1].legend(loc="lower left", ncol=4)
 axes[1].text(-0.59, 0.5e5, "(b.)", fontsize=11)
