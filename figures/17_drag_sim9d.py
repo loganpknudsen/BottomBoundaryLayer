@@ -1,5 +1,5 @@
-"""Figure 17: Sim9D (Sim9 parameters with quadratic bottom drag). (a) perturbation u at T = 5 and
-T = 15 with isopycnals; (b) quasi-Lagrangian power spectral density of u over T = 0-20.
+"""Figure 17: Sim9D (Sim9 parameters with quadratic bottom drag). Perturbation u with isopycnals at
+(a) T = 5 and (b) T = 15; (c) quasi-Lagrangian power spectral density of u over T = 0-20.
 
 Run: Sim9D, full_code_diagnostics_stblty_comp_drag.jl with S = 1, Ri_inv = 0.95, delta = 0.8
 (c_d = 3.1e-3 from the log law, zero total buoyancy gradient at the bottom); output
@@ -83,7 +83,7 @@ ax.set_title(f"Quasi-Lagrangian $u$, z = {float(ds.zC[ZI]):.1f} m, T = {T[SPECTR
              fontsize="medium")
 ax.legend(frameon=False)
 
-for key, label in (("s0", "(a.)"), ("psd", "(b.)")):
+for key, label in (("s0", "(a.)"), ("s1", "(b.)"), ("psd", "(c.)")):
     axs[key].text(-0.1, 1.04, label, transform=axs[key].transAxes, fontsize="medium")
 
 save(fig, __file__)
