@@ -4,7 +4,8 @@
 Source: Floquet_Analysis_Basis_Diagram_Hilditch.ipynb (origin/Base_Case), cells 3-7 and 36.
 No data needed. The equations are kept exactly as in the notebook (small-angle Eq 2.28 system,
 the optimal slope found by scanning m in [-200, 200]); this is a faithful extraction, except that
-the along-slope ASP term no longer carries the notebook's extra cos(theta) (see Eq 2.31).
+the along-slope ASP term no longer carries the notebook's extra cos(theta) (see Eq 2.31) and v is
+reconstructed consistently with Eq 2.28 (no -f theta), so the budget closes exactly.
 
 With --residual, also plots the budget residual in grey (panel a: (dk/dt - GSP - ASP - BP)/k;
 panel b: k(t) - k(0) - integral of GSP + ASP + BP) and saves as 07_tke_budget_linear_residual.
@@ -79,7 +80,10 @@ def TKE_and_velocities(S, gamma_set, m_max, tf):
     output = sc.odeint(PSI_system, [0, 1], t, args=(m_max, S2, theta, gm, lmbd, delta, fstar, phi))
     w = ((m_t(t, m_max, lmbd, delta, fstar, phi)) ** 2 + 1) ** (-1) * output[:, 0]
     u = m_t(t, m_max, lmbd, delta, fstar, phi) * w * n
-    v = -f * (gm * S2 / theta - theta + m_max) * output[:, 1] / lmbd
+    # Consistent with the small-angle approximation of Eq 2.28, which neglects the tilted-rotation
+    # Coriolis terms f theta v (Eq 2.25a) and f theta w (Eq 2.25b): v = -(Lambda + f mu0) zeta,
+    # without the -f theta of Eq 2.25b. The pair does no work, so Eq 2.31 is unchanged and closes.
+    v = -f * (gm * S2 / theta + m_max) * output[:, 1] / lmbd
     b = -theta * (m_max + (1 - gm) / theta) * output[:, 1] / (1 - gm)
     ke = 0.5 * (u**2 + v**2 + n**2 * w**2)
     dkdt = np.gradient(ke, t[-1] - t[-2])

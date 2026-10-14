@@ -9,8 +9,10 @@ Solves Eq. 2.26 with the small-angle coefficients of Eq. 2.28 (as in the preprin
 criterion q = 0 (gamma = gamma_u). The fuller Eq. 2.27 (with the +S^2 gamma term restored that the
 printed 2.27a omits) closes the Eq. 2.31 budget exactly but shifts the SI onset by O(theta^2/S^2),
 because Eq. 2.18 has already dropped terms of that order; it was used briefly and set aside.
-The budget() below evaluates Eq. 2.31 on the 2.28 solutions, so it closes only to within
-O(theta^2/S^2) (see the 'closure' output); how to treat the budget is still to be decided.
+2.28 is Eq. 2.25 with the tilted-rotation Coriolis pair removed (f theta v in 2.25a, f theta w in
+2.25b). That pair does no work, so Eq. 2.31 is unchanged, but the fields must be reconstructed
+consistently: v = -(Lambda + f mu0) zeta, without the -f theta of 2.25b. With that, budget()
+closes Eq. 2.31 exactly on 2.28 solutions (see the 'closure' output).
 Time is t_hat = f* t with f* = f sqrt(1 + S^2), so growth rates are in units of f*.
 """
 import numpy as np
@@ -121,7 +123,10 @@ def budget(flow, mu0, ic="floquet", nt=2001):
     n = flow.fstar / Lam
     w = Psi / (1 + mu**2)
     u = mu * w * n
-    v = -f * (g * S2 / th - th + mu0) * zeta / Lam
+    # Consistent with the small-angle approximation of Eq 2.28: 2.28 neglects the tilted-rotation
+    # Coriolis terms f theta v (Eq 2.25a) and f theta w (Eq 2.25b), so v = -(Lambda + f mu0) zeta,
+    # without the -f theta of Eq 2.25b. The pair does no work, so Eq 2.31 is unchanged and closes.
+    v = -f * (g * S2 / th + mu0) * zeta / Lam
     b = -N2 * th * (mu0 + (1 - g) / th) * zeta / (N2 * (1 - g))
     k = 0.5 * (u**2 + v**2 + n**2 * w**2)
     Ri = N2 * (1 - g) / Lam**2
