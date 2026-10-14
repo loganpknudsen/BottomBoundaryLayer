@@ -3,7 +3,8 @@
 
 Source: Floquet_Analysis_Basis_Diagram_Hilditch.ipynb (origin/Base_Case), cells 3-7 and 36.
 No data needed. The equations are kept exactly as in the notebook (small-angle Eq 2.28 system,
-the optimal slope found by scanning m in [-200, 200]); this is a faithful extraction.
+the optimal slope found by scanning m in [-200, 200]); this is a faithful extraction, except that
+the along-slope ASP term no longer carries the notebook's extra cos(theta) (see Eq 2.31).
 
 With --residual, also plots the budget residual in grey (panel a: (dk/dt - GSP - ASP - BP)/k;
 panel b: k(t) - k(0) - integral of GSP + ASP + BP) and saves as 07_tke_budget_linear_residual.
@@ -83,7 +84,9 @@ def TKE_and_velocities(S, gamma_set, m_max, tf):
     ke = 0.5 * (u**2 + v**2 + n**2 * w**2)
     dkdt = np.gradient(ke, t[-1] - t[-2])
     GSP = -v * w
-    WSP = -u * w * delta * np.cos(t + np.pi / 2) + v * w * (f * np.cos(theta) * delta / fstar * np.sin(t + np.pi / 2))
+    # Eq 2.31 along-slope ASP term: delta (f/f*) sin(t + phi) v w (the notebook had an extra cos(theta),
+    # left over from the simulations' f* = f cos(theta) sqrt(1 + S^2) convention)
+    WSP = -u * w * delta * np.cos(t + np.pi / 2) + v * w * (f * delta / fstar * np.sin(t + np.pi / 2))
     BFLUX = alpha * beta ** (-1) * u * b + w * b * Ri
     intGSP = sc.cumulative_trapezoid(GSP[:], t[:])
     intWSP = sc.cumulative_trapezoid(WSP[:], t[:])
