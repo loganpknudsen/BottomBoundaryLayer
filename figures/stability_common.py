@@ -3,15 +3,15 @@
 Reads the grids written by linear_theory/stability_grid.py. Plotted fields pass through mask(),
 which holds the masking criteria agreed so far:
   1. points above the convective limit (convectively unstable at some wave phase) are removed;
-  2. below gamma_l (omega_min^2/f*^2 > 0.25), points with sigma/f below GROWTH_CUTOFF_F are
-     removed (the weak modes there depend on the m-scan resolution; above gamma_l they are
-     converged and are kept);
-  3. below gamma_l, points whose fastest mode is not PSI are removed. SI cannot occur there, so
-     this removes only non-PSI (harmonic) growth; PSI and SI above gamma_l are kept.
+  2. below gamma_l (omega_min^2/f*^2 > 0.25), points whose fastest mode is not PSI are removed.
+     SI cannot occur there, so this removes only non-PSI (harmonic) growth; PSI and SI above
+     gamma_l are kept.
+The grids must use the fine m scan (linear_theory DM=0.01): with the preprint's 0.1 step, weak
+modes at small delta and below gamma_l are missed intermittently.
 The analytic curves (gamma_l, gamma_u, convective limit) are drawn as lines. The PSI boundary
 line is the 0.5 contour of an unsmoothed indicator: 1 where the fastest mode is PSI, growing
-(sigma/f >= GROWTH_CUTOFF_F below gamma_l, sigma/f* > GROWTH_FLOOR above it) and below the
-convective limit, 0 elsewhere; its accuracy is set by the grid spacing (see linear_theory REFINE). The TKE-budget
+(sigma/f* > GROWTH_FLOOR) and below the convective limit, 0 elsewhere; its accuracy is set by
+the grid spacing (see linear_theory REFINE). The TKE-budget
 variant for Figs 8-9 (BUDGET_IC) is still a placeholder kept from the preprint.
 """
 import sys
@@ -29,12 +29,8 @@ BUDGET_IC = "ic01"
 
 # PSI: |Im sigma| = f*/2, tested as >= PSI_FREQ.
 PSI_FREQ = 0.4999
-# Growth-rate cutoff below gamma_l, in units of f (sigma/f = (sigma/f*) sqrt(1 + S^2), as
-# plotted). Removes the weak, m-resolution-dependent modes there (artefacts of the 0.1 m scan reach
-# ~0.02-0.03 f); below gamma_l the PSI boundary therefore marks sigma = GROWTH_CUTOFF_F * f.
-GROWTH_CUTOFF_F = 0.025
-# "Growing" above gamma_l: stable points have |sigma/f*| < 4e-11 (round-off) on the grids checked,
-# the weakest real growth found was 2e-6.
+# "Growing": stable points have |sigma/f*| < 4e-11 (round-off) on the grids checked; the weakest
+# real growth found was 2e-6.
 GROWTH_FLOOR = 1e-8
 BOUNDARY_LEVEL = 0.5
 
@@ -65,23 +61,19 @@ def mask(field, strat, S, delta, growth, freq):
     """Return `field` with masked points set to NaN. strat (gamma), S, delta, growth (sigma/f*)
     and freq (|Im sigma|/f*) must broadcast to field's shape. Criteria:
       1. gamma above the convective limit for this delta;
-      2. gamma below gamma_l and sigma/f below GROWTH_CUTOFF_F;
-      3. gamma below gamma_l and the fastest mode not PSI.
+      2. gamma below gamma_l and the fastest mode not PSI.
+    `growth` is unused now that the growth cutoff is removed; kept for a stable call signature.
     """
-    below = strat < gamma_lower_limit(S)
     keep = ((strat <= convective_limit(S, delta))
-            & ~(below & (growth_over_f(growth, S) < GROWTH_CUTOFF_F))
-            & ~(below & (np.abs(freq) < PSI_FREQ)))
+            & ~((strat < gamma_lower_limit(S)) & (np.abs(freq) < PSI_FREQ)))
     return np.where(keep, field, np.nan)
 
 
 def psi_unstable(freq, growth, S, strat, delta):
-    """1.0 where the fastest mode is PSI, growing (sigma/f >= GROWTH_CUTOFF_F below gamma_l,
-    sigma/f* > GROWTH_FLOOR above it) and below the convective limit, else 0.0; contour at
-    BOUNDARY_LEVEL. growth is sigma/f*."""
-    below = strat < gamma_lower_limit(S)
-    growing = np.where(below, growth_over_f(growth, S) >= GROWTH_CUTOFF_F, growth > GROWTH_FLOOR)
-    return ((np.abs(freq) >= PSI_FREQ) & growing & (strat <= convective_limit(S, delta))).astype(float)
+    """1.0 where the fastest mode is PSI, growing (sigma/f* > GROWTH_FLOOR) and below the
+    convective limit, else 0.0; contour at BOUNDARY_LEVEL. growth is sigma/f*."""
+    return ((np.abs(freq) >= PSI_FREQ) & (growth > GROWTH_FLOOR)
+            & (strat <= convective_limit(S, delta))).astype(float)
 
 
 def sgamma_mesh(data, delta):

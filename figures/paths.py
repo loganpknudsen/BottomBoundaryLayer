@@ -13,8 +13,8 @@ REPO = FIG_DIR.parent
 # Simulation output (TKE_terms_*.nc and flow_fields_*.nc). Default: the March 2026 runs.
 SIM_DIR = Path(os.environ.get("BBL_SIM_DIR", "/glade/derecho/scratch/knudsenl/data/new_data/final_draft"))
 
-# Linear-theory grids from linear_theory/stability_grid.py (sgamma.nc, freq.nc).
-LT_DIR = Path(os.environ.get("BBL_LT_DIR", f"/glade/derecho/scratch/{USER}/BottomBoundaryLayer/output/linear_theory"))
+# Linear-theory grids from linear_theory/stability_grid.py (sgamma.nc, freq.nc), with the fine m scan.
+LT_DIR = Path(os.environ.get("BBL_LT_DIR", f"/glade/derecho/scratch/{USER}/BottomBoundaryLayer/output/linear_theory_dm0.01"))
 
 # Growth-rate fits from Result_Calculations/growth_pipeline/fit_growth.py.
 FITS_CSV = Path(os.environ.get("BBL_FITS_CSV", REPO / "Result_Calculations/growth_pipeline/growth_fits.csv"))
