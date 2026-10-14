@@ -59,9 +59,12 @@ Ri = (N2 / shear2).sel(zC=slice(0, h))
 
 # Fraction of BBL points with Ri <= 0.25 for the first 501 outputs (cells 10 and 14). The notebook
 # counts these with a Python loop over Ri.where(Ri <= 0.25, other="nan"); summing the boolean mask
-# gives the same count. 135 is the number of grid levels below h for Sim9.
-count_list = (Ri.isel(time=slice(0, 501)) <= 0.25).sum(dim=[d for d in Ri.dims if d != "time"]).values
-prcnt = np.array(count_list) / (135 * 1024)
+# gives the same count. The denominator is the number of grid points in the BBL (z <= h), counted
+# from the selected region rather than hard-coded (135 x 1024 for Sim9).
+space_dims = [d for d in Ri.dims if d != "time"]
+count_list = (Ri.isel(time=slice(0, 501)) <= 0.25).sum(dim=space_dims).values
+n_bbl = int(np.prod([Ri.sizes[d] for d in space_dims]))
+prcnt = np.array(count_list) / n_bbl
 
 fig = plt.figure(figsize=(10, 7), constrained_layout=True)
 gs = gridspec.GridSpec(3, 2, figure=fig, height_ratios=[1.2, 1.2, 1])
