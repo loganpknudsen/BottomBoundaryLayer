@@ -78,12 +78,8 @@ t2 = 350
 t3 = 360
 t4 = 370
 v_max = 2e-3
-# TODO(decision): colormap. Base_Case cell 28 uses "bwr"; the submission commit (27f8414, cell 27)
-# uses "RdYlBu", and the preprint Fig 13 colour bar (blue at +0.002, red at -0.002) looks like
-# RdYlBu. Panel (b), however, matches only the Base_Case version (BBL fraction, y-limit 0.41).
-c_map = None
-if c_map is None:
-    raise NotImplementedError('Fig 13 colormap: "bwr" (Base_Case notebook) or "RdYlBu" (submission commit, matches preprint)?')
+# Colormap: "bwr" (Base_Case notebook; the preprint used RdYlBu). Chosen 2026-10-14.
+c_map = "bwr"
 
 
 def T(ti):

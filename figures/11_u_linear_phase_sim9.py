@@ -37,12 +37,8 @@ t3 = 300
 t4 = 310
 v_max = 1e-4
 lin_thresh = 1e-6
-# TODO(decision): colormap. Base_Case cell 23 uses "bwr"; the submission commit (27f8414, cell 22)
-# uses "RdYlBu", and the preprint Fig 11 colour bar (blue at +1e-4, yellow at 0, red at -1e-4)
-# looks like RdYlBu.
-c_map = None
-if c_map is None:
-    raise NotImplementedError('Fig 11 colormap: "bwr" (Base_Case notebook) or "RdYlBu" (submission commit, matches preprint)?')
+# Colormap: "bwr" (Base_Case notebook; the preprint used RdYlBu). Chosen 2026-10-14.
+c_map = "bwr"
 
 fig, axs = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(8, 4), layout="constrained")
 panels = [(axs[0, 0], t1, " ", "z [$m$]"), (axs[0, 1], t2, " ", " "),
