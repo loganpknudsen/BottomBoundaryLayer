@@ -2,7 +2,7 @@
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 31, which does not run as
 committed (it reads the S-gamma dataset and undefined boundary arrays); here it reads freq.nc and
-draws the boundary with the same placeholder method as Figs 3-5. Masked with
+draws the PSI boundary the same way as Figs 3-5. Masked with
 stability_common.mask (currently: points above the convective limit for each delta). Colour levels are fixed
 (0 to 0.3, as in Fig 4) rather than spanning the data range, so unmasked SI growth rates saturate
 instead of compressing the colour scale.
@@ -25,7 +25,7 @@ for k, (ax, label) in enumerate(zip(axs, ("(a.)", "(b.)", "(c.)"))):
     y = np.broadcast_to(d.delta.values[:, None], x.shape)
     cf = ax.contourf(x, y, sc.mask(d.growth_rate.values * np.sqrt(1 + S**2), d.strat_values.values, S, y),
                      levels=levels, extend="both", cmap="YlOrRd")
-    ax.contour(x, y, sc.boundary_field(d.frequency.values, d.strat_values.values, S),
+    ax.contour(x, y, sc.psi_unstable(d.frequency.values, d.growth_rate.values),
                levels=[sc.BOUNDARY_LEVEL], colors="k", linewidths=1)
     ax.text(-0.075, 1.05, label)
     ax.set_xlabel(r"$\omega_{\mathrm{min}}^2/(f^*)^2$")

@@ -3,17 +3,16 @@
 Reads the grids written by linear_theory/stability_grid.py. Plotted fields pass through mask(),
 which holds the masking criteria agreed so far:
   1. points above the convective limit (convectively unstable at some wave phase) are removed.
-The analytic curves (gamma_l, gamma_u, convective limit) are drawn as lines. Two choices are kept
-from stability_analysis_output_reader.ipynb as placeholders, to be settled with the masking:
-  * the PSI boundary line: the 0.4999 contour of the smoothed frequency field (cells 15, 18);
-  * the TKE-budget variant for Figs 8-9 (BUDGET_IC).
+The analytic curves (gamma_l, gamma_u, convective limit) are drawn as lines. The PSI boundary
+line is the 0.5 contour of an unsmoothed indicator: 1 where the fastest mode is PSI and growing,
+0 elsewhere; its accuracy is set by the grid spacing (see linear_theory REFINE). The TKE-budget
+variant for Figs 8-9 (BUDGET_IC) is still a placeholder kept from the preprint.
 """
 import sys
 from pathlib import Path
 
 import numpy as np
 import xarray as xr
-from scipy.ndimage import gaussian_filter
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from paths import LT_DIR  # noqa: E402
@@ -22,10 +21,12 @@ from paths import LT_DIR  # noqa: E402
 # growing Floquet mode. Placeholder: not yet decided.
 BUDGET_IC = "ic01"
 
-# Placeholder PSI boundary (notebook cells 15, 18): frequency set to 0 above 1.1 gamma_u,
-# smoothed with this sigma (in grid cells), contoured at BOUNDARY_LEVEL.
-SMOOTH_SIGMA = 0.275
-BOUNDARY_LEVEL = 0.4999
+# PSI-unstable: |Im sigma| = f*/2 (tested as >= PSI_FREQ) and growth above GROWTH_FLOOR. Stable
+# points have |growth| < 4e-11 (round-off) on the grids checked; the weakest real growth found was
+# 2e-6, so the floor sits in the gap between them.
+PSI_FREQ = 0.4999
+GROWTH_FLOOR = 1e-8
+BOUNDARY_LEVEL = 0.5
 
 
 def load(name):
@@ -54,11 +55,9 @@ def mask(field, strat, S, delta):
     return np.where(keep, field, np.nan)
 
 
-def boundary_field(freq, strat, S):
-    """Smoothed frequency used for the PSI boundary contour (placeholder method).
-    freq, strat: 2-D arrays on the same grid; S: slope Burger number(s) broadcastable to them."""
-    f = np.where(strat < 1.1 * gamma_upper_limit(S), freq, 0.0)
-    return gaussian_filter(f, SMOOTH_SIGMA)
+def psi_unstable(freq, growth):
+    """1.0 where the fastest mode is PSI and growing, else 0.0; contour at BOUNDARY_LEVEL."""
+    return ((np.abs(freq) >= PSI_FREQ) & (growth > GROWTH_FLOOR)).astype(float)
 
 
 def sgamma_mesh(data, delta):
@@ -70,9 +69,8 @@ def sgamma_mesh(data, delta):
 
 
 def sgamma_boundary(d):
-    """Boundary field for an S-gamma slice from sgamma_mesh."""
-    S = d.slope_burger_number.values[:, None]
-    return boundary_field(d.frequency.values, d.strat_values.values, S)
+    """PSI-unstable indicator for an S-gamma slice from sgamma_mesh."""
+    return psi_unstable(d.frequency.values, d.growth_rate.values)
 
 
 def budget(d, term):
