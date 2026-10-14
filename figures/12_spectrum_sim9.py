@@ -10,6 +10,10 @@ initial transient) and panel (b) shows u and v. Fixes relative to the notebook: 
 taken from the data (the notebook's "z=16.02 m" was stale; the series is at grid level 64,
 z = 50.39 m for Sim9); the PSD, which xrft returns per Hz, is divided by 2 pi so that it is a density
 per unit angular frequency, consistent with the omega axis; axis labels give the correct units.
+
+Usage: python 12_spectrum_sim9.py [--zi N]   (grid level of the time series; default 64, z = 50.39 m
+for Sim9; earlier notebook versions used 20, z = 16.02 m). A non-default level is added to the
+output name, e.g. 12_spectrum_sim9_zi20.png.
 """
 import pathlib
 import sys
@@ -50,7 +54,7 @@ def z_change(t, z, x):  # advection by isopycnals
 # Quasi-Lagrangian velocities (cells 6 and 7)
 ti = 100   # T = 5
 tf = 300   # T = 15
-zi = 64
+zi = int(sys.argv[sys.argv.index("--zi") + 1]) if "--zi" in sys.argv else 64
 xi = 256
 v_lagrange = ocean_data.v.sel(xC=ocean_data.xC[xi] + z_change(ocean_data.time[ti:tf], ocean_data.zC[zi], ocean_data.xC[xi]),
                               zC=ocean_data.zC[zi], time=ocean_data.time[ti:tf], method="nearest")
@@ -89,4 +93,4 @@ ax.set_xlabel(r"Angular frequency $\omega$ [rad s$^{-1}$]")
 ax.set_xscale("log")
 ax.set_ylabel(r"PSD [m$^2$ s$^{-1}$ rad$^{-1}$]")
 
-save(fig, __file__)
+save(fig, __file__ if zi == 64 else str(pathlib.Path(__file__).with_name(f"12_spectrum_sim9_zi{zi}.py")))
