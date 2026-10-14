@@ -4,8 +4,11 @@ Same runs, parameters and resources as the March set (run_all.py), but using
 full_code_diagnostics_noflux.jl and writing to OUTPUT_DIR. The SI-unstable runs
 (Ri_inv = 1.05, SI_SIMS) are not in the figure and are submitted only when named.
 
-Usage: python submit_noflux.py [--dry-run] [SIM ...]
+Usage: python submit_noflux.py [--dry-run] [--drag] [SIM ...]
   --dry-run   write and print the job scripts but do not qsub them
+  --drag      run full_code_diagnostics_stblty_comp_drag.jl instead (quadratic bottom drag on the
+              total velocity, zero total buoyancy gradient at the bottom; e.g. Sim9D is
+              "--drag S10R095delta08"); jobs and logs get a _drag suffix
   SIM ...     submit only these parameter sets (default: all of ALL_SIMS; SI_SIMS by name)
 
 Progress is written live to logs/noflux/SIM.log (tail -f it); the PBS .out/.err files
@@ -32,14 +35,16 @@ JULIA_FILE = "full_code_diagnostics_noflux.jl"
 JOB_DIR = Path("jobs_noflux")
 LOG_DIR = Path("logs/noflux")
 
+DRAG_JULIA_FILE = "full_code_diagnostics_stblty_comp_drag.jl"
+
 PBS_SCRIPT = """#!/bin/bash -l
-#PBS -N {name}_nf
+#PBS -N {name}{tag}
 #PBS -A UMCP0023
 #PBS -l select=1:ncpus=32:mpiprocs=2:mem=160gb:ngpus=1:gpu_type=v100
 #PBS -l walltime=8:00:00
 #PBS -q casper
-#PBS -o {log_dir}/{name}.out
-#PBS -e {log_dir}/{name}.err
+#PBS -o {log_dir}/{name}{log_tag}.out
+#PBS -e {log_dir}/{name}{log_tag}.err
 #PBS -m abe
 
 module --force purge
@@ -51,13 +56,15 @@ cd {repo}
 # Log straight to glade (PBS only copies the -o/-e files at job end). `script` runs julia
 # on a pseudo-terminal so its output is line-buffered; -f flushes each write, -e keeps
 # julia's exit status.
-script -qfec "julia --pkgimages=no --project=. {julia_file} --path {output_dir} --suffix {name}" {log_dir}/{name}.log
+script -qfec "julia --pkgimages=no --project=. {julia_file} --path {output_dir} --suffix {name}" {log_dir}/{name}{log_tag}.log
 """
 
 
 def main(argv):
     dry_run = "--dry-run" in argv
-    sims = [a for a in argv if a != "--dry-run"] or ALL_SIMS
+    drag = "--drag" in argv
+    sims = [a for a in argv if a not in ("--dry-run", "--drag")] or ALL_SIMS
+    julia_file, tag, log_tag = (DRAG_JULIA_FILE, "_drag", "_drag") if drag else (JULIA_FILE, "_nf", "")
     unknown = set(sims) - set(ALL_SIMS) - set(SI_SIMS)
     if unknown:
         sys.exit(f"not in ALL_SIMS or SI_SIMS: {sorted(unknown)}")
@@ -67,9 +74,9 @@ def main(argv):
         d.mkdir(parents=True, exist_ok=True)
 
     for name in sims:
-        job = repo / JOB_DIR / f"{name}.sh"
-        job.write_text(PBS_SCRIPT.format(name=name, log_dir=repo / LOG_DIR, repo=repo,
-                                         julia_file=JULIA_FILE, output_dir=OUTPUT_DIR))
+        job = repo / JOB_DIR / f"{name}{log_tag}.sh"
+        job.write_text(PBS_SCRIPT.format(name=name, tag=tag, log_tag=log_tag, log_dir=repo / LOG_DIR, repo=repo,
+                                         julia_file=julia_file, output_dir=OUTPUT_DIR))
         if dry_run:
             print(f"--- {job}\n{job.read_text()}")
         else:

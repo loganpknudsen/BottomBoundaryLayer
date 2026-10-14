@@ -52,7 +52,7 @@ end
 
 ### Path Saved To
 
-path_name = "/glade/derecho/scratch/knudsenl/data/new_data/final_draft/" # args["path"]
+path_name = joinpath(args["path"], "") # output directory from --path (ensure trailing slash)
 setname = args["suffix"]
 
 ### Load in Parameters
@@ -188,10 +188,12 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5))
 
 ### progress message to check time step size
 
-progress_message(sim) =
+function progress_message(sim)
         @printf("i: %04d, t: %s, Δt: %s, wall time: %s, Inertial Period %s\n",
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9),sim.model.clock.time*fˢ/2π)
+        flush(stdout) # stdout is block-buffered when redirected to a file
+end
 
 simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(2π/fˢ) ) 
 
