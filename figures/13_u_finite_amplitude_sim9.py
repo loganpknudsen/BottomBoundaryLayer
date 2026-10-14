@@ -105,12 +105,12 @@ fig.colorbar(im, ax=[ax1, ax2, ax3, ax4], label=r"u-velocity [$m\text{ }s^{-1}$]
 ax1.text(-200, 185, "(a.)")
 
 ax_big.plot(ocean_data.time.values[0:501] * fstar / (2 * np.pi), prcnt, color="k")
-ax_big.vlines(ocean_data.time.values[t1] * fstar / (2 * np.pi), -0.01, 0.42, color="grey", linestyle="-.", label=r"T=" + T(t1))
-ax_big.vlines(ocean_data.time.values[t2] * fstar / (2 * np.pi), -0.01, 0.42, color="grey", linestyle="--", label=r"T=" + T(t2))
+ax_big.vlines(ocean_data.time.values[t1] * fstar / (2 * np.pi), -0.01, 0.6, color="grey", linestyle="-.", label=r"T=" + T(t1))
+ax_big.vlines(ocean_data.time.values[t2] * fstar / (2 * np.pi), -0.01, 0.6, color="grey", linestyle="--", label=r"T=" + T(t2))
 ax_big.legend()
-ax_big.text(-1, 0.45, "(b.)")
+ax_big.text(-1, 0.65, "(b.)")
 ax_big.set_xlim([0, 25])
-ax_big.set_ylim([-0.01, 0.41])
+ax_big.set_ylim([-0.01, 0.6])
 ax_big.set_xlabel("T")
 ax_big.set_ylabel(r"Fraction w/ Ri$\leq 0.25$")
 
