@@ -1,10 +1,11 @@
 """Simulation vs. Floquet growth rate (manuscript Fig. 10), from fit_growth.py output.
 
 Choices (agreed 2026-10-14):
-  * window tolerance p = 10%;
+  * fit window of n = 4 amplitude e-folds ending at the peak growth rate (fit_growth.py);
   * SI-unstable runs (Sim5, Sim10, Sim14) are dropped;
   * Sim6 is kept although its fastest Floquet mode is not PSI;
-  * runs with no exponential phase (Sim6, Sim18) are plotted at sigma = 0 with an open marker.
+  * runs with no exponential phase (Sim6 in the no-flux runs) are plotted at sigma = 0 with an
+    open marker.
 
 With --all, the SI-unstable runs are added back for testing (in red), and r^2 is reported
 both with and without them.
@@ -22,13 +23,13 @@ import scipy.stats
 
 from sims import SIMS
 
-P = 0.10
+N_EFOLDS = 4
 MARKERS = {0.5: "x", 1.0: "+", 1.5: "*"}
 
 
 def main(fits_csv, prefix="simulation_vs_stability", include_all=False):
     df = pd.read_csv(fits_csv)
-    df = df[np.isclose(df.p, P)].copy()
+    df = df[df.n == N_EFOLDS].copy()
     if not include_all:
         df = df[~df.si_unstable]
     df["color"] = np.where(df.si_unstable, "tab:red", "k")
