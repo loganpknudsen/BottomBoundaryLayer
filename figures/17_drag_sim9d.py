@@ -43,11 +43,14 @@ def nice_limit(x):
     return next(float(m * 10**e) for m in (1, 2, 5, 10) if m * 10**e >= x)
 
 
-# Snapshots stacked as wide panels (the domain is 2000 m x 200 m), sharing the x axis
+# Snapshots stacked as wide panels (the domain is 2000 m x 200 m), sharing the x axis. One grid
+# with a narrow colourbar column, so the spectrum below has the same width as the snapshots.
 fig = plt.figure(figsize=(7.5, 8), layout="constrained")
-top, bottom = fig.subfigures(2, 1, height_ratios=[2, 1.1])
-snap_axes = top.subplots(2, 1, sharex=True)
-axs = {"s0": snap_axes[0], "s1": snap_axes[1], "psd": bottom.subplots()}
+gs = fig.add_gridspec(3, 2, height_ratios=[1, 1, 1.1], width_ratios=[1, 0.025])
+axs = {"s0": fig.add_subplot(gs[0, 0])}
+axs["s1"] = fig.add_subplot(gs[1, 0], sharex=axs["s0"])
+axs["psd"] = fig.add_subplot(gs[2, 0])
+caxs = {"s0": fig.add_subplot(gs[0, 1]), "s1": fig.add_subplot(gs[1, 1])}
 
 for key, ti in zip(("s0", "s1"), SNAPSHOTS):
     ax = axs[key]
@@ -57,8 +60,10 @@ for key, ti in zip(("s0", "s1"), SNAPSHOTS):
     im = u.plot(ax=ax, cmap="RdBu_r", vmin=-vmax, vmax=vmax, add_colorbar=False, rasterized=True)
     (ds.B + ds.ba).isel(time=ti).squeeze(drop=True).plot.contour(
         ax=ax, colors="k", levels=N_ISOPYCNALS, linewidths=0.6, linestyles="solid", alpha=0.7)
-    top.colorbar(im, ax=ax, label=r"$u$ [m s$^{-1}$]", extend="both", aspect=12, pad=0.02)
+    fig.colorbar(im, cax=caxs[key], label=r"$u$ [m s$^{-1}$]", extend="both")
     ax.set(title="", xlabel="x [m]" if key == "s1" else "", ylabel="z [m]")
+    if key == "s0":
+        ax.tick_params(labelbottom=False)
     ax.text(0.01, 0.95, f"T = {T[ti]:.0f}", transform=ax.transAxes, ha="left", va="top",
             bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=0.8))
 
