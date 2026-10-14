@@ -1,6 +1,6 @@
 """Floquet growth rate for each simulation, evaluated at its exact (S, gamma, delta).
 
-Uses linear_theory/floquet.py: Eq. 2.26 with the corrected Eq. 2.27 coefficients (time scaled
+Uses linear_theory/floquet.py: Eq. 2.26 with the Eq. 2.28 coefficients (time scaled
 by f*, so sigma is in units of f*), the same system used for the parameter-space figures.
 The growth rate is maximised over the perturbation slope mu0 directly rather than looked up
 on a precomputed grid.

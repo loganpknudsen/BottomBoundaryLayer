@@ -1,5 +1,5 @@
 #!/bin/bash
-# Submit the linear-theory parameter grids (corrected Eq 2.27 system) as Casper CPU jobs.
+# Submit the linear-theory parameter grids (Eq 2.28 system) as Casper CPU jobs.
 # Usage (from the repo root): [REFINE=n] [DM=step] [HOURS=h] bash linear_theory/submit_grids.sh [sgamma] [freq]
 #   REFINE=n divides the grid spacing by n (default 1, the preprint grids); cost ~ n^2.
 #   DM is the m-scan step (default 0.1, the preprint value); DM=0.01 costs ~10x.

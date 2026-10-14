@@ -1,5 +1,5 @@
 """Compute growth rate, frequency, optimal perturbation slope and the TKE budget over a
-parameter grid, with the corrected Eq. 2.27 system (floquet.py).
+parameter grid, with the Eq. 2.28 system (floquet.py).
 
 Grids at REFINE = 1 (the same as the preprint figures used):
   sgamma  S in (0, 2) step 0.005, gamma in [0, 1] (5 x 40 points), delta in {0, 0.5, 1}
@@ -72,7 +72,7 @@ def main(name, chunk, nchunks, outdir, nproc=None, refine=1, dm=0.1):
                             np.broadcast_to(strat[idx][:, None, :], shape).copy())
     ds = xr.Dataset(data, coords={"slope_burger_number": S[idx], "delta": delta,
                                   "strat_index": np.arange(strat.shape[1])})
-    ds.attrs.update(equations="Eq 2.26 with corrected Eq 2.27 (linear_theory/floquet.py)",
+    ds.attrs.update(equations="Eq 2.26 with Eq 2.28 coefficients (linear_theory/floquet.py)",
                     units="growth_rate, frequency in units of f* = f sqrt(1+S^2)",
                     budget="Eq 2.31 terms integrated over one period / change in k_hat; "
                            "_floquet: growing Floquet mode, _ic01: (Psi, zeta) = (0, 1)",

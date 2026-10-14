@@ -1,15 +1,17 @@
 """Floquet stability analysis of PSI in the bottom boundary layer (manuscript Section 2).
 
-Solves Eq. 2.26 with the coefficients of Eq. 2.27, derived from Eq. 2.25 without the further
-small-angle reduction of Eq. 2.28. Note that the A0 printed as Eq. 2.27a in the May 2026
-preprint is missing a +S^2 gamma term inside the bracket; the form used here is
+Solves Eq. 2.26 with the small-angle coefficients of Eq. 2.28 (as in the preprint):
 
-    A0 = -[mu0 (S^2/theta - theta) + S^2 (1 - gamma)/theta^2 - S^2 gamma + theta^2] / (1 + S^2)
-    A1 = mu0 + (S^2 - theta^2) / (theta (1 + S^2))
+    A0 = -S^2 / (theta (1 + S^2)) [mu0 + (1 - gamma)/theta]
+    A1 = mu0 + S^2 / (theta (1 + S^2))
 
-For this system the linear TKE budget (Eq. 2.31) is exact, so growth rates, perturbation slopes
-and budget terms all come from one set of equations. Time is t_hat = f* t with
-f* = f sqrt(1 + S^2), so growth rates are in units of f*.
+2.28 keeps all terms to the same order, so its SI onset at delta = 0 lies exactly at the PV
+criterion q = 0 (gamma = gamma_u). The fuller Eq. 2.27 (with the +S^2 gamma term restored that the
+printed 2.27a omits) closes the Eq. 2.31 budget exactly but shifts the SI onset by O(theta^2/S^2),
+because Eq. 2.18 has already dropped terms of that order; it was used briefly and set aside.
+The budget() below evaluates Eq. 2.31 on the 2.28 solutions, so it closes only to within
+O(theta^2/S^2) (see the 'closure' output); how to treat the budget is still to be decided.
+Time is t_hat = f* t with f* = f sqrt(1 + S^2), so growth rates are in units of f*.
 """
 import numpy as np
 from scipy.integrate import simpson, solve_ivp
@@ -34,9 +36,10 @@ class Flow:
         self.amp = delta * self.Lam / self.fstar        # wave amplitude of mu(t)
 
     def A(self, mu0):
+        """Eq. 2.28 coefficients."""
         S2, th, g = self.S2, self.theta, self.gamma
-        A0 = -(mu0 * (S2 / th - th) + S2 * (1 - g) / th**2 - S2 * g + th**2) / (1 + S2)
-        A1 = mu0 + (S2 - th**2) / (th * (1 + S2))
+        A0 = -S2 / (th * (1 + S2)) * (mu0 + (1 - g) / th)
+        A1 = mu0 + S2 / (th * (1 + S2))
         return A0, A1
 
     def mu(self, t, mu0):

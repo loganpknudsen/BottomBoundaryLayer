@@ -30,6 +30,5 @@ def tke_filename(s):
 
 
 # Runs whose fastest Floquet mode is not PSI (Im sigma != f*/2), from theory_growth.py with the
-# corrected Eq 2.27 system: Sim6 (omega_min^2/(f*)^2 = 0.35) and SI-unstable Sim10 and Sim14.
-# (Sim5 is SI-unstable by its PV but its fastest Floquet mode is PSI in this system.)
-NOT_PSI = {"Sim6", "Sim10", "Sim14"}
+# Eq 2.28 system: the three SI-unstable runs and Sim6 (omega_min^2/(f*)^2 = 0.35).
+NOT_PSI = {"Sim5", "Sim6", "Sim10", "Sim14"}
