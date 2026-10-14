@@ -17,7 +17,7 @@ import sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 import scipy.stats
@@ -60,7 +60,7 @@ def main(fits_csv, prefix="simulation_vs_stability", include_si=True):
     ax.set_title(rf"$r^2={r2:.2f}$")
     handles, labels = ax.get_legend_handles_labels()
     if df.si_unstable.any():
-        handles.append(Patch(color=SI_COLOR))
+        handles.append(Line2D([], [], ls="none", marker="o", color=SI_COLOR))
         labels.append("SI unstable")
     leg = ax.legend(handles, labels, fontsize=8)
     for h in leg.legend_handles[:len(MARKERS) + 1]:
