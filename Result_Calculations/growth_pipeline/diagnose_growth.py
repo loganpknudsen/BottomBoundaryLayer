@@ -25,11 +25,11 @@ from sims import SIMS, tke_filename
 
 THETA = 0.1
 F = 1e-4
-# Floquet growth rates (sigma / f*) from theory_growth.py
-THEORY = {"Sim1": 0.1346, "Sim2": 0.1768, "Sim3": 0.1827, "Sim4": 0.1843, "Sim5": 0.2403,
-          "Sim6": 0.0126, "Sim7": 0.1074, "Sim8": 0.1292, "Sim9": 0.1453, "Sim10": 0.2834,
-          "Sim11": 0.0309, "Sim12": 0.0713, "Sim13": 0.1027, "Sim14": 0.2655,
-          "Sim15": 0.1200, "Sim16": 0.0873, "Sim17": 0.0571, "Sim18": 0.0282}
+# Floquet growth rates (sigma / f*) from theory_growth.py (corrected Eq 2.27 system)
+THEORY = {"Sim1": 0.1121, "Sim2": 0.1774, "Sim3": 0.1922, "Sim4": 0.1942, "Sim5": 0.1952,
+          "Sim6": 0.0126, "Sim7": 0.1067, "Sim8": 0.1316, "Sim9": 0.1476, "Sim10": 0.2566,
+          "Sim11": 0.0308, "Sim12": 0.0718, "Sim13": 0.1033, "Sim14": 0.2553, "Sim15": 0.1224,
+          "Sim16": 0.0889, "Sim17": 0.0581, "Sim18": 0.0287}
 
 
 def load_lnk(path, S):

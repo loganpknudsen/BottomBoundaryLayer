@@ -1,50 +1,25 @@
 """Floquet growth rate for each simulation, evaluated at its exact (S, gamma, delta).
 
-Uses the small-angle PSI system from stability_analysis_full_run_small_angle.py (time
-scaled by f*, so sigma is in units of f*). Instead of looking up the nearest point on
-a precomputed grid, the Floquet exponent is maximised over the perturbation slope m
-directly: a coarse sweep followed by a bounded scalar refinement.
+Uses linear_theory/floquet.py: Eq. 2.26 with the corrected Eq. 2.27 coefficients (time scaled
+by f*, so sigma is in units of f*), the same system used for the parameter-space figures.
+The growth rate is maximised over the perturbation slope mu0 directly rather than looked up
+on a precomputed grid.
 """
+import sys
+from pathlib import Path
+
 import numpy as np
-import scipy.integrate as sc
-import scipy.optimize as so
 
-from sims import SIMS, gamma
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "linear_theory"))
+import floquet as fl  # noqa: E402
 
-THETA = 0.1
-F = 1e-4
-TAU = 2 * np.pi
+from sims import SIMS, gamma  # noqa: E402
 
-
-def floquet(m, S, gm, delta):
-    """Return the Floquet exponent (sigma, frequency) with the largest real part, in units of f*."""
-    S2 = S**2
-    N2 = S2 * F**2 / THETA**2
-    fstar = F * np.sqrt(1 + S2)
-    lmbd = N2 * THETA * gm / F
-    A0 = -S2 / (THETA * (1 + S2)) * (m + (1 - gm) / THETA)
-    A1 = m + S2 / (THETA * (1 + S2))
-
-    def rhs(t, v):
-        psi, D = v
-        mt = m + delta * lmbd / fstar * np.sin(t + np.pi / 2)
-        return [(A0 - A1 * mt) * D, psi / (1 + mt**2)]
-
-    cols = [sc.solve_ivp(rhs, (0, TAU), ic, rtol=1e-10, atol=1e-12).y[:, -1] for ic in ([1, 0], [0, 1])]
-    eigs = np.log(np.linalg.eigvals(np.array(cols).T).astype(complex)) / TAU
-    e = eigs[np.argmax(eigs.real)]
-    return e.real, abs(e.imag)
+M_GRID = np.arange(-50, 5 + 0.1, 0.1)
 
 
 def max_growth(S, gm, delta):
-    ms = np.arange(-40, 5, 0.1)
-    sig = np.array([floquet(m, S, gm, delta)[0] for m in ms])
-    i = np.argmax(sig)
-    res = so.minimize_scalar(lambda m: -floquet(m, S, gm, delta)[0],
-                             bounds=(ms[max(i - 1, 0)], ms[min(i + 1, len(ms) - 1)]),
-                             method="bounded", options={"xatol": 1e-6})
-    sigma, freq = floquet(res.x, S, gm, delta)
-    return sigma, freq, res.x
+    return fl.fastest_mode(fl.Flow(S, gm, delta), M_GRID)
 
 
 if __name__ == "__main__":
