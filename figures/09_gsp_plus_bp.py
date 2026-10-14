@@ -2,7 +2,7 @@
 (b) delta = 1.0.
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 89; the budget now comes
-from sgamma.nc instead of notebook cells 68-69. Masked with stability_common.mask (currently:
+from sgamma.nc instead of notebook cells 68-69. The colourbar is labelled (unlabelled in the notebook). Masked with stability_common.mask (currently:
 above the convective limit, or below gamma_l with sigma/f < 1e-3 or a non-PSI fastest mode).
 """
 import matplotlib.pyplot as plt
@@ -29,5 +29,6 @@ for ax, delta, label in zip(axs, (0.5, 1.0), ("(a.)", "(b.)")):
     ax.set_xlabel(r"$S_\infty$")
 axs[0].set_ylim([0.05, 1])
 axs[0].set_ylabel(r"$\gamma$")
-fig.colorbar(cf, ax=axs, ticks=np.arange(-vmax, vmax + 0.06, 0.5))
+cbar = fig.colorbar(cf, ax=axs, ticks=np.arange(-vmax, vmax + 0.06, 0.5))
+cbar.set_label(r"Fraction of TKE change over one period")
 save(fig, __file__)
