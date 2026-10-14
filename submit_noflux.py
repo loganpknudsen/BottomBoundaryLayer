@@ -7,6 +7,9 @@ full_code_diagnostics_noflux.jl and writing to OUTPUT_DIR. The SI-unstable runs
 Usage: python submit_noflux.py [--dry-run] [SIM ...]
   --dry-run   write and print the job scripts but do not qsub them
   SIM ...     submit only these parameter sets (default: all of ALL_SIMS)
+
+Progress is written live to logs/noflux/SIM.log (tail -f it); the PBS .out/.err files
+only appear when the job ends.
 """
 import subprocess
 import sys
@@ -40,7 +43,8 @@ module --ignore-cache load cuda
 module --ignore-cache load julia/1.10.2
 
 cd {repo}
-julia --pkgimages=no --project=. {julia_file} --path {output_dir} --suffix {name}
+# Write Julia's output straight to glade: PBS only copies the -o/-e files at job end.
+julia --pkgimages=no --project=. {julia_file} --path {output_dir} --suffix {name} > {log_dir}/{name}.log 2>&1
 """
 
 

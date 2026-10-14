@@ -169,10 +169,12 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5))
 
 ### progress message to check time step size
 
-progress_message(sim) =
+function progress_message(sim)
         @printf("i: %04d, t: %s, Δt: %s, wall time: %s, Intertial Period %s\n",
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9),sim.model.clock.time*fˢ/2π)
+        flush(stdout) # stdout is block-buffered when redirected to a file
+end
 
 simulation.callbacks[:progress] = Callback(progress_message, TimeInterval(2π/fˢ) ) 
 
