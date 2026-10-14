@@ -2,8 +2,8 @@
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 28. Data: sgamma.nc.
 mu_B = -(1 - gamma)/theta is the isopycnal-aligned slope. Masked with stability_common.mask
-(currently: above the convective limit, or non-PSI
-below gamma_l, or sigma/f < 1e-3). At stable points the "optimal" slope is the
+(currently: above the convective limit, or
+below gamma_l with sigma/f < 1e-3 or a non-PSI fastest mode). At stable points the "optimal" slope is the
 argmax of a zero growth rate and is not meaningful.
 """
 import matplotlib.pyplot as plt

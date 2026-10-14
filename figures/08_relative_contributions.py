@@ -4,7 +4,7 @@ period, for delta = 0.5.
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 87; the budget now comes
 from sgamma.nc (computed with the growth-rate equations, see linear_theory/floquet.py) instead
 of notebook cell 68. Masked with stability_common.mask (currently: above the convective
-limit, or non-PSI below gamma_l, or sigma/f < 1e-3). Change from the notebook: the colourbar was labelled as a growth
+limit, or below gamma_l with sigma/f < 1e-3 or a non-PSI fastest mode). Change from the notebook: the colourbar was labelled as a growth
 rate; the plotted quantity is a dimensionless fraction of the TKE change.
 """
 import matplotlib.pyplot as plt
