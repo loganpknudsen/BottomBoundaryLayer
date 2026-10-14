@@ -10,6 +10,10 @@ initial transient) and panel (b) shows u and v. Fixes relative to the notebook: 
 taken from the data (the notebook's "z=16.02 m" was stale; the series is at grid level 64,
 z = 50.39 m for Sim9); the PSD, which xrft returns per Hz, is divided by 2 pi so that it is a density
 per unit angular frequency, consistent with the omega axis; axis labels give the correct units.
+Panel (a) averages the quasi-Lagrangian power spectrum over all starting x, and panel (b) follows the
+starting x where |u| is largest at T = 5 (a crest). The notebook used the single point x = 500 m,
+which in the 2026 runs sits on a node of the u pattern, so its series flips sign as the node drifts
+across it.
 
 Usage: python 12_spectrum_sim9.py [--zi N]   (grid level of the time series; default 64, z = 50.39 m
 for Sim9; earlier notebook versions used 20, z = 16.02 m). A non-default level is added to the
@@ -51,22 +55,39 @@ def z_change(t, z, x):  # advection by isopycnals
     return z_osc
 
 
-# Quasi-Lagrangian velocities (cells 6 and 7)
+# Quasi-Lagrangian velocities from every starting x. At output i the QL position of a parcel that
+# started at grid point j is x_j + chi(t_i); on the uniform periodic grid its nearest grid point is
+# j + n_i with n_i = round(chi(t_i)/dx) (wrapping in x), as in the notebook's nearest-point sampling.
 ti = 100   # T = 5
 tf = 300   # T = 15
 zi = int(sys.argv[sys.argv.index("--zi") + 1]) if "--zi" in sys.argv else 64
-xi = 256
-v_lagrange = ocean_data.v.sel(xC=ocean_data.xC[xi] + z_change(ocean_data.time[ti:tf], ocean_data.zC[zi], ocean_data.xC[xi]),
-                              zC=ocean_data.zC[zi], time=ocean_data.time[ti:tf], method="nearest")
-v_lagrange = v_lagrange.drop_vars(['xC', 'yF', 'zC'])
-u_lagrange = ocean_data.u.sel(xF=ocean_data.xF[xi] + z_change(ocean_data.time[ti:tf], ocean_data.zC[zi], ocean_data.xF[xi]),
-                              zC=ocean_data.zC[zi], time=ocean_data.time[ti:tf], method="nearest")
-u_lagrange = u_lagrange.drop_vars(['xF', 'yC', 'zC'])
+t_win = ocean_data.time[ti:tf]
+dx = float(ocean_data.xF[1] - ocean_data.xF[0])
+n_shift = np.rint(z_change(t_win, ocean_data.zC[zi], None).values / dx).astype(int)
 
-transform_lagrange = xf.power_spectrum(u_lagrange, dim="time")   # density per Hz (cycles/s)
-omega = transform_lagrange.freq_time * 2 * np.pi                   # angular frequency [rad/s]
-psd = transform_lagrange / (2 * np.pi)                             # density per unit omega
-z_label = f"z={float(ocean_data.zC[zi]):.2f} m"
+
+def quasi_lagrangian(field):
+    """(time, x0) array: the field following the QL position of each starting grid point x0."""
+    a = field.isel(time=slice(ti, tf), zC=zi).squeeze(drop=True).transpose("time", ...).values
+    nx = a.shape[1]
+    idx = (np.arange(nx)[None, :] + n_shift[:, None]) % nx
+    return xr.DataArray(np.take_along_axis(a, idx, axis=1), dims=("time", "x0"),
+                        coords={"time": t_win.values, "x0": ocean_data.xF.values})
+
+
+u_ql = quasi_lagrangian(ocean_data.u)
+v_ql = quasi_lagrangian(ocean_data.v)
+
+# (a) power spectrum averaged over all starting positions, so it does not depend on where the
+# sample sits relative to the crests and nodes of the perturbation pattern
+transform_lagrange = xf.power_spectrum(u_ql, dim="time").mean("x0")   # density per Hz (cycles/s)
+omega = transform_lagrange.freq_time * 2 * np.pi                         # angular frequency [rad/s]
+psd = transform_lagrange / (2 * np.pi)                                   # density per unit omega
+
+# (b) time series at a crest: the starting x where |u| is largest at T = 5
+j_crest = int(np.argmax(np.abs(u_ql.isel(time=0).values)))
+u_lagrange, v_lagrange = u_ql.isel(x0=j_crest), v_ql.isel(x0=j_crest)
+z_label = f"z={float(ocean_data.zC[zi]):.2f} m, $x_0$={float(u_ql.x0[j_crest]):.0f} m"
 
 fig, ax_dict = plt.subplot_mosaic([['(a.)', '(b.)']], layout="constrained", figsize=(9, 4))
 ax = ax_dict['(b.)']
