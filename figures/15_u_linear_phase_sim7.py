@@ -36,26 +36,27 @@ t1 = 300
 t2 = 310
 t3 = 400
 t4 = 410
-v_max = 1e-5
-c_map = "RdYlBu"
-# TODO(decision): linear threshold. Both notebook versions use lin_thresh = 1e-9 (colour-bar ticks
-# down to 1e-8), but the preprint caption says 1e-7 and the preprint colour bar shows ticks only
-# down to 1e-7 with 0 one decade below, which looks like lin_thresh = 1e-7.
-lin_thresh = None
-if lin_thresh is None:
-    raise NotImplementedError("Fig 15 linear threshold: 1e-9 (notebook) or 1e-7 (preprint caption/colour bar)?")
+# Colour scale as in Fig 11 (chosen 2026-10-14); the notebooks used RdYlBu, v_max = 1e-5 and
+# lin_thresh = 1e-9 (preprint caption: 1e-7). Adjust using the printed u ranges.
+v_max = 2e-3
+lin_thresh = 1e-5
+c_map = "bwr"
 
 fig, axs = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(8, 6), layout="constrained")
 panels = [(axs[0, 0], t1, " ", "z [$m$]"), (axs[0, 1], t2, " ", " "),
           (axs[1, 0], t3, "x [$m$]", "z [$m$]"), (axs[1, 1], t4, "x [$m$]", " ")]
 for ax, ti, xlab, ylab in panels:
-    im = ocean_data.u.isel(time=ti, zC=slice(0, upper_limit)).plot(
+    u_panel = ocean_data.u.isel(time=ti, zC=slice(0, upper_limit))
+    T_panel = float(ocean_data.time[ti].values * fstar / (2 * np.pi))
+    print(f"T = {T_panel:6.2f}: u min = {float(u_panel.min()):+.3e} m/s, max = {float(u_panel.max()):+.3e} m/s")
+    im = u_panel.plot(
         ax=ax, label=" ", add_colorbar=False, cmap=c_map,
         norm=colors.SymLogNorm(linthresh=lin_thresh, vmin=-v_max, vmax=v_max), rasterized=True)
     (ocean_data.B + ocean_data.ba).isel(time=ti, yC=0, zC=slice(0, upper_limit)).plot.contour(
         ax=ax, colors="k", levels=isopycnal_numbers, alpha=0.75)
     ax.set(title=r"T=" + str(round(ocean_data.time[ti].values * fstar / (2 * np.pi), 2)), xlabel=xlab, ylabel=ylab)
-fig.colorbar(im, ax=axs, label="u-velocity [$m\\,s^{-1}$]",
-             ticks=[1e-4, -1e-4, 1e-5, -1e-5, 1e-6, -1e-6, 1e-7, -1e-7, 1e-8, -1e-8])
+cbar = fig.colorbar(im, ax=axs, label="u-velocity [$m\\,s^{-1}$]",
+                    ticks=[1e-3, -1e-3, 1e-4, -1e-4, 1e-5, -1e-5, 0])
+cbar.minorticks_off()   # symlog minor ticks crowd around zero
 
 save(fig, __file__)
