@@ -2,8 +2,8 @@
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 28. Data: sgamma.nc.
 mu_B = -(1 - gamma)/theta is the isopycnal-aligned slope. Masked with stability_common.mask
-(currently: above the convective limit, or sigma/f below
-the growth cutoff). At stable points the "optimal" slope is the
+(currently: above the convective limit, sigma/f below
+the growth cutoff, or non-PSI below gamma_l). At stable points the "optimal" slope is the
 argmax of a zero growth rate and is not meaningful.
 """
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ fig, axs = plt.subplots(1, 2, figsize=(8, 3), sharey=True, layout="constrained")
 for ax, delta, label in zip(axs, (0.5, 1.0), ("(a.)", "(b.)")):
     Sm, g, d = sc.sgamma_mesh(data, delta)
     mu_B = -(1 - g) / THETA
-    cf = ax.contourf(Sm, g, sc.mask(d.slope_angle.values / mu_B, g, Sm, delta, d.growth_rate.values), extend="both", levels=levels, vmax=vmax, vmin=vmin,
+    cf = ax.contourf(Sm, g, sc.mask(d.slope_angle.values / mu_B, g, Sm, delta, d.growth_rate.values, d.frequency.values), extend="both", levels=levels, vmax=vmax, vmin=vmin,
                      cmap="RdYlBu")
     ax.contour(Sm, g, sc.sgamma_boundary(d), levels=[sc.BOUNDARY_LEVEL], colors="k", linestyles="--", linewidths=1.4)
     sc.analytic_lines(ax, S, delta)
