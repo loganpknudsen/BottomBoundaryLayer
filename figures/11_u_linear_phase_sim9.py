@@ -35,8 +35,8 @@ t1 = 200
 t2 = 210
 t3 = 300
 t4 = 310
-v_max = 1e-2
-lin_thresh = 1e-4
+v_max = 2e-3       # just above the largest |u| plotted (1.8e-3 at T = 15.5)
+lin_thresh = 1e-5  # |u| at T = 10
 # Colormap: "bwr" (Base_Case notebook; the preprint used RdYlBu). Chosen 2026-10-14.
 c_map = "bwr"
 
@@ -54,6 +54,6 @@ for ax, ti, xlab, ylab in panels:
         ax=ax, colors="k", levels=isopycnal_numbers, alpha=0.75)
     ax.set(title=r"T=" + str(round(ocean_data.time[ti].values * fstar / (2 * np.pi), 2)), xlabel=xlab, ylabel=ylab)
 fig.colorbar(im, ax=axs, label="u-velocity [$m\\,s^{-1}$]",
-             ticks=[1e-2, -1e-2, 1e-3, -1e-3, 1e-4, -1e-4, 0])
+             ticks=[1e-3, -1e-3, 1e-4, -1e-4, 1e-5, -1e-5, 0])
 
 save(fig, __file__)
