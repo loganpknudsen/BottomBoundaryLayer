@@ -2,7 +2,7 @@
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 27. Data: sgamma.nc.
 Masked with stability_common.mask (currently: above the convective limit,
-or non-PSI below gamma_l).
+or non-PSI below gamma_l, or sigma/f < 1e-3).
 Growth rate is plotted as sigma/f = (sigma/f*) sqrt(1 + S^2), as in the notebook.
 """
 import matplotlib.pyplot as plt
