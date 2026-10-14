@@ -26,63 +26,29 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import xarray as xr
-import xrft as xf
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from paths import SIM_DIR, save  # noqa: E402
+import quasi_lagrangian as ql  # noqa: E402
 
-# Run parameters (Sim9), cell 1
-theta = 0.1
-f = 1e-4
-Sinf = 1.0
-Ri_inv = 0.95
-N2 = Sinf**2 * f**2 / np.tan(theta) ** 2
-delta = 0.8
-Vinf = 0.05
-gamma = (1 + (1 - Ri_inv ** (-1)) * Sinf**2) * (1 + Sinf**2) ** (-1)
-lmbd = N2 * gamma * np.tan(theta) / (f * np.cos(theta))
-h = Vinf / lmbd
-fstar = f * np.cos(theta) * (1 + Sinf**2) ** (0.5)
+P = ql.background(Sinf=1.0, Ri_inv=0.95, delta=0.8)   # Sim9
+fstar = P["fstar"]
 
 file = "flow_fields_Sinf_1.0_Ri_inv_0.95_delta_0.8.nc"
 ocean_data = xr.open_dataset(SIM_DIR / file)
 seconds = ocean_data.time / pd.Timedelta("1s")
 ocean_data = ocean_data.assign_coords(time=('time', seconds.data))
 
-
-def z_change(t, z, x):  # advection by isopycnals
-    z_osc = delta * lmbd / fstar * np.sin(fstar * t + np.pi / 2) * (h - z)
-    return z_osc
-
-
-# Quasi-Lagrangian velocities from every starting x. At output i the QL position of a parcel that
-# started at grid point j is x_j + chi(t_i); on the uniform periodic grid its nearest grid point is
-# j + n_i with n_i = round(chi(t_i)/dx) (wrapping in x), as in the notebook's nearest-point sampling.
+# Quasi-Lagrangian velocities from every starting x (figures/quasi_lagrangian.py)
 ti = 100   # T = 5
 tf = 300   # T = 15
 zi = int(sys.argv[sys.argv.index("--zi") + 1]) if "--zi" in sys.argv else 64
-t_win = ocean_data.time[ti:tf]
-dx = float(ocean_data.xF[1] - ocean_data.xF[0])
-n_shift = np.rint(z_change(t_win, ocean_data.zC[zi], None).values / dx).astype(int)
-
-
-def quasi_lagrangian(field):
-    """(time, x0) array: the field following the QL position of each starting grid point x0."""
-    a = field.isel(time=slice(ti, tf), zC=zi).squeeze(drop=True).transpose("time", ...).values
-    nx = a.shape[1]
-    idx = (np.arange(nx)[None, :] + n_shift[:, None]) % nx
-    return xr.DataArray(np.take_along_axis(a, idx, axis=1), dims=("time", "x0"),
-                        coords={"time": t_win.values, "x0": ocean_data.xF.values})
-
-
-u_ql = quasi_lagrangian(ocean_data.u)
-v_ql = quasi_lagrangian(ocean_data.v)
+u_ql = ql.quasi_lagrangian(ocean_data, "u", zi, ti, tf, P)
+v_ql = ql.quasi_lagrangian(ocean_data, "v", zi, ti, tf, P)
 
 # (a) power spectrum averaged over all starting positions, so it does not depend on where the
 # sample sits relative to the crests and nodes of the perturbation pattern
-transform_lagrange = xf.power_spectrum(u_ql, dim="time").mean("x0")   # density per Hz (cycles/s)
-omega = transform_lagrange.freq_time * 2 * np.pi                         # angular frequency [rad/s]
-psd = transform_lagrange / (2 * np.pi)                                   # density per unit omega
+omega, psd = ql.spectrum(u_ql)
 
 # (b) time series at a crest: the starting x where |u| is largest at T = 5
 j_crest = int(np.argmax(np.abs(u_ql.isel(time=0).values)))
