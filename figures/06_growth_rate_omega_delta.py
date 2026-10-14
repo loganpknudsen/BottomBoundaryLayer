@@ -4,7 +4,7 @@ Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 31, which
 committed (it reads the S-gamma dataset and undefined boundary arrays); here it reads freq.nc and
 draws the PSI boundary the same way as Figs 3-5. Masked with
 stability_common.mask (currently: above the convective limit for each delta,
-sigma/f below the growth cutoff, or non-PSI below gamma_l, i.e. omega_min^2/f*^2 > 0.25). Colour levels are fixed
+weak growth below gamma_l, or non-PSI below gamma_l, i.e. omega_min^2/f*^2 > 0.25). Colour levels are fixed
 (0 to 0.3, as in Fig 4) rather than spanning the data range, so unmasked SI growth rates saturate
 instead of compressing the colour scale.
 """

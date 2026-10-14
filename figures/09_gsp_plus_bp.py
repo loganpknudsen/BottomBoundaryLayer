@@ -3,7 +3,7 @@
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 89; the budget now comes
 from sgamma.nc instead of notebook cells 68-69. Masked with stability_common.mask (currently:
-above the convective limit, sigma/f below the growth cutoff, or non-PSI below gamma_l).
+above the convective limit, weak growth below gamma_l, or non-PSI below gamma_l).
 """
 import matplotlib.pyplot as plt
 import numpy as np
