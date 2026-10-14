@@ -3,7 +3,8 @@ period, for delta = 0.5.
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 87; the budget now comes
 from sgamma.nc (computed with the growth-rate equations, see linear_theory/floquet.py) instead
-of notebook cell 68. Unmasked. Change from the notebook: the colourbar was labelled as a growth
+of notebook cell 68. Masked with stability_common.mask (currently: points above the
+convective limit). Change from the notebook: the colourbar was labelled as a growth
 rate; the plotted quantity is a dimensionless fraction of the TKE change.
 """
 import matplotlib.pyplot as plt
@@ -22,7 +23,7 @@ boundary = sc.sgamma_boundary(d)
 
 fig, axs = plt.subplots(1, 3, figsize=(8, 3), sharey=True, layout="constrained")
 for ax, term, label in zip(axs, ("ASP", "GSP", "BP"), ("(a.)", "(b.)", "(c.)")):
-    cf = ax.contourf(Sm, g, sc.budget(d, term), levels=levels, vmax=vmax, vmin=-vmax, extend="both", cmap="bwr")
+    cf = ax.contourf(Sm, g, sc.mask(sc.budget(d, term), g, Sm, DELTA), levels=levels, vmax=vmax, vmin=-vmax, extend="both", cmap="bwr")
     ax.contour(Sm, g, boundary, levels=[sc.BOUNDARY_LEVEL], colors="k", linestyles="--", linewidths=1.4)
     sc.analytic_lines(ax, S, DELTA)
     ax.text(0.05, 1.05, label)

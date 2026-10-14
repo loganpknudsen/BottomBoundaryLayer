@@ -1,9 +1,10 @@
 """Shared pieces for the linear-theory figures (Figs 3-6, 8, 9).
 
-Reads the grids written by linear_theory/stability_grid.py. NO MASKING is applied: every grid
-point is plotted as computed. The analytic curves (gamma_l, gamma_u, convective limit) are drawn
-as lines. Two choices are kept from stability_analysis_output_reader.ipynb as placeholders, to be
-settled together with the masking:
+Reads the grids written by linear_theory/stability_grid.py. Plotted fields pass through mask(),
+which holds the masking criteria agreed so far:
+  1. points above the convective limit (convectively unstable at some wave phase) are removed.
+The analytic curves (gamma_l, gamma_u, convective limit) are drawn as lines. Two choices are kept
+from stability_analysis_output_reader.ipynb as placeholders, to be settled with the masking:
   * the PSI boundary line: the 0.4999 contour of the smoothed frequency field (cells 15, 18);
   * the TKE-budget variant for Figs 8-9 (BUDGET_IC).
 """
@@ -42,6 +43,15 @@ def gamma_upper_limit(S):
 
 def convective_limit(S, d):
     return np.sqrt(1 + S**2) / (np.sqrt(1 + S**2) + d * S**2)
+
+
+def mask(field, strat, S, delta):
+    """Return `field` with masked points set to NaN. strat (gamma), S and delta must broadcast to
+    field's shape. Criteria:
+      1. gamma above the convective limit for this delta.
+    """
+    keep = strat <= convective_limit(S, delta)
+    return np.where(keep, field, np.nan)
 
 
 def boundary_field(freq, strat, S):

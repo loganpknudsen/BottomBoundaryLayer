@@ -2,7 +2,8 @@
 (b) delta = 1.0.
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 89; the budget now comes
-from sgamma.nc instead of notebook cells 68-69. Unmasked.
+from sgamma.nc instead of notebook cells 68-69. Masked with stability_common.mask (currently:
+points above the convective limit).
 """
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,7 +19,7 @@ levels = np.linspace(-vmax, vmax + 1 / 100, 100)
 fig, axs = plt.subplots(1, 2, figsize=(8, 3), sharey=True, layout="constrained")
 for ax, delta, label in zip(axs, (0.5, 1.0), ("(a.)", "(b.)")):
     Sm, g, d = sc.sgamma_mesh(data, delta)
-    cf = ax.contourf(Sm, g, sc.budget(d, "GSP") + sc.budget(d, "BP"), levels=levels, vmax=vmax, vmin=-vmax,
+    cf = ax.contourf(Sm, g, sc.mask(sc.budget(d, "GSP") + sc.budget(d, "BP"), g, Sm, delta), levels=levels, vmax=vmax, vmin=-vmax,
                      extend="both", cmap="bwr")
     ax.contour(Sm, g, sc.sgamma_boundary(d), levels=[sc.BOUNDARY_LEVEL], colors="k", linestyles="--", linewidths=1.4)
     sc.analytic_lines(ax, S, delta)
