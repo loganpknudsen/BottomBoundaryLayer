@@ -7,9 +7,11 @@ Grids at REFINE = 1 (the same as the preprint figures used):
   freq    S in {0.5, 1, 1.5}, omega_min^2/f*^2 from -0.05 to 0.45 (251 points),
           delta in [0, 1] (201 points)  -> Fig 6
 REFINE = n divides the grid spacing by n in S and gamma (sgamma) or in omega and delta (freq),
-costing about n^2 times as much.
+costing about n^2 times as much. DM is the step of the scan over the perturbation slope m
+(default 0.1, as in the preprint); 0.01 resolves the narrow instability ranges in m at small delta
+and below gamma_l (0.01 and 0.005 agree on sampled points), at about 10 times the cost.
 
-Usage: python stability_grid.py GRID CHUNK NCHUNKS OUTDIR [NPROC] [REFINE]
+Usage: python stability_grid.py GRID CHUNK NCHUNKS OUTDIR [NPROC] [REFINE] [DM]
   Splits the S values of GRID into NCHUNKS pieces and computes piece CHUNK (0-based),
   writing OUTDIR/GRID_CHUNK.nc. Combine the pieces with merge_grid.py.
 """
@@ -22,7 +24,9 @@ import xarray as xr
 
 import floquet as fl
 
-M_GRID = np.arange(-50, 5 + 0.1, 0.1)
+def m_grid(dm):
+    dm = float(dm)
+    return np.arange(-50, 5 + dm / 2, dm)
 
 
 def grid(name, refine=1):
@@ -44,9 +48,9 @@ def grid(name, refine=1):
 
 
 def point(args):
-    S, gamma, delta = args
+    S, gamma, delta, dm = args
     flow = fl.Flow(S, gamma, delta)
-    sig, freq, m = fl.fastest_mode(flow, M_GRID)
+    sig, freq, m = fl.fastest_mode(flow, m_grid(dm))
     out = {"growth_rate": sig, "frequency": freq, "slope_angle": m}
     for ic in ("floquet", "ic01"):
         for k, v in fl.budget(flow, m, ic).items():
@@ -54,11 +58,11 @@ def point(args):
     return out
 
 
-def main(name, chunk, nchunks, outdir, nproc=None, refine=1):
+def main(name, chunk, nchunks, outdir, nproc=None, refine=1, dm=0.1):
     chunk, nchunks = int(chunk), int(nchunks)
     S, delta, strat = grid(name, refine)
     idx = np.array_split(np.arange(S.size), nchunks)[chunk]
-    tasks = [(S[i], strat[i, j], d) for i in idx for d in delta for j in range(strat.shape[1])]
+    tasks = [(S[i], strat[i, j], d, dm) for i in idx for d in delta for j in range(strat.shape[1])]
     with Pool(int(nproc) if nproc else os.cpu_count()) as pool:
         res = pool.map(point, tasks, chunksize=8)
     shape = (idx.size, delta.size, strat.shape[1])
@@ -72,7 +76,7 @@ def main(name, chunk, nchunks, outdir, nproc=None, refine=1):
                     units="growth_rate, frequency in units of f* = f sqrt(1+S^2)",
                     budget="Eq 2.31 terms integrated over one period / change in k_hat; "
                            "_floquet: growing Floquet mode, _ic01: (Psi, zeta) = (0, 1)",
-                    refine=int(refine))
+                    refine=int(refine), m_step=float(dm))
     S2 = ds.slope_burger_number**2
     with np.errstate(divide="ignore", invalid="ignore"):
         ds["omega_ratio"] = (1 - ds.strat_values * (1 + S2)) / ((1 + S2) * (1 - ds.strat_values))
