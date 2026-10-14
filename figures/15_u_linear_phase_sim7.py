@@ -3,7 +3,7 @@ with isopycnals; symmetric-log colour scale.
 
 Source: Result_Calculations/velocity_visualization.ipynb (origin/Base_Case), cells 1, 5 and 21
 (cell 20 in the submission commit 27f8414; identical plotting settings).
-Run: Sim7 (S = 1, Ri_inv = 0.75, delta = 0.8), March output flow_fields_..._Ri_inv_0.75_delta_0.8.nc.
+Run: Sim7 (S = 1, Ri_inv = 0.75, delta = 0.8), flow_fields_..._Ri_inv_0.75_delta_0.8.nc in BBL_SIM_DIR.
 """
 import pathlib
 import sys

@@ -10,8 +10,11 @@ USER = os.environ.get("USER", "")
 FIG_DIR = Path(__file__).resolve().parent
 REPO = FIG_DIR.parent
 
-# Simulation output (TKE_terms_*.nc and flow_fields_*.nc). Default: the March 2026 runs.
-SIM_DIR = Path(os.environ.get("BBL_SIM_DIR", "/glade/derecho/scratch/knudsenl/data/new_data/final_draft"))
+# Simulation output (TKE_terms_*.nc and flow_fields_*.nc). Default: the revision runs with no
+# perturbation buoyancy flux at the bottom (full_code_diagnostics_noflux.jl, via submit_noflux.py),
+# plus the Sim9D drag run. The March 2026 runs (b' = 0 at the bottom) are in
+# /glade/derecho/scratch/knudsenl/data/new_data/final_draft.
+SIM_DIR = Path(os.environ.get("BBL_SIM_DIR", f"/glade/derecho/scratch/{USER}/BottomBoundaryLayer/output"))
 
 # Linear-theory grids from linear_theory/stability_grid.py (sgamma.nc, freq.nc), with the fine m scan.
 LT_DIR = Path(os.environ.get("BBL_LT_DIR", f"/glade/derecho/scratch/{USER}/BottomBoundaryLayer/output/linear_theory_dm0.01"))

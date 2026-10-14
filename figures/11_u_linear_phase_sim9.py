@@ -2,7 +2,7 @@
 with isopycnals; symmetric-log colour scale, linear threshold 1e-6.
 
 Source: Result_Calculations/velocity_visualization.ipynb (origin/Base_Case), cells 1, 5 and 23.
-Run: Sim9 (S = 1, Ri_inv = 0.95, delta = 0.8), March output flow_fields_..._Ri_inv_0.95_delta_0.8.nc.
+Run: Sim9 (S = 1, Ri_inv = 0.95, delta = 0.8), flow_fields_..._Ri_inv_0.95_delta_0.8.nc in BBL_SIM_DIR.
 """
 import pathlib
 import sys

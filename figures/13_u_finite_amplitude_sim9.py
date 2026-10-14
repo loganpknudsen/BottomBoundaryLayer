@@ -6,7 +6,7 @@ Source: Result_Calculations/velocity_visualization.ipynb (origin/Base_Case), cel
 14 and 28. Ri is computed from the total fields, Ri = d_z(B + ba) / [d_z(ub + ua)^2 + d_z(vb + va)^2],
 correcting the notebook, which omitted the u-shear and used the x-mean-removed perturbations b, v
 (dropping the mean-flow modification that develops at finite amplitude).
-Run: Sim9 (S = 1, Ri_inv = 0.95, delta = 0.8), March output flow_fields_..._Ri_inv_0.95_delta_0.8.nc.
+Run: Sim9 (S = 1, Ri_inv = 0.95, delta = 0.8), flow_fields_..._Ri_inv_0.95_delta_0.8.nc in BBL_SIM_DIR.
 """
 import pathlib
 import sys
