@@ -1,0 +1,61 @@
+"""Figure 15: perturbation u for Sim7 over the linear growth phase (T = 15, 15.5, 20, 20.5),
+with isopycnals; symmetric-log colour scale.
+
+Source: Result_Calculations/velocity_visualization.ipynb (origin/Base_Case), cells 1, 5 and 21
+(cell 20 in the submission commit 27f8414; identical plotting settings).
+Run: Sim7 (S = 1, Ri_inv = 0.75, delta = 0.8), March output flow_fields_..._Ri_inv_0.75_delta_0.8.nc.
+"""
+import pathlib
+import sys
+
+import matplotlib.colors as colors
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import xarray as xr
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from paths import SIM_DIR, save  # noqa: E402
+
+# Run parameters (Sim7)
+theta = 0.1
+f = 1e-4
+Sinf = 1.0
+Ri_inv = 0.75
+delta = 0.8
+fstar = f * np.cos(theta) * (1 + Sinf**2) ** (0.5)
+
+file = "flow_fields_Sinf_1.0_Ri_inv_0.75_delta_0.8.nc"
+ocean_data = xr.open_dataset(SIM_DIR / file).chunk(time=1)
+seconds = ocean_data.time / pd.Timedelta("1s")
+ocean_data = ocean_data.assign_coords(time=('time', seconds.data))
+
+upper_limit = -1
+isopycnal_numbers = 15
+t1 = 300
+t2 = 310
+t3 = 400
+t4 = 410
+v_max = 1e-5
+c_map = "RdYlBu"
+# TODO(decision): linear threshold. Both notebook versions use lin_thresh = 1e-9 (colour-bar ticks
+# down to 1e-8), but the preprint caption says 1e-7 and the preprint colour bar shows ticks only
+# down to 1e-7 with 0 one decade below, which looks like lin_thresh = 1e-7.
+lin_thresh = None
+if lin_thresh is None:
+    raise NotImplementedError("Fig 15 linear threshold: 1e-9 (notebook) or 1e-7 (preprint caption/colour bar)?")
+
+fig, axs = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(8, 6), layout="constrained")
+panels = [(axs[0, 0], t1, " ", "z [$m$]"), (axs[0, 1], t2, " ", " "),
+          (axs[1, 0], t3, "x [$m$]", "z [$m$]"), (axs[1, 1], t4, "x [$m$]", " ")]
+for ax, ti, xlab, ylab in panels:
+    im = ocean_data.u.isel(time=ti, zC=slice(0, upper_limit)).plot(
+        ax=ax, label=" ", add_colorbar=False, cmap=c_map,
+        norm=colors.SymLogNorm(linthresh=lin_thresh, vmin=-v_max, vmax=v_max), rasterized=True)
+    (ocean_data.B + ocean_data.ba).isel(time=ti, yC=0, zC=slice(0, upper_limit)).plot.contour(
+        ax=ax, colors="k", levels=isopycnal_numbers, alpha=0.75)
+    ax.set(title=r"T=" + str(round(ocean_data.time[ti].values * fstar / (2 * np.pi), 2)), xlabel=xlab, ylabel=ylab)
+fig.colorbar(im, ax=axs, label="u-velocity [$m\\,s^{-1}$]",
+             ticks=[1e-4, -1e-4, 1e-5, -1e-5, 1e-6, -1e-6, 1e-7, -1e-7, 1e-8, -1e-8])
+
+save(fig, __file__)
