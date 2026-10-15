@@ -29,6 +29,7 @@ for ax, term, label in zip(axs, ("ASP", "GSP", "BP"), ("(a.)", "(b.)", "(c.)")):
     ax.text(0.05, 1.05, label)
     ax.set_xlim([0.15, 1.9])
     ax.set_ylim([0.05, 1])
+    sc.label_limits(ax)
     ax.set_xticks(np.arange(0.2, 2, 0.4))
     ax.set_xlabel(r"$S_\infty$")
 axs[0].set_ylabel(r"$\gamma$")

@@ -28,6 +28,8 @@ for ax, delta, label in zip(axs, (0.5, 1.0), ("(a.)", "(b.)")):
     ax.set_xticks(np.arange(0.2, 2, 0.2))
     ax.set_xlabel(r"$S_\infty$")
 axs[0].set_ylim([0.05, 1])
+for ax in axs:
+    sc.label_limits(ax)
 axs[0].set_ylabel(r"$\gamma$")
 cbar = fig.colorbar(cf, ax=axs, ticks=np.arange(-vmax, vmax + 0.06, 0.5))
 cbar.set_label(r"Fraction of TKE change over one period")
