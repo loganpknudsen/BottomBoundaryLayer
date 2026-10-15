@@ -22,7 +22,9 @@ notebooks it replaced are listed at the end.
 ## 1. Simulations
 
 Each run is a parameter set in `parameters_stblty.jl` (e.g. `S10R095delta08` is Sim9:
-S∞ = 1, Ri_inv = 0.95, δ = 0.8). Submit from the repo root on Casper:
+S∞ = 1, Ri_inv = 0.95, δ = 0.8). `Ri_inv` is the Hilditch & Thomas inverse Richardson number
+Ri_HT⁻¹ of Eq 2.29 (so ω²min/f*² = 1 − Ri_inv), not the inverse of the boundary-layer Richardson
+number N²(1 − γ)/Λ²; see the note at the top of `parameters_stblty.jl`. Submit from the repo root on Casper:
 
 ```
 python submit_noflux.py                         # all runs in the growth-rate comparison

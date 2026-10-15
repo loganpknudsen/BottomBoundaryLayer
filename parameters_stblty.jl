@@ -1,5 +1,12 @@
 using Parameters
 
+# Note on naming: `Ri_inv` (and the "R" in names like S10R095delta08, and "Ri_inv_0.95" in output
+# file names) is NOT the inverse of the boundary-layer Richardson number Ri = N²(1 - γ)/Λ² used in
+# the TKE budget (Eq 2.31) and Fig 13. It is the Hilditch & Thomas (2023) inverse Richardson number
+# of Eq 2.29, Ri_HT⁻¹ = S²/[(1 + S²)(1 - γ)], which is how γ is set below:
+#     γ = (1 + (1 - Ri_inv⁻¹) S²)/(1 + S²)  ⇔  Ri_inv = Ri_HT⁻¹,   and ω²_min/f*² = 1 - Ri_inv.
+# Ri_inv > 1 means the run is SI-unstable (Sims 5, 10, 14). Example, Sim9: Ri_inv = 0.95, but 1/Ri ≈ 0.43.
+
 @with_kw struct DenseParams
 
     S01gammau = (S = 0.1,
