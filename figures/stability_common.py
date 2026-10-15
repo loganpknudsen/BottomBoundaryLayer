@@ -112,3 +112,11 @@ def analytic_lines(ax, S, delta=None):
     ax.plot(S, gamma_lower_limit(S), c="k")
     if delta is not None:
         ax.plot(S, convective_limit(S, delta), c="grey", linestyle="--", linewidth=2)
+
+
+def label_limits(ax, S_u=1.8, S_l=1.6, dy=0.03, fontsize=9):
+    """Label the gamma_u and gamma_l lines just above them near the right edge (as in the revised
+    Figs 4 and 5)."""
+    ax.text(S_u, gamma_upper_limit(S_u) + dy, r"$\gamma_u$", fontsize=fontsize, ha="center", va="bottom")
+    ax.text(S_l, max(gamma_lower_limit(S_l), ax.get_ylim()[0]) + dy, r"$\gamma_l$", fontsize=fontsize,
+            ha="center", va="bottom")
