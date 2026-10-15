@@ -1,5 +1,6 @@
 """Figure 11: perturbation u for Sim9 over the linear growth phase (T = 10, 10.5, 15, 15.5),
-with isopycnals; symmetric-log colour scale, linear threshold 1e-6.
+with isopycnals; symmetric-log colour scale with range and linear threshold set from the data
+(colour_scales.symlog_limits; the values used are printed).
 
 Source: Result_Calculations/velocity_visualization.ipynb (origin/Base_Case), cells 1, 5 and 23.
 Run: Sim9 (S = 1, Ri_inv = 0.95, delta = 0.8), flow_fields_..._Ri_inv_0.95_delta_0.8.nc in BBL_SIM_DIR.

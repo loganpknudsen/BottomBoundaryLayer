@@ -2,7 +2,7 @@
 
 Same runs, parameters and resources as the March set (run_all.py), but using
 full_code_diagnostics_noflux.jl and writing to OUTPUT_DIR. The SI-unstable runs
-(Ri_inv = 1.05, SI_SIMS) are not in the figure and are submitted only when named.
+(Ri_inv = 1.05, SI_SIMS) are submitted only when named.
 
 Usage: python submit_noflux.py [--dry-run] [--drag] [SIM ...]
   --dry-run   write and print the job scripts but do not qsub them
