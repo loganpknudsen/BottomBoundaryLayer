@@ -15,15 +15,17 @@ from paths import save
 THETA = 0.1
 data = sc.load("sgamma")
 S = data.slope_burger_number.values
+# Revised-manuscript colour scale: diverging seismic map centred on mu_o/mu_B = 1 (white = aligned
+# with the isopycnals), levels symmetric about 1. (The preprint used RdYlBu with levels to vmax + 1/20.)
 vmin, vmax = 0.25, 1.75
-levels = np.linspace(vmin, vmax + 1 / 20, 100)
+levels = np.linspace(vmin, vmax, 101)
 
 fig, axs = plt.subplots(1, 2, figsize=(8, 3), sharey=True, layout="constrained")
 for ax, delta, label in zip(axs, (0.5, 1.0), ("(a.)", "(b.)")):
     Sm, g, d = sc.sgamma_mesh(data, delta)
     mu_B = -(1 - g) / THETA
     cf = ax.contourf(Sm, g, sc.mask(d.slope_angle.values / mu_B, g, Sm, delta, d.growth_rate.values, d.frequency.values), extend="both", levels=levels, vmax=vmax, vmin=vmin,
-                     cmap="RdYlBu")
+                     cmap="seismic")
     ax.contour(Sm, g, sc.sgamma_boundary(d), levels=[sc.BOUNDARY_LEVEL], colors="k", linestyles="--", linewidths=1.4)
     sc.analytic_lines(ax, S, delta)
     ax.text(0.075, 1.05, label)
