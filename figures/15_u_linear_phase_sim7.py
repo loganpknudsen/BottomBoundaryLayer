@@ -1,5 +1,6 @@
 """Figure 15: perturbation u for Sim7 over the linear growth phase (T = 15, 15.5, 20, 20.5),
-with isopycnals; symmetric-log colour scale.
+with isopycnals; symmetric-log colour scale with range and linear threshold set from the data
+(colour_scales.symlog_limits; the values used are printed). Same layout and size as Fig 11.
 
 Source: Result_Calculations/velocity_visualization.ipynb (origin/Base_Case), cells 1, 5 and 21
 (cell 20 in the submission commit 27f8414; identical plotting settings).
@@ -39,7 +40,7 @@ t3 = 400
 t4 = 410
 c_map = "bwr"
 
-fig, axs = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(8, 6), layout="constrained")
+fig, axs = plt.subplots(2, 2, sharex=True, sharey=True, figsize=(8, 4), layout="constrained")
 panels = [(axs[0, 0], t1, " ", "z [$m$]"), (axs[0, 1], t2, " ", " "),
           (axs[1, 0], t3, "x [$m$]", "z [$m$]"), (axs[1, 1], t4, "x [$m$]", " ")]
 u_panels = [ocean_data.u.isel(time=ti, zC=slice(0, upper_limit)).compute() for _, ti, _, _ in panels]
