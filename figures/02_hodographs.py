@@ -41,7 +41,7 @@ u_S15_u, v_S15_u, b_S15_u = oscillation(t, 1.5, "gamma_u")
 fig, axes = plt.subplots(nrows=1, ncols=2, sharey=True, figsize=(8, 16 / 3))
 
 axes[0].plot(u_S05_u, v_S05_u, color="k", zorder=0, label=r"$S_\infty =0.5$")
-axes[0].scatter(u_S05_u[0], v_S05_u[0], zorder=1, color="k", label="Initial Condtions")
+axes[0].scatter(u_S05_u[0], v_S05_u[0], zorder=1, color="k", label="Initial Conditions")
 axes[0].plot(u_S1_u, v_S1_u, color="b", zorder=0, label=r"$S_\infty =1$")
 axes[0].scatter(u_S1_u[0], v_S1_u[0], zorder=1, color="k")
 axes[0].plot(u_S15_u, v_S15_u, color="g", zorder=0, label=r"$S_\infty =1.5$")
@@ -64,6 +64,10 @@ axes[1].set_ylabel(r'$\breve{b}/(\delta\Lambda N_\infty)$', fontsize=12)
 axes[1].text(-1.1, 1.05, "(b.)", fontsize=12)
 axes[1].set_aspect('equal')
 
-fig.legend(bbox_to_anchor=(0.55, 0.05), loc="lower center", ncol=4)
+# Legend order as in the revised manuscript: the three S_inf curves, then the initial conditions
+handles, labels = axes[0].get_legend_handles_labels()
+order = [labels.index(l) for l in (r"$S_\infty =0.5$", r"$S_\infty =1$", r"$S_\infty =1.5$", "Initial Conditions")]
+fig.legend([handles[i] for i in order], [labels[i] for i in order],
+           bbox_to_anchor=(0.55, 0.05), loc="lower center", ncol=4)
 plt.tight_layout()
 save(fig, __file__)

@@ -33,4 +33,5 @@ ax.legend(handles=[Line2D([], [], color="black", linestyle="-", label=r"$\delta=
                    Line2D([], [], color="red", linestyle="--", label=r"$\delta=1.0$")], loc="lower left")
 ax.set_xlim([0.15, 1.9])
 ax.set_ylim([0.02, 1])
+sc.label_limits(ax, fontsize=11)
 save(fig, __file__)
