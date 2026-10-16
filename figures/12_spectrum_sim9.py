@@ -70,8 +70,8 @@ ax.set_title("(b.)", fontfamily='serif', loc='left', fontsize='medium')
 
 ax = ax_dict['(a.)']
 ax.plot(omega, psd, color="k")
-ax.vlines(0.5 * fstar, ymin=0, ymax=float(psd.max()) * 1.05, color="tab:blue", linewidth=1.5, linestyles="dotted", label="$f^*/2$")
-ax.vlines(fstar, ymin=0, ymax=float(psd.max()) * 1.05, color="tab:orange", linewidth=1.5, linestyles="dotted", label="$f^*$")
+ax.vlines(0.5 * fstar, ymin=0, ymax=float(psd.max()) * 1.05, color="tab:orange", linewidth=1.5, linestyles="dotted", label="$f^*/2$")
+ax.vlines(fstar, ymin=0, ymax=float(psd.max()) * 1.05, color="tab:blue", linewidth=1.5, linestyles="dotted", label="$f^*$")
 ax.set_xlim([1e-05, float(omega.max())])
 ax.set_ylim([0, float(psd.max()) * 1.05])
 ax.set_box_aspect(0.9)
