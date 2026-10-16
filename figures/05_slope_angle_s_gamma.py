@@ -1,7 +1,10 @@
 """Figure 5: perturbation slope mu_o / mu_B over S_inf-gamma for (a) delta = 0.5, (b) delta = 1.0.
 
 Source: stability_analysis_output_reader.ipynb (origin/Base_Case) cell 28. Data: sgamma.nc.
-mu_B = -(1 - gamma)/theta is the isopycnal-aligned slope. Masked with stability_common.mask
+mu_B = -(1 - gamma)/theta is the isopycnal-aligned value of mu. Both are inverse slopes (dx/dz)
+in the rotated frame: the perturbation varies as exp(ik[x - mu z]), so u = mu w. The isopycnal slope
+relative to the bottom is 1/mu_B = -theta/(1 - gamma); relative to the horizontal it is
+-gamma theta/(1 - gamma) (Allen & Newberger 1998), which is not directly comparable with mu. Masked with stability_common.mask
 (currently: above the convective limit, or
 below gamma_l with sigma/f < 1e-3 or a non-PSI fastest mode). At stable points the "optimal" slope is the
 argmax of a zero growth rate and is not meaningful.
