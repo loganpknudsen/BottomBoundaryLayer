@@ -53,7 +53,8 @@ omega, psd = ql.spectrum(u_ql)
 # (b) time series at a crest: the starting x where |u| is largest at T = 5
 j_crest = int(np.argmax(np.abs(u_ql.isel(time=0).values)))
 u_lagrange, v_lagrange = u_ql.isel(x0=j_crest), v_ql.isel(x0=j_crest)
-z_label = f"z={float(ocean_data.zC[zi]):.2f} m, $x_0$={float(u_ql.x0[j_crest]):.0f} m"
+z_label = f"z={float(ocean_data.zC[zi]):.2f} m"
+print(f"panel (b): starting position x0 = {float(u_ql.x0[j_crest]):.0f} m (crest at T = 5; give it in the caption)")
 
 fig, ax_dict = plt.subplot_mosaic([['(a.)', '(b.)']], layout="constrained", figsize=(9, 4))
 ax = ax_dict['(b.)']
