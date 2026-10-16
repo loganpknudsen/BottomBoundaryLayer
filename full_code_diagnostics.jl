@@ -141,10 +141,10 @@ B_field = BackgroundField(constant_stratification, parameters=p)
 
 ### Boundary Conditions for Buoyancy
 
-b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
+# b_bc_top= GradientBoundaryCondition(-1*N²*cosd(θ))
 b_bc_bottom= ValueBoundaryCondition(0) 
 
-buoyancy_grad = FieldBoundaryConditions(top = b_bc_top, bottom=b_bc_bottom) 
+buoyancy_grad = FieldBoundaryConditions(top = b_bc_top) # , bottom=b_bc_bottom
 
 ### diffusitivity and viscosity values for closure
 
@@ -184,7 +184,7 @@ simulation.callbacks[:wizard] = Callback(wizard, IterationInterval(5))
 ### progress message to check time step size
 
 progress_message(sim) =
-        @printf("i: %04d, t: %s, Δt: %s, wall time: %s, Intertial Period %s\n",
+        @printf("i: %04d, t: %s, Δt: %s, wall time: %s, Inertial Period %s\n",
         sim.model.clock.iteration, prettytime(sim.model.clock.time),
         prettytime(sim.Δt), prettytime((time_ns() - start_time) * 1e-9),sim.model.clock.time*fˢ/2π)
 

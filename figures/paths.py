@@ -1,0 +1,31 @@
+"""Where the figure scripts read data and write figures.
+
+Override any location with an environment variable, e.g.
+    BBL_SIM_DIR=/path/to/runs python figures/11_u_linear_phase_sim9.py
+"""
+import os
+from pathlib import Path
+
+USER = os.environ.get("USER", "")
+FIG_DIR = Path(__file__).resolve().parent
+REPO = FIG_DIR.parent
+
+# Simulation output (TKE_terms_*.nc and flow_fields_*.nc). Default: the revision runs with no
+# perturbation buoyancy flux at the bottom (full_code_diagnostics_noflux.jl, via submit_noflux.py),
+# plus the Sim9D drag run. The March 2026 runs (b' = 0 at the bottom) are in
+# /glade/derecho/scratch/knudsenl/data/new_data/final_draft.
+SIM_DIR = Path(os.environ.get("BBL_SIM_DIR", f"/glade/derecho/scratch/{USER}/BottomBoundaryLayer/output"))
+
+# Linear-theory grids from linear_theory/stability_grid.py (sgamma.nc, freq.nc), with the fine m scan.
+LT_DIR = Path(os.environ.get("BBL_LT_DIR", f"/glade/derecho/scratch/{USER}/BottomBoundaryLayer/output/linear_theory_dm0.01"))
+
+OUT_DIR = Path(os.environ.get("BBL_FIG_OUT", FIG_DIR / "output"))
+
+
+def save(fig, script_file, dpi=300):
+    """Save `fig` as figures/output/<script name>.png and .pdf."""
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    stem = Path(script_file).stem
+    for ext in ("png", "pdf"):
+        fig.savefig(OUT_DIR / f"{stem}.{ext}", dpi=dpi)
+    print(f"wrote {OUT_DIR / stem}.png/.pdf")
