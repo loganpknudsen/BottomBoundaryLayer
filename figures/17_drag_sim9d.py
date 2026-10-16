@@ -74,7 +74,7 @@ pos = omega > 0
 ax = axs["psd"]
 ax.plot(omega[pos], psd[pos], color="k", lw=1.2)
 ax.axvline(0.5 * P["fstar"], color="tab:blue", ls=":", lw=1.5, label=r"$f^*/2$")
-ax.axvline(P["fstar"], color="0.4", ls=":", lw=1.5, label=r"$f^*$")
+ax.axvline(P["fstar"], color="tab:orange", ls=":", lw=1.5, label=r"$f^*$")
 ax.set_xscale("log")
 ax.set_xlim(float(omega[pos].min()), float(omega[pos].max()))
 ax.set_ylim(0, None)
